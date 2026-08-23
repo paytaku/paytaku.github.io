@@ -53,6 +53,21 @@ ARTICLE_META-->
     });
   });
 })();
+
+// サムネイル自動表示：assets/thumbnails/{slug}.{png|jpg|jpeg|webp} があれば #lpThumb に読み込む。
+(function(){
+  var img = document.getElementById('lpThumb');
+  if(!img) return;
+  var slug = location.pathname.split('/').pop().replace(/\.html$/, '');
+  var exts = ['png', 'jpg', 'jpeg', 'webp'];
+  (function tryNext(i){
+    if(i >= exts.length) return;
+    var test = new Image();
+    test.onload = function(){ img.src = test.src; img.style.display = 'block'; };
+    test.onerror = function(){ tryNext(i + 1); };
+    test.src = '../assets/thumbnails/' + slug + '.' + exts[i];
+  })(0);
+})();
 </script>
 
 <div class="lp-page card-shindan-page">
@@ -61,6 +76,16 @@ ARTICLE_META-->
     <nav class="lp-breadcrumb">
       <a href="../index.html">ホーム</a> ＞ <a href="./index.html">カード解説</a> ＞ 小田急ポイントカードは沿線に住んでない人でも得か？…
     </nav>
+
+    <!-- サムネイル：assets/thumbnails/{slug}.png（またはjpg/jpeg/webp）があれば自動表示 -->
+    <img class="lp-thumb" id="lpThumb" alt="小田急ポイントカードは沿線に住んでない人でも得か？">
+
+    <div class="lp-hero">
+      <div class="lp-badge">カード解説</div>
+      <h1 class="lp-title">小田急ポイントカードは沿線に住んでない人でも得か？「最大12%」の正体と無料カード／OPクレジットの選び方</h1>
+      <p class="lp-tagline">「沿線に住んでないと意味ないんじゃ」「12%ってどうせ一部の店だけでしょ」──その一歩手前で止まっている人へ、正直な向き不向きを整理しました。</p>
+      <div class="lp-byline">更新日：2026-08-20　|　ペイ択編集部</div>
+    </div>
 
     <!-- ① ファーストビュー（12%主役） -->
     <div class="nl-hero">
@@ -93,7 +118,7 @@ ARTICLE_META-->
       <a data-aff="custom-1787211123687" href="https://h.accesstrade.net/sp/cc?rk=01004q8200ox3w" class="nl-cta-btn" target="_blank" rel="noopener noreferrer nofollow sponsored">公式サイトを見る（PR）</a>
       <p class="nl-cta-hint">その前に ── このカードが自分に必要か、まず下の3分診断で確認できます。</p>
     </div>
-    <div class="lp-byline" style="margin-bottom:28px;">更新日：2026-08-20　|　ペイ択編集部</div>
+
 
     <nav class="lp-toc">
       <div class="lp-toc-title">この記事の流れ</div>

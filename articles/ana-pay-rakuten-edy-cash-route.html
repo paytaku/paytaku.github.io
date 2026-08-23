@@ -54,6 +54,21 @@ ARTICLE_META-->
     });
   });
 })();
+
+// サムネイル自動表示：assets/thumbnails/{slug}.{png|jpg|jpeg|webp} があれば #lpThumb に読み込む。
+(function(){
+  var img = document.getElementById('lpThumb');
+  if(!img) return;
+  var slug = location.pathname.split('/').pop().replace(/\.html$/, '');
+  var exts = ['png', 'jpg', 'jpeg', 'webp'];
+  (function tryNext(i){
+    if(i >= exts.length) return;
+    var test = new Image();
+    test.onload = function(){ img.src = test.src; img.style.display = 'block'; };
+    test.onerror = function(){ tryNext(i + 1); };
+    test.src = '../assets/thumbnails/' + slug + '.' + exts[i];
+  })(0);
+})();
 </script>
 
 <div class="lp-page card-shindan-page">
@@ -62,6 +77,16 @@ ARTICLE_META-->
     <nav class="lp-breadcrumb">
       <a href="../index.html">ホーム</a> ＞ <a href="./index.html">チャージルート</a> ＞ ANA Pay→楽天Edy→楽天キャッシュ→楽天ペイ…
     </nav>
+
+    <!-- サムネイル：assets/thumbnails/{slug}.png（またはjpg/jpeg/webp）があれば自動表示 -->
+    <img class="lp-thumb" id="lpThumb" alt="ANA Pay→楽天Edy→楽天キャッシュ→楽天ペイ">
+
+    <div class="lp-hero">
+      <div class="lp-badge">チャージルート</div>
+      <h1 class="lp-title">ANA Pay→楽天Edy→楽天キャッシュ→楽天ペイ、2026年8月改悪後の現実的な上限｜エポスゴールド起点はもう組めません</h1>
+      <p class="lp-tagline">「月10万円動かせるって書いてあったのに」「エポスゴールドで始めようとしたら対象外だった」──改定後の現実的な上限と、代わりの起点カードを整理しました。</p>
+      <div class="lp-byline">更新日：2026-08-23　|　ペイ択編集部</div>
+    </div>
 
     <div class="nl-hero">
       <p class="nl-hero-name">ANA Pay→楽天Edy→楽天キャッシュ→楽天ペイ 2026年8月版</p>
@@ -73,7 +98,6 @@ ARTICLE_META-->
       <a data-aff="daiichi-neobank-debit-premium" href="#" class="nl-cta-btn" target="_blank" rel="noopener noreferrer nofollow sponsored">起点カードの候補を見る（PR）</a>
       <p class="nl-cta-hint">その前に ── 今からでも組む価値があるか、下の3分診断で確認できます。</p>
     </div>
-    <div class="lp-byline" style="margin-bottom:28px;">更新日：2026-08-23　|　ペイ択編集部</div>
 
     <nav class="lp-toc">
       <div class="lp-toc-title">この記事の流れ</div>

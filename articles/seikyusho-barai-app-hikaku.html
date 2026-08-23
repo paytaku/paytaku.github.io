@@ -53,6 +53,21 @@ ARTICLE_META-->
     });
   });
 })();
+
+// サムネイル自動表示：assets/thumbnails/{slug}.{png|jpg|jpeg|webp} があれば #lpThumb に読み込む。
+(function(){
+  var img = document.getElementById('lpThumb');
+  if(!img) return;
+  var slug = location.pathname.split('/').pop().replace(/\.html$/, '');
+  var exts = ['png', 'jpg', 'jpeg', 'webp'];
+  (function tryNext(i){
+    if(i >= exts.length) return;
+    var test = new Image();
+    test.onload = function(){ img.src = test.src; img.style.display = 'block'; };
+    test.onerror = function(){ tryNext(i + 1); };
+    test.src = '../assets/thumbnails/' + slug + '.' + exts[i];
+  })(0);
+})();
 </script>
 
 <div class="lp-page card-shindan-page">
@@ -62,12 +77,22 @@ ARTICLE_META-->
       <a href="../index.html">ホーム</a> ＞ <a href="./index.html">チャージルート</a> ＞ 請求書払いアプリ徹底比較…
     </nav>
 
+    <!-- サムネイル：assets/thumbnails/{slug}.png（またはjpg/jpeg/webp）があれば自動表示 -->
+    <img class="lp-thumb" id="lpThumb" alt="請求書払いアプリ徹底比較">
+
+    <div class="lp-hero">
+      <div class="lp-badge">チャージルート</div>
+      <h1 class="lp-title">請求書払いアプリ徹底比較｜au PAY・PayPay・楽天ペイ・d払い・ファミペイ、2026年8月時点でどれが得か</h1>
+      <p class="lp-tagline">「どのアプリで払っても同じでしょ」と思っていませんか？決済時の還元はほぼ全滅している中、今も意味があるアプリだけを正直に比較しました。</p>
+      <div class="lp-byline">更新日：2026-08-20　|　ペイ択編集部</div>
+    </div>
+
     <div class="nl-hero">
       <p class="nl-hero-name">請求書払いアプリ徹底比較</p>
       <p class="nl-hero-sub">2026年8月時点でどれが得か</p>
       <p class="nl-hero-cap" style="margin-top:10px;">税金・公共料金の請求書払い、実は「決済時のポイント還元」はほぼ全滅しています。今も意味があるのは、チャージ側で還元が残っているアプリだけです。6つを正直に比較します。</p>
     </div>
-    <div class="lp-byline" style="margin-bottom:28px;">更新日：2026-08-20　|　ペイ択編集部</div>
+
 
     <nav class="lp-toc">
       <div class="lp-toc-title">この記事の流れ</div>

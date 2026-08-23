@@ -54,6 +54,21 @@ ARTICLE_META-->
     });
   });
 })();
+
+// サムネイル自動表示：assets/thumbnails/{slug}.{png|jpg|jpeg|webp} があれば #lpThumb に読み込む。
+(function(){
+  var img = document.getElementById('lpThumb');
+  if(!img) return;
+  var slug = location.pathname.split('/').pop().replace(/\.html$/, '');
+  var exts = ['png', 'jpg', 'jpeg', 'webp'];
+  (function tryNext(i){
+    if(i >= exts.length) return;
+    var test = new Image();
+    test.onload = function(){ img.src = test.src; img.style.display = 'block'; };
+    test.onerror = function(){ tryNext(i + 1); };
+    test.src = '../assets/thumbnails/' + slug + '.' + exts[i];
+  })(0);
+})();
 </script>
 
 <div class="lp-page card-shindan-page">
@@ -62,6 +77,16 @@ ARTICLE_META-->
     <nav class="lp-breadcrumb">
       <a href="../index.html">ホーム</a> ＞ <a href="./index.html">証券・投資</a> ＞ DMM株が向く人・向かない人…
     </nav>
+
+    <!-- サムネイル：assets/thumbnails/{slug}.png（またはjpg/jpeg/webp）があれば自動表示 -->
+    <img class="lp-thumb" id="lpThumb" alt="DMM株が向く人・向かない人">
+
+    <div class="lp-hero">
+      <div class="lp-badge">証券・投資</div>
+      <h1 class="lp-title">DMM株が向く人・向かない人｜投信で積立したい人は開かなくていい理由とSBI・楽天との使い分け</h1>
+      <p class="lp-tagline">「もうSBI持ってるのに開く意味ある？」「投信が買えないなら論外では？」──その一歩手前で止まっている人へ。DMM株が本当に向く人を正直に整理しました。</p>
+      <div class="lp-byline">更新日：2026-08-23　|　ペイ択編集部</div>
+    </div>
 
     <div class="nl-hero">
       <p class="nl-hero-name">DMM株 2026年8月版</p>
@@ -73,7 +98,7 @@ ARTICLE_META-->
       <a data-aff="dmm-kabu" href="#" class="nl-cta-btn" target="_blank" rel="noopener noreferrer nofollow sponsored">公式サイトを見る（PR）</a>
       <p class="nl-cta-hint">その前に ── あなたに向いているか、下の3分診断で確認できます。</p>
     </div>
-    <div class="lp-byline" style="margin-bottom:28px;">更新日：2026-08-23　|　ペイ択編集部</div>
+
 
     <nav class="lp-toc">
       <div class="lp-toc-title">この記事の流れ</div>
@@ -92,7 +117,7 @@ ARTICLE_META-->
 
     <!-- STEP1: 診断 -->
     <section class="nl-block" id="quiz">
-      <p class="nl-quiz-hero-h">あなたは<br><span class="em">DMM株が向く人</span>？</p>
+      <p class="nl-quiz-hero-h">1. あなたは<br><span class="em">DMM株が向く人</span>？</p>
       <p class="nl-quiz-hero-sub">2問で分かります。</p>
       <div class="nl-quiz">
         <div class="nl-quiz-group">
@@ -118,14 +143,14 @@ ARTICLE_META-->
 
     <!-- STEP2: 結論 -->
     <section class="nl-block" id="conc">
-      <h2 class="nl-h2">結論：SBI・楽天を持っていても「2つ目」に開く理由</h2>
+      <h2 class="nl-h2">2. 結論：SBI・楽天を持っていても「2つ目」に開く理由</h2>
       <p class="nl-text">「もうSBIか楽天を持っているのに、また口座を増やす意味があるのか」——これがDMM株を検討する人の一番の疑問です。答えは、<b>DMM株は積立の代わりではなく、個別株取引の専用口座</b>という点にあります。</p>
       <p class="nl-text" style="margin-top:10px;">DMM株は投資信託を取り扱っておらず、つみたてNISAにも対応していません。積立はこれまで通りSBI証券や楽天証券で続けたうえで、<b>「気になる個別株（特に米国株）を安く売買したいとき」だけDMM株を使う</b>という2枚看板の運用が、このカードの正しい向き合い方です。口座開設・維持費はいずれも0円なので、2つ目を持つこと自体にコストはかかりません。</p>
     </section>
 
     <!-- STEP3: 誤解を解く -->
     <section class="nl-block" id="point">
-      <h2 class="nl-h2">「ポイント還元1%」は積立クレカの還元と別物です</h2>
+      <h2 class="nl-h2">3. 「ポイント還元1%」は積立クレカの還元と別物です</h2>
       <p class="nl-text">DMM株を「クレカ積立で1%還元される証券」と誤解している方がいますが、違います。DMM株は<b>クレカ積立という仕組み自体が存在せず</b>、その代わりに<b>取引手数料の1%がDMM株ポイントとして還元される</b>仕組みです。</p>
       <p class="nl-text" style="margin-top:10px;">例えば1日の国内株取引手数料が660円なら、66ポイント（1pt＝1円で現金化可能）が還元されます。<b>米国株は取引手数料が0円のため、そもそもポイント還元の対象外</b>です。積立投信でクレカ積立の還元を狙いたい場合はSBI証券や楽天証券が向いており、DMM株はあくまで個別株取引向けの選択肢です。</p>
       <div class="nl-caution" style="margin-top:14px;">
@@ -136,7 +161,7 @@ ARTICLE_META-->
 
     <!-- STEP4: 手数料の実態 -->
     <section class="nl-block" id="tesuryo">
-      <h2 class="nl-h2">「手数料最安水準」の実態</h2>
+      <h2 class="nl-h2">4. 「手数料最安水準」の実態</h2>
       <p class="nl-text">DMM株の現物取引手数料は、取引金額に応じて次のように設定されています。</p>
       <div class="nl-table-wrap">
         <table class="nl-compare">
@@ -155,13 +180,13 @@ ARTICLE_META-->
 
     <!-- STEP5: 米国株のリアル感覚 -->
     <section class="nl-block" id="beikoku">
-      <h2 class="nl-h2">米国株を1株・数千円から買うイメージ</h2>
+      <h2 class="nl-h2">5. 米国株を1株・数千円から買うイメージ</h2>
       <p class="nl-text">DMM株は米国株もスマホアプリで1株から購入できます。米国株の取引手数料は0円のため、<b>「まとまった資金が無くても、有名企業の株を数千円から試せる」</b>のが個別株デビューのハードルを下げているポイントです。</p>
       <p class="nl-text" style="margin-top:10px;">一方で、取扱銘柄数は大手ネット証券より少なめです。狙っている個別銘柄がある場合は、開設前に公式サイトの取扱銘柄一覧で確認しておくと二度手間になりません。</p>
     </section>
 
     <section class="nl-block" id="chuii">
-      <h2 class="nl-h2-plain">口座開設前に知る3つの注意点</h2>
+      <h2 class="nl-h2-plain">6. 口座開設前に知る3つの注意点</h2>
       <ul class="nl-list">
         <li><b>投資信託・つみたてNISAは非対応</b>：積立をメインにしたい人はSBI証券・楽天証券を使ってください。DMM株はあくまで個別株取引の専用口座です。</li>
         <li><b>単元未満株（S株）の取扱いなし</b>：1株単位の少額国内株取引をメインにしたい場合は、対応している他社も比較してください。</li>
@@ -172,7 +197,7 @@ ARTICLE_META-->
 
     <!-- STEP6: 手順 -->
     <section class="nl-block" id="step">
-      <h2 class="nl-h2">口座開設〜取引開始までの手順</h2>
+      <h2 class="nl-h2">7. 口座開設〜取引開始までの手順</h2>
       <div class="nl-steps">
         <div class="nl-step">
           <div class="nl-step-num">1</div>
@@ -209,7 +234,7 @@ ARTICLE_META-->
     </section>
 
     <section class="nl-block" id="faq">
-      <h2 class="nl-h2-plain">よくある質問</h2>
+      <h2 class="nl-h2-plain">8. よくある質問</h2>
       <div class="nl-faq">
         <div class="nl-faq-item">
           <button type="button" class="nl-faq-q">SBI・楽天と2つも口座を持つのは面倒じゃない？<span class="mark">＋</span></button>
@@ -227,7 +252,7 @@ ARTICLE_META-->
     </section>
 
     <section class="nl-block" id="summary">
-      <h2 class="nl-h2-plain">まとめ</h2>
+      <h2 class="nl-h2-plain">9. まとめ</h2>
       <p class="nl-text">DMM株は「何でも揃う総合証券」ではなく、<b>個別株（特に米国株）を安くスマホで売買するための特化型サブ証券</b>です。投資信託やつみたてNISAには非対応なので、積立中心の人には向きません。逆に、SBI・楽天で積立をしつつ「気になる個別株はDMMで手軽に売買したい」という人には、維持費ゼロで持てる便利な2つ目の口座になります。「ポイント還元1%」は取引手数料に対するものであり、積立クレカの還元とは別の仕組みである点も押さえておいてください。</p>
       <div class="nl-tags">
         <span class="nl-tag">DMM株</span>
