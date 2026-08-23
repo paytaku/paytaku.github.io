@@ -17,7 +17,7 @@ if(window.GA_MEASUREMENT_ID){
 // そのURLをここに入れる。Gemini APIはクレジットカード登録なしの無料枠がある。
 // デプロイ方法は cloudflare-worker/README.md を参照。
 // 空のままだと「✨ リンクから取り込む」は「設定が必要です」という案内を出すだけになる。
-window.AI_IMPORT_ENDPOINT = "https://www.sbishinseibank.co.jp/lp/transfer_sbihyper_2608/"; // ← 例: "https://paytaku-ai-import.your-name.workers.dev"
+window.AI_IMPORT_ENDPOINT = "https://silent-scene-2981.ayana16371212.workers.dev"; // ← 例: "https://paytaku-ai-import.your-name.workers.dev"
 // アフィリエイトリンクのクリック計測（GA4のイベント形式で送信）
 document.addEventListener("click", function(e){
   var link = e.target.closest("a[href*='a8.net'], a[href*='accesstrade.net']");
