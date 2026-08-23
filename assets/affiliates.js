@@ -36,13 +36,16 @@
       });
 
       /* ---- バナーの差し込み ---- */
-      /* data-aff-banner="キー" [data-aff-banner-idx="0"] でバナーを特定 */
+      /*
+       * 単体: data-aff-banner="キー" [data-aff-banner-idx="0"]
+       * 複数: data-aff-banner-list="キー"
+       *   → affiliates.json の banners[キー] に登録されたバナーを、登録順ですべて表示
+       */
       document.querySelectorAll('[data-aff-banner]').forEach(function(el){
         var key  = el.getAttribute('data-aff-banner');
         var arr  = banners[key];
         if(!arr) return;
 
-        /* 配列（新形式）と旧形式 {href,img} の両対応 */
         var list = Array.isArray(arr) ? arr : [arr];
         var idx  = parseInt(el.getAttribute('data-aff-banner-idx') || '0', 10);
         var b    = list[idx] || list[0];
@@ -53,11 +56,49 @@
         if(img && b.img){
           img.setAttribute('src', b.img);
         } else if(!b.img){
-          /* 画像URLが未設定のバナーは非表示にする */
           var box = el.closest('.lp-banner-box') || el;
           box.style.display = 'none';
         }
         if(b.title) el.setAttribute('title', b.title);
+      });
+
+      /* ---- 登録されたバナーをすべて表示 ---- */
+      document.querySelectorAll('[data-aff-banner-list]').forEach(function(container){
+        var key = container.getAttribute('data-aff-banner-list');
+        var arr = banners[key];
+        if(!arr) return;
+
+        var list = Array.isArray(arr) ? arr : [arr];
+        var valid = list.filter(function(b){ return b && b.img && b.href; });
+        if(!valid.length){
+          container.style.display = 'none';
+          return;
+        }
+
+        valid.forEach(function(b, i){
+          var box = document.createElement('div');
+          box.className = 'lp-banner-box';
+
+          var label = document.createElement('div');
+          label.className = 'lp-banner-label';
+          label.textContent = '📣 PR';
+          box.appendChild(label);
+
+          var a = document.createElement('a');
+          a.href = b.href;
+          a.target = '_blank';
+          a.rel = 'sponsored noopener nofollow';
+          if(b.title) a.title = b.title;
+
+          var img = document.createElement('img');
+          img.src = b.img;
+          img.alt = b.title || key;
+          img.className = 'lp-banner-img';
+          img.loading = 'lazy';
+          a.appendChild(img);
+          box.appendChild(a);
+          container.appendChild(box);
+        });
       });
     })
     .catch(function(){ /* 失敗時はHTMLの元href・文言をそのまま使う */ });

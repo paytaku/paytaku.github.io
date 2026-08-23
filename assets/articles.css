@@ -112,18 +112,11 @@ body{
   gap: 8px;
 }
 .site-logo{
-  display: flex;
-  align-items: center;
-  width: 132px;
-  height: 40px;
-  flex-shrink: 0;
+  font-size: 16px;
+  font-weight: 900;
+  color: var(--text);
   text-decoration: none;
-}
-.site-logo img{
-  display: block;
-  width: 84px;
-  height: auto;
-  object-fit: contain;
+  letter-spacing: .01em;
 }
 .site-logo span{ color: var(--foil-2); }
 .site-header-tagline{
@@ -465,6 +458,7 @@ body{
 }
 
 /* PRバナー */
+.lp-banner-list{ margin: 24px 0 8px; }
 .lp-banner-box{ margin-bottom: 28px; text-align: center; }
 .lp-banner-label{ font-size: 10px; color: var(--dim); margin-bottom: 6px; text-align: left; font-weight: 700; }
 .lp-banner-img{ width: 100%; border-radius: var(--radius); border: 1px solid var(--line); }
