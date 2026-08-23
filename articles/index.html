@@ -22,11 +22,7 @@
     --fs-card-title:18px; --fs-card-desc:14px; --fs-tag:11px;
     --fs-date:11px; --fs-nav:10px; --pad-card:16px; --gap-card:16px;
     --pad-edge:16px; --h-btn:48px; --h-nav:64px;
-    --page-max-width:430px;
   }
-  /* 画面が広いときは記事一覧の幅も広げる（スマホはそのまま430px） */
-  @media (min-width:700px){ :root{ --page-max-width:min(90vw, 720px); } }
-  @media (min-width:1000px){ :root{ --page-max-width:960px; } }
   html.large{
     --fs-page-title:28px; --fs-page-sub:15px; --fs-section:20px;
     --fs-card-title:22px; --fs-card-desc:16px; --fs-tag:12px;
@@ -36,7 +32,7 @@
   html.large body{ line-height:1.6; }
   a{ text-decoration:none; }
   *{ -webkit-tap-highlight-color: transparent; }
-  body{ max-width:var(--page-max-width); margin:0 auto !important; font-family:'Noto Sans JP','Hiragino Sans','Hiragino Kaku Gothic ProN',sans-serif; }
+  body{ max-width:430px; margin:0 auto; font-family:'Noto Sans JP','Hiragino Sans','Hiragino Kaku Gothic ProN',sans-serif; }
   .icon-btn{ -webkit-tap-highlight-color:transparent; }
   .icon-btn:active{ background-color:rgba(79,70,229,0.08); }
   html.dark .icon-btn:active{ background-color:rgba(129,140,248,0.15); }
@@ -56,9 +52,8 @@
 
 <header class="sticky top-0 z-50 bg-white dark:bg-slate-900 border-b border-[#E2E8F0] dark:border-slate-700" style="height:56px;">
   <div class="h-full flex items-center justify-between px-4">
-    <a href="../index.html" class="flex items-center gap-2">
-      <img src="../assets/logo.png" alt="ペイ択" width="22" height="22" class="shrink-0">
-      <span class="font-bold text-[15px] text-[#0F172A] dark:text-white">ペイ<span class="text-[#4F46E5]">択</span></span>
+    <a href="../index.html" class="flex items-center">
+      <img src="../assets/logo.png" alt="ペイ択" width="88" height="42" class="shrink-0 object-contain">
     </a>
     <div class="flex items-center gap-1">
       <button id="fontToggle" aria-label="文字サイズ切替" class="icon-btn w-9 h-9 rounded-full flex items-center justify-center text-[13px] font-bold text-[#4F46E5] dark:text-indigo-300 bg-[#EEF2FF] dark:bg-indigo-950/60">A+</button>
@@ -74,7 +69,7 @@
 </header>
 
 <!-- メニューパネル -->
-<div id="menuOverlay" class="hidden fixed inset-0 bg-black/40 z-40" style="max-width:var(--page-max-width); margin:0 auto;"></div>
+<div id="menuOverlay" class="hidden fixed inset-0 bg-black/40 z-40" style="max-width:430px; margin:0 auto;"></div>
 <div id="menuPanel" class="hidden fixed top-0 right-0 h-full bg-white dark:bg-slate-900 z-50 shadow-2xl" style="width:78%; max-width:340px;">
   <div class="flex items-center justify-between px-4 border-b border-[#E2E8F0] dark:border-slate-700" style="height:56px;">
     <span class="font-bold text-[15px] text-[#0F172A] dark:text-white">メニュー</span>
@@ -106,14 +101,14 @@
   <div class="inline-flex gap-2" id="filterChips"></div>
 </div>
 
-<main class="px-4" id="articleList" style="display:grid; gap:var(--gap-card); grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));"></main>
+<main class="px-4 flex flex-col" id="articleList" style="gap:var(--gap-card);"></main>
 <p id="emptyState" class="hidden text-center text-[#94A3B8] dark:text-slate-500 py-10 text-[13px]">このカテゴリの記事は準備中です。</p>
 
 <div class="px-4 mt-4">
   <a href="#" class="w-full flex items-center justify-center rounded-lg border border-[#E2E8F0] dark:border-slate-600 text-[#4F46E5] dark:text-indigo-300 font-bold hover:bg-[#F8FAFC] dark:hover:bg-slate-800" style="height:var(--h-btn);">もっと見る</a>
 </div>
 
-<nav class="fixed bottom-0 left-0 right-0 mx-auto bg-white dark:bg-slate-900 border-t border-[#E2E8F0] dark:border-slate-700 flex" style="max-width:var(--page-max-width); height:var(--h-nav); z-index:50;">
+<nav class="fixed bottom-0 left-0 right-0 mx-auto bg-white dark:bg-slate-900 border-t border-[#E2E8F0] dark:border-slate-700 flex" style="max-width:430px; height:var(--h-nav); z-index:50;">
   <a href="../index.html" class="flex-1 flex flex-col items-center justify-center gap-1 text-[#4F46E5]">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 11L12 4L21 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 10V20H19V10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
     <span class="font-bold" style="font-size:var(--fs-nav);">ホーム</span>
@@ -138,7 +133,7 @@
 
 <script>
 const ARTICLES = [{"slug":"dmm-kabu-shindan","category":"証券・投資","title":"DMM株が向く人・向かない人｜投信で積立したい人は開かなくていい理由とSBI・楽天との使い分け","overview":"DMM株は手数料最安水準で米国株もスマホで1株から買える証券。ただし投資信託は買えず、つみたてNISAも不可。積立はSBI・楽天、個別株の売買はDMMという使い分けが正解です。「ポイント還元1%」の正体、実際の手数料、口…","updatedDate":"2026-08-23","thumbnail":"../assets/thumbnails/dmm-kabu-shindan.png"},{"slug":"smbc-nl-shindan","category":"カード解説","title":"三井住友カード（NL）はコンビニに行かない人でも得か？7%を取り逃さない設定と2枚持ち設計","overview":"三井住友カード（NL）は対象コンビニ・飲食店でスマホのタッチ決済7%還元。でも2026年2月からカード現物・iDは対象外に。7%を取り逃さない設定、ファミマ派の立ち回り、楽天・JCB Wをメイン＋NLをサブにする2枚持ち…","updatedDate":"2026-08-20","thumbnail":"../assets/thumbnails/smbc-nl-shindan.png"},{"slug":"epos-card-shindan","category":"カード解説","title":"エポスカードは「還元率で選ぶカード」ではない｜0.5%でも2枚目に持つ価値と無料ゴールド化の全手順","overview":"エポスカードは基本還元率0.5%ながら、年会費無料で手厚い海外旅行保険・空港ラウンジ・全国優待・ポイント無期限が手に入る「特典要員」カード。ゴールド限定の「選べるポイントアップショップ」（2026年4月改定で最大1.0%…","updatedDate":"2026-08-23","thumbnail":null},{"slug":"jcb-card-w-shindan","category":"カード解説","title":"JCB CARD Wは「39歳まで」のラストチャンス｜還元率悪い説の真相と損しない使い方","overview":"JCB CARD Wは39歳までに作れば40歳以降もずっと年会費無料。「還元率が悪い」と言われる理由を数字で分解し、J-POINT（旧OkiDoki）を1ポイント1円以上で使う交換先、優待店を使わない人でも元が取れる基準…","updatedDate":"2026-08-20","thumbnail":"../assets/thumbnails/jcb-card-w-shindan.png"},{"slug":"rakuten-card-shindan","category":"カード解説","title":"楽天カードは「楽天市場を使わない人」でも得か？街の買い物で1.5%にする設定まで解説","overview":"楽天市場をほぼ使わなくても、楽天カード＋楽天ペイで街の買い物を実質1.5%還元にできます。「やばい」と言われる理由の真相、期間限定ポイントを失効させない初期設定、他社カードからの乗り換え判定まで、申し込み前に知りたいこと…","updatedDate":"2026-08-19","thumbnail":"../assets/thumbnails/rakuten-card-shindan.png"},{"slug":"dcard-series-shindan","category":"カード解説","title":"dカード完全ガイド｜GOLD／PLATINUM／GOLD U、あなたに合う1枚を30秒で診断","overview":"年会費11,000円は本当に元が取れるのか？ 年齢・ドコモ料金・カード利用額の3問で、あなたに合う1枚を30秒で判定。年会費を確実に回収する寄せる支払い5つまで解説します。","updatedDate":"2026-08-19","thumbnail":"../assets/thumbnails/dcard-series-shindan.png"},{"slug":"rakuten-card-review","category":"カード解説","title":"楽天カードを徹底解説｜還元率・SPU・プレミアムカードとの違い","overview":"楽天カードは年会費永年無料でどこでも1.0%還元、楽天市場で使えばSPUの上乗せで3.0%以上まで還元率が上がるカードです。国内で最も保有者数が多いカードのひとつで、貯まった楽天ポイントは楽天グループの各サービスだけでな…","updatedDate":"2026-08-14","thumbnail":null},{"slug":"odakyu-point-card-shindan","category":"カード解説","title":"小田急ポイントカードは沿線に住んでない人でも得か？「最大12%」の正体と無料カード／OPクレジットの選び方","overview":"小田急ポイントカードは加盟店提示で最大12%還元。でもその12%の正体は、実は「電車の乗り方」にあります。無料のOPポイント専用カードとOPクレジットの違い、二重取りの仕組み、電車・百貨店での立ち回り、楽天カードとの2枚…","updatedDate":"2026-08-20","thumbnail":null},{"slug":"touch-norisha-10-5","category":"キャンペーン","title":"クレカのタッチ決済で乗車 最大10.5%（常設）の使い方","overview":"電車・バスなどの運賃を、クレジットカードのタッチ決済で支払うだけでポイント還元が受けられる常設キャンペーンです。JCBカードなら最大10.5%、三井住友カードなら最大8%という高い還元率が、事前エントリーとタッチ決済の設…","updatedDate":"2026-08-09","thumbnail":null},{"slug":"vpoint-pay-yusen-10","category":"キャンペーン","title":"VポイントPay ポイント優先払いで10%還元キャンペーンの使い方","overview":"VポイントPayアプリの「ポイントで支払う」をONにしたうえでスマホのタッチ決済を使うと、合計500円（税込）以上の利用で10%のVポイントが還元されるキャンペーンです。上限は500ポイントで、5,000円分の利用で上限…","updatedDate":"2026-08-09","thumbnail":null},{"slug":"vcoupon-multi-shop-500pt","category":"キャンペーン","title":"Vクーポン 複数ショップ利用で最大500ポイントもらう方法","overview":"三井住友カードの「Vクーポン」を、複数の対象ショップで使うほど上乗せポイントが増えていく、いわば「はしご」ボーナス企画です。下記の店舗別Vクーポンと併用できるため、1店舗だけで終わらせず、複数店舗をまわるほど有利になりま…","updatedDate":"2026-08-09","thumbnail":null},{"slug":"natsu-coupon-matsuri","category":"キャンペーン","title":"夏のクーポン祭り（Vクーポン × Vポイントアプリ）の攻略法","overview":"三井住友カードの「Vクーポン」と、Vポイントアプリの「Vカードクーポン」を両方セットしてから会計することで、提示時と決済時のそれぞれで特典が重なる企画です。Vポイントアプリを初めて使う人・久しぶりの人には30ptがもらえ…","updatedDate":"2026-08-09","thumbnail":null},{"slug":"jichitai-campaign","category":"キャンペーン","title":"自治体キャンペーン（地域限定の高還元）の見つけ方・使い方","overview":"自治体とスマホ決済各社が連携した還元事業で、還元率が突出して高いのが特徴です。多くは在住・在勤を問わず観光客も対象で、事前エントリーも不要です。ただし予算上限に達すると期間内でも早期終了するため、使う予定があるなら期間の…","updatedDate":"2026-08-09","thumbnail":null},{"slug":"dpoint-koukan-zouryo","category":"キャンペーン","title":"dポイント交換 最大15%増量キャンペーンの活用法","overview":"他社ポイント（Pontaポイント、ポイントサイトのポイントなど）をdポイントへ交換すると、交換した合計額に対して8%が期間限定ポイントとして付与されるキャンペーンです。買い物をしなくても、持っているポイントを交換するだけ…","updatedDate":"2026-08-09","thumbnail":null},{"slug":"aupay-seikyusho-max-route","category":"チャージルート","title":"au PAY請求書払い、2026年8月時点の最大ルートはこのカード｜三井住友ゴールドNLルートはもう古い","overview":"au PAY請求書払いの「最強ルート」として今も紹介され続けている三井住友カード ゴールド(NL)は、2026年3月の改定で実質0.6%まで下がっています。2026年8月時点で最大のルートを組めるのはau PAYゴールド…","updatedDate":"2026-08-20","thumbnail":null},{"slug":"seikyusho-barai-app-hikaku","category":"チャージルート","title":"請求書払いアプリ徹底比較｜au PAY・PayPay・楽天ペイ・d払い・ファミペイ、2026年8月時点でどれが得か","overview":"税金・公共料金の請求書払い、実はほとんどのアプリでもう還元メリットがありません。PayPayはほぼゼロ、d払いは請求書払い自体は対象外、楽天ペイの単純ルートも改悪済み（複雑な多段ルートなら今も高還元）。2026年8月時点…","updatedDate":"2026-08-20","thumbnail":null},{"slug":"idare-card-katsuyo","category":"チャージルート","title":"IDAREカードは「使うほど」ではなく「置いておくほど」得なプリペイドカード｜具体的にいくら貯まるか計算した","overview":"IDAREは決済利用額ではなく、毎月の残高に応じてボーナスがもらえる珍しいプリペイドカードです。2026年7月からのランク制度で最大年率2.2%。月いくら入れるといくら貯まるのか、具体的な金額で計算しました。","updatedDate":"2026-08-20","thumbnail":null},{"slug":"paypay-card-kaiaku-2026","category":"カード解説","title":"PayPayカードは2026年6月の改悪後も持つ価値があるか｜au PAY・ファミペイ・Suicaへのチャージが軒並り対象外に","overview":"PayPayカードは2026年6月2日、公共料金半減・他社決済チャージ完全対象外・ポイント払い分の付与廃止など、複数の改定が一斉に入りました。当サイトのチャージルート特集で扱ってきたau PAY・ファミペイ・楽天Edy・…","updatedDate":"2026-08-20","thumbnail":null},{"slug":"ana-pay-rakuten-edy-cash-route","category":"チャージルート","title":"ANA Pay→楽天Edy→楽天キャッシュ→楽天ペイ、2026年8月改悪後の現実的な上限｜エポスゴールド起点はもう組めません","overview":"ANA Pay→楽天Edy→楽天キャッシュ→楽天ペイのルートは、2026年8月1日の改定で状況が大きく変わりました。楽天Edy→楽天キャッシュの交換上限が月10万円から月1万円に縮小し、長年の定番起点だったエポスゴールド…","updatedDate":"2026-08-23","thumbnail":null},{"slug":"kateene-bank-debit-shindan","category":"カード解説","title":"カテエネBANKデビットは「中部電力と契約してなくても」作れる｜月末200万円条件の実態とV NEOBANK後継としての実力","overview":"「カテエネ」の名前から中部電力の顧客専用だと誤解されがちなカテエネBANKデビットですが、実際は電気・ガス契約不要で誰でも口座開設できます。月末残高200万円で還元率2.0%になる仕組みの実態、200万円を用意できない人…","updatedDate":"2026-08-23","thumbnail":null}];
-const PR = {"category":"カード解説","title":"楽天カードは年会費永年無料でポイントが貯まりやすい定番カード｜新規入会でポイントプレゼント中","overview":"年会費永年無料、還元率1.0%からスタート。楽天市場での買い物はSPUの上乗せでさらに還元率アップ。今なら新規入会・利用でポイントがもらえるキャンペーンを実施中です。","updatedDate":"2026-08-20","ctaUrl":"#","affKey":"rakuten-card","bannerKey":"rakuten-card","bannerIdx":1};
+const PR = {"category":"キャンペーン","title":"【2026年8月最新】クレジットカード入会キャンペーンまとめ｜最大15,000ポイントもらえるカードは？","overview":"2026年8月時点で実施中のクレジットカード入会キャンペーンを徹底比較。新規入会ポイント還元を中心に、お得なカードを厳選して紹介します。","updatedDate":"2026-08-10","ctaUrl":"#","affKey":""};
 const THUMB_GRADIENT = {"カード解説":"linear-gradient(135deg,#4F46E5 0%,#7C3AED 100%)","キャンペーン":"linear-gradient(135deg,#7C3AED 0%,#EC4899 100%)","証券・投資":"linear-gradient(135deg,#10B981 0%,#059669 100%)","チャージルート":"linear-gradient(135deg,#F59E0B 0%,#D97706 100%)"};
 const THUMB_ICON = {"カード解説":"💳","キャンペーン":"🎁","証券・投資":"📈","チャージルート":"🔌"};
 const CATEGORIES = ["すべて","キャンペーン","カード解説","証券・投資","チャージルート"];
@@ -178,12 +173,7 @@ function prHtml(){
   <a href="${PR.ctaUrl}"${PR.affKey ? ` data-aff="${PR.affKey}"` : ""} target="_blank" rel="noopener noreferrer nofollow sponsored"
      class="card-link fade-in block bg-[#FAF5FF] dark:bg-purple-950/40 rounded-2xl overflow-hidden border border-[#D8B4FE] dark:border-purple-800 shadow-[0_2px_8px_rgba(126,34,206,0.08)]">
     <div class="relative">
-      <div class="thumb-16x9 thumb-pattern text-white relative overflow-hidden" style="background:linear-gradient(135deg,#7C3AED 0%,#EC4899 100%);">
-        <span style="font-size:56px; filter:drop-shadow(0 2px 6px rgba(0,0,0,0.25));">🎁</span>
-        <div class="lp-banner-box absolute inset-0">
-          <img data-aff-banner="${PR.bannerKey}" data-aff-banner-idx="${PR.bannerIdx}" alt="" class="w-full h-full object-cover" loading="lazy">
-        </div>
-      </div>
+      <div class="thumb-16x9 thumb-pattern text-white" style="background:linear-gradient(135deg,#7C3AED 0%,#EC4899 100%);"><span style="font-size:56px; filter:drop-shadow(0 2px 6px rgba(0,0,0,0.25));">🎉</span></div>
       <span class="absolute bg-[#7C3AED] text-white font-bold rounded px-2 py-0.5" style="font-size:10px; top:12px; left:12px;">PR</span>
     </div>
     <div style="padding:var(--pad-card);">
