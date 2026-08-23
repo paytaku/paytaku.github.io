@@ -1,0 +1,7 @@
+name = "paytaku-ai-import"
+main = "worker.js"
+compatibility_date = "2026-08-01"
+
+# GEMINI_API_KEY はここには書かない。
+# デプロイ後に `wrangler secret put GEMINI_API_KEY` で設定する（README参照）。
+# Google AI Studio（https://aistudio.google.com/apikey）でクレジットカード登録なしに発行できる。
