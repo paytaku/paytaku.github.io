@@ -19,7 +19,12 @@
   --accent-tint: #F3E8FF;
   --shadow-card: 0 1px 3px rgba(15, 23, 42, 0.08);
   --shadow-md: 0 8px 24px rgba(79, 70, 229, 0.16);
+  --lp-max-width: 600px;
 }
+
+/* 画面が広いときは記事本体の幅も広げる（スマホはそのまま600px） */
+@media (min-width: 700px){ :root{ --lp-max-width: min(90vw, 820px); } }
+@media (min-width: 1000px){ :root{ --lp-max-width: 900px; } }
 
 /* ===== ダークモード（デフォルト） ===== */
 :root, [data-theme="dark"]{
@@ -99,7 +104,7 @@ body{
   transition: background .2s;
 }
 .site-header-inner{
-  max-width: 600px;
+  max-width: var(--lp-max-width);
   margin: 0 auto;
   padding: 12px 16px;
   display: flex;
@@ -142,7 +147,7 @@ body{
 
 /* ===== 別ページ（LP・記事）スタイル ===== */
 .lp-page{ background: var(--bg); min-height: 100vh; }
-.lp-wrap{ max-width: 600px; margin: 0 auto; padding: 16px 16px 48px; }
+.lp-wrap{ max-width: var(--lp-max-width); margin: 0 auto; padding: 16px 16px 48px; }
 .lp-back{
   display: inline-block;
   font-size: 12.5px;
@@ -214,6 +219,17 @@ body{
   color: rgba(255,255,255,0.85);
   margin: 14px 0 0;
   position: relative;
+}
+
+/* サムネイル画像（assets/thumbnails/{slug}.png 等が存在すれば自動表示） */
+.lp-thumb{
+  display: none;
+  width: 100%;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-md);
 }
 
 .lp-section{ margin-bottom: 28px; }
