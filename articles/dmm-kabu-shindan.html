@@ -55,19 +55,38 @@ ARTICLE_META-->
   });
 })();
 
-// サムネイル自動表示：assets/thumbnails/{slug}.{png|jpg|jpeg|webp} があれば #lpThumb に読み込む。
+// サムネイル自動表示：
+// ① content/articles.json のこの記事の "thumbnail" フィールド（外部URL）があればそれを使う
+// ② 無ければ assets/thumbnails/{slug}.{png|jpg|jpeg|webp} を探して見つかれば使う
+// ③ どちらも無ければ何も表示しない
 (function(){
   var img = document.getElementById('lpThumb');
   if(!img) return;
   var slug = location.pathname.split('/').pop().replace(/\.html$/, '');
-  var exts = ['png', 'jpg', 'jpeg', 'webp'];
-  (function tryNext(i){
-    if(i >= exts.length) return;
-    var test = new Image();
-    test.onload = function(){ img.src = test.src; img.style.display = 'block'; };
-    test.onerror = function(){ tryNext(i + 1); };
-    test.src = '../assets/thumbnails/' + slug + '.' + exts[i];
-  })(0);
+
+  function tryLocalFile(){
+    var exts = ['png', 'jpg', 'jpeg', 'webp'];
+    (function tryNext(i){
+      if(i >= exts.length) return;
+      var test = new Image();
+      test.onload = function(){ img.src = test.src; img.style.display = 'block'; };
+      test.onerror = function(){ tryNext(i + 1); };
+      test.src = '../assets/thumbnails/' + slug + '.' + exts[i];
+    })(0);
+  }
+
+  fetch('../content/articles.json', { cache: 'no-cache' })
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(list){
+      var entry = Array.isArray(list) ? list.find(function(a){ return a.slug === slug; }) : null;
+      if(entry && entry.thumbnail){
+        img.src = entry.thumbnail;
+        img.style.display = 'block';
+      } else {
+        tryLocalFile();
+      }
+    })
+    .catch(tryLocalFile);
 })();
 </script>
 
