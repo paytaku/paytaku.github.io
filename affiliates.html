@@ -270,7 +270,9 @@ var CARDS = [
   {key:'jcb-card-w',      name:'JCB CARD W'},
   {key:'epos-card',       name:'エポスカード'},
   {key:'smbc-nl',         name:'三井住友カード（NL）'},
-  {key:'dmm-kabu',        name:'DMM株'},
+  {key:'dmm-kabu',        name:'DMM 株'},
+  {key:'aupay-market',    name:'au PAYマーケット'},
+  {key:'odakyu-op',       name:'小田急ポイントカード（OPクレジット）'},
 ];
 var ASP_LIST = ['トラフィックゲート','A8.net','afb','バリューコマース','LinkShare','ハピタス','モッピー','その他（手動入力）'];
 
@@ -350,13 +352,15 @@ document.getElementById('ghSaveBtn').addEventListener('click',function(){
 
 /* ===== JSON生成 ===== */
 function buildLinksJson(){
-  var links={},banners={};
+  var links={},banners={},names={};
   CARDS.forEach(function(card){
     var s=linkState[card.key];
-    if(!s.url) return;
-    var entry={type:s.type,url:s.url};
-    if(s.type==='point'&&s.via) entry.via=s.via;
-    links[card.key]=entry;
+    names[card.key]=card.name; // サイト側がカード名で照合できるよう、キー→名前も公開する
+    if(s.url){
+      var entry={type:s.type,url:s.url};
+      if(s.type==='point'&&s.via) entry.via=s.via;
+      links[card.key]=entry;
+    }
     var vb=s.banners.filter(function(b){ return b.href||b.img; });
     if(vb.length){
       banners[card.key]=vb.map(function(b){
@@ -365,8 +369,9 @@ function buildLinksJson(){
     }
   });
   var obj={
-    _comment:'アフィリエイトリンクの一元管理ファイル。このファイルを更新するだけで全記事に反映されます。',
-    links:links
+    _comment:'アフィリエイトリンクの一元管理ファイル。このファイルを更新するだけで全記事・本体サイトに反映されます。',
+    links:links,
+    names:names
   };
   if(Object.keys(banners).length) obj.banners=banners;
   return obj;
@@ -511,14 +516,20 @@ function buildRewardCard(card){
   var key=card.key, r=rewardState[key];
   var el=document.createElement('div');
   el.className='card'; el.id='reward-'+key;
-  var opts=ASP_LIST.map(function(a){ return '<option value="'+esc(a)+'"'+(r.asp===a?' selected':'')+'>'+esc(a)+'</option>'; }).join('');
+  var aspInList = ASP_LIST.indexOf(r.asp) !== -1;
+  var showOther = !!(r.asp && !aspInList);
+  var otherValue = r.aspOther || (showOther ? r.asp : '');
+  var opts=ASP_LIST.map(function(a){
+    var isSelected = a==='その他（手動入力）' ? (r.asp===a || showOther) : (r.asp===a);
+    return '<option value="'+esc(a)+'"'+(isSelected?' selected':'')+'>'+esc(a)+'</option>';
+  }).join('');
   el.innerHTML=
     '<div class="card-top">'
       +'<span class="card-name">'+esc(card.name)+'</span>'
       +'<span class="card-key">'+esc(key)+'</span>'
     +'</div>'
     +'<div class="reward-row">'
-      +'<div class="field"><label>ASPサービス</label><select id="rasp-'+key+'"><option value="">未設定</option>'+opts+'</select><input type="text" id="rasp-other-'+key+'" placeholder="サービス名を入力" style="margin-top:6px;display:none;" value="'+esc(r.aspOther||'')+'"></div>'
+      +'<div class="field"><label>ASPサービス</label><select id="rasp-'+key+'"><option value="">未設定</option>'+opts+'</select><input type="text" id="rasp-other-'+key+'" placeholder="サービス名を入力" style="margin-top:6px;'+(showOther?'display:block;':'display:none;')+'" value="'+esc(otherValue)+'"></div>'
       +'<div class="field"><label>報酬額（円）</label><input type="number" id="rrwd-'+key+'" placeholder="例：5000" value="'+esc(r.reward)+'"></div>'
     +'</div>'
     +'<div class="field"><label>備考（承認タイミング・条件など）</label><input type="text" id="rnote-'+key+'" placeholder="例：承認後2ヶ月・新規のみ" value="'+esc(r.rewardNote)+'"></div>'
@@ -537,7 +548,7 @@ function buildRewardCard(card){
     if(!isOther) roth.value='';
     updateRewardSummary();
   }
-  if(rsel){ rsel.addEventListener('change', syncAspOther); syncAspOther(); }
+  if(rsel){ rsel.addEventListener('change', syncAspOther); }
   if(roth){ roth.addEventListener('input', updateRewardSummary); }
 }
 
@@ -677,9 +688,49 @@ function kanaToRomaji(str){
   }
   return out;
 }
+/* よく出てくるブランド名（漢字を含む）のキー変換辞書。
+   ひらがな・カタカナだけでは変換できない漢字の社名・サービス名をここに追加していく。
+   長い語から先にマッチさせるため、キーは長さ降順で判定する。 */
+var BRAND_KEY_MAP = {
+  '小田急': 'odakyu',
+  '三井住友': 'smbc',
+  '三菱ＵＦＪ': 'mufg',
+  '三菱UFJ': 'mufg',
+  '三菱東京': 'mufg',
+  'みずほ': 'mizuho',
+  '楽天': 'rakuten',
+  '住信ＳＢＩ': 'sbi-sumishin',
+  '住信SBI': 'sbi-sumishin',
+  '横浜銀行': 'yokohama-bank',
+  '東急': 'tokyu',
+  '西武': 'seibu',
+  '京王': 'keio',
+  '京急': 'keikyu',
+  '阪急': 'hankyu',
+  '近鉄': 'kintetsu',
+  '西日本': 'jr-west',
+  '東日本': 'jr-east',
+  '日本旅行': 'nta',
+  '証券': 'shoken',
+  '百貨店': 'department'
+};
+/* 辞書に一致する部分をローマ字（英数字）へ事前に置換してから、通常のtoKey処理にかける */
+function applyBrandMap(name){
+  var out = name;
+  Object.keys(BRAND_KEY_MAP)
+    .sort(function(a,b){ return b.length - a.length; }) // 長い語から優先的にマッチ
+    .forEach(function(jp){
+      if(out.indexOf(jp) !== -1){
+        out = out.split(jp).join(' ' + BRAND_KEY_MAP[jp] + ' ');
+      }
+    });
+  return out;
+}
 function toKey(name){
-  return kanaToRomaji(name).toLowerCase()
-    .replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40)||'custom-'+Date.now();
+  return kanaToRomaji(applyBrandMap(name)).toLowerCase()
+    .replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40);
+  /* 変換の結果が空文字になるケース（辞書にない漢字だけの名前など）は、
+     ここでタイムスタンプに逃がさない。addCardConfirm側で手入力を必須にする。 */
 }
 
 // モーダル
@@ -697,7 +748,17 @@ document.getElementById('addCardModal').addEventListener('click',function(e){
 });
 // カード名からキーを自動生成
 document.getElementById('newCardName').addEventListener('input',function(){
-  document.getElementById('newCardKey').value=toKey(this.value);
+  var keyEl = document.getElementById('newCardKey');
+  var generated = toKey(this.value);
+  keyEl.value = generated;
+  if(this.value.trim() && !generated){
+    // 辞書にない漢字だけの名前などで自動生成できなかった場合、手入力を促す
+    keyEl.placeholder = '自動生成できませんでした。半角英数字で手入力してください（例：odakyu-op）';
+    keyEl.style.borderColor = 'var(--warn)';
+  } else {
+    keyEl.placeholder = '例：matsui-shoken、paypay-card';
+    keyEl.style.borderColor = '';
+  }
 });
 document.getElementById('addCardConfirm').addEventListener('click',function(){
   var name=document.getElementById('newCardName').value.trim();
