@@ -78,6 +78,10 @@ h1{font-size:20px;font-weight:900;margin:0 0 4px;}
 .banner-title-input{flex:1;padding:6px 10px;background:var(--bg);border:1px solid var(--line);border-radius:7px;color:var(--text);font-family:inherit;font-size:13px;font-weight:700;outline:none;}
 .banner-title-input:focus{border-color:var(--primary);}
 .banner-title-input::placeholder{color:var(--dim);font-weight:400;}
+.banner-move{background:none;border:none;color:var(--dim);font-size:13px;cursor:pointer;padding:0 4px;line-height:1;flex-shrink:0;}
+.banner-move:hover{color:var(--primary);}
+.banner-move:disabled{opacity:0.25;cursor:default;}
+.banner-move:disabled:hover{color:var(--dim);}
 .banner-del{background:none;border:none;color:var(--dim);font-size:18px;cursor:pointer;padding:0 4px;line-height:1;flex-shrink:0;}
 .banner-del:hover{color:var(--danger);}
 .paste-area{width:100%;padding:8px 10px;background:var(--bg);border:1px solid var(--line);border-radius:7px;color:var(--muted);font-family:monospace;font-size:11.5px;resize:vertical;min-height:72px;display:block;margin-bottom:5px;}
@@ -270,7 +274,9 @@ var CARDS = [
   {key:'jcb-card-w',      name:'JCB CARD W'},
   {key:'epos-card',       name:'エポスカード'},
   {key:'smbc-nl',         name:'三井住友カード（NL）'},
-  {key:'dmm-kabu',        name:'DMM株'},
+  {key:'dmm-kabu',        name:'DMM 株'},
+  {key:'aupay-market',    name:'au PAYマーケット'},
+  {key:'odakyu-op',       name:'小田急ポイントカード（OPクレジット）'},
 ];
 var ASP_LIST = ['トラフィックゲート','A8.net','afb','バリューコマース','LinkShare','ハピタス','モッピー','その他（手動入力）'];
 
@@ -350,9 +356,10 @@ document.getElementById('ghSaveBtn').addEventListener('click',function(){
 
 /* ===== JSON生成 ===== */
 function buildLinksJson(){
-  var links={},banners={};
+  var links={},banners={},names={};
   CARDS.forEach(function(card){
     var s=linkState[card.key];
+    names[card.key]=card.name; // サイト側がカード名で照合できるよう、キー→名前も公開する
     if(s.url){
       var entry={type:s.type,url:s.url};
       if(s.type==='point'&&s.via) entry.via=s.via;
@@ -366,8 +373,9 @@ function buildLinksJson(){
     }
   });
   var obj={
-    _comment:'アフィリエイトリンクの一元管理ファイル。このファイルを更新するだけで全記事に反映されます。',
-    links:links
+    _comment:'アフィリエイトリンクの一元管理ファイル。このファイルを更新するだけで全記事・本体サイトに反映されます。',
+    links:links,
+    names:names
   };
   if(Object.keys(banners).length) obj.banners=banners;
   return obj;
@@ -407,12 +415,14 @@ document.getElementById('saveBtn').addEventListener('click',async function(){
 });
 
 /* ===== リンクカードUI ===== */
-function buildBannerHtml(key,idx,b){
+function buildBannerHtml(key,idx,b,total){
   var id=key+'-b'+idx;
   return '<div class="banner-item" id="bi-'+id+'">'
     +'<div class="banner-item-top">'
-      +'<span class="banner-num">バナー '+(idx+1)+'</span>'
+      +'<span class="banner-num">バナー '+(idx+1)+(idx===0?'（記事に表示される1枚）':'')+'</span>'
       +'<input type="text" class="banner-title-input" id="btitle-'+id+'" placeholder="例：券面画像、ポイント訴求 など" value="'+esc(b.title||'')+'">'
+      +'<button class="banner-move" data-key="'+key+'" data-idx="'+idx+'" data-dir="up" title="上に移動"'+(idx===0?' disabled':'')+'>▲</button>'
+      +'<button class="banner-move" data-key="'+key+'" data-idx="'+idx+'" data-dir="down" title="下に移動"'+(idx===total-1?' disabled':'')+'>▼</button>'
       +'<button class="banner-del" data-key="'+key+'" data-idx="'+idx+'" title="削除">×</button>'
     +'</div>'
     +'<div class="field"><label>バナーコードをペースト（自動解析）</label>'
@@ -446,7 +456,7 @@ function buildLinkCard(card){
     +'</div>'
     +'<div class="sep"></div>'
     +'<div class="banner-head"><span class="banner-head-label">バナー（任意・複数登録可）</span></div>'
-    +'<div class="banner-list" id="blist-'+key+'">'+s.banners.map(function(b,i){ return buildBannerHtml(key,i,b); }).join('')+'</div>'
+    +'<div class="banner-list" id="blist-'+key+'">'+s.banners.map(function(b,i){ return buildBannerHtml(key,i,b,s.banners.length); }).join('')+'</div>'
     +'<button class="btn-add" id="badd-'+key+'"><span>＋</span> バナーを追加</button>';
   document.getElementById('cardList').appendChild(el);
   bindLinkCard(card);
@@ -504,6 +514,18 @@ function bindBannerItem(key,idx){
     var c=CARDS.find(function(c){ return c.key===key; });
     var el=document.getElementById('card-'+key); if(el) el.parentNode.removeChild(el);
     buildLinkCard(c); updatePreview();
+  });
+  document.querySelectorAll('.banner-move[data-key="'+key+'"][data-idx="'+idx+'"]').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var dir=btn.getAttribute('data-dir');
+      var swapWith=dir==='up'?idx-1:idx+1;
+      if(swapWith<0||swapWith>=s.banners.length) return;
+      var tmp=s.banners[idx]; s.banners[idx]=s.banners[swapWith]; s.banners[swapWith]=tmp;
+      var c=CARDS.find(function(c){ return c.key===key; });
+      var el=document.getElementById('card-'+key); if(el) el.parentNode.removeChild(el);
+      buildLinkCard(c); updatePreview();
+      setStatus(dir==='up'&&swapWith===0?'バナー'+(idx+1)+'が記事に表示される1枚になりました。':'並び順を変更しました。','ok',3000);
+    });
   });
 }
 
