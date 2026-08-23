@@ -429,5 +429,27 @@
       "epos-card-shindan"
     ],
     "customHtml": true
+  },
+  {
+    "slug": "ana-pay-rakuten-edy-cash-route",
+    "category": "チャージルート",
+    "title": "ANA Pay→楽天Edy→楽天キャッシュ→楽天ペイ、2026年8月改悪後の現実的な上限｜エポスゴールド起点はもう組めません",
+    "publishedDate": "2026-08-23",
+    "updatedDate": "2026-08-23",
+    "tags": [
+      "ANA Pay",
+      "楽天Edy",
+      "楽天キャッシュ",
+      "楽天ペイ",
+      "チャージルート",
+      "ANAマイル"
+    ],
+    "overview": "ANA Pay→楽天Edy→楽天キャッシュ→楽天ペイのルートは、2026年8月1日の改定で状況が大きく変わりました。楽天Edy→楽天キャッシュの交換上限が月10万円から月1万円に縮小し、長年の定番起点だったエポスゴールドはANA Payチャージの対象外に。今からでも組む価値があるのか、新しい上限でどれだけ得できるのか、代わりの起点カードまで含めて解説します。",
+    "related": [
+      "aupay-seikyusho-max-route",
+      "rakuten-card-shindan",
+      "epos-card-shindan"
+    ],
+    "customHtml": true
   }
 ]
