@@ -329,7 +329,11 @@ function indexTemplate(articles){
     --fs-card-title:18px; --fs-card-desc:14px; --fs-tag:11px;
     --fs-date:11px; --fs-nav:10px; --pad-card:16px; --gap-card:16px;
     --pad-edge:16px; --h-btn:48px; --h-nav:64px;
+    --page-max-width:430px;
   }
+  /* 画面が広いときは記事一覧の幅も広げる（スマホはそのまま430px） */
+  @media (min-width:700px){ :root{ --page-max-width:min(90vw, 720px); } }
+  @media (min-width:1000px){ :root{ --page-max-width:960px; } }
   html.large{
     --fs-page-title:28px; --fs-page-sub:15px; --fs-section:20px;
     --fs-card-title:22px; --fs-card-desc:16px; --fs-tag:12px;
@@ -339,7 +343,7 @@ function indexTemplate(articles){
   html.large body{ line-height:1.6; }
   a{ text-decoration:none; }
   *{ -webkit-tap-highlight-color: transparent; }
-  body{ max-width:430px; margin:0 auto !important; font-family:'Noto Sans JP','Hiragino Sans','Hiragino Kaku Gothic ProN',sans-serif; }
+  body{ max-width:var(--page-max-width); margin:0 auto !important; font-family:'Noto Sans JP','Hiragino Sans','Hiragino Kaku Gothic ProN',sans-serif; }
   .icon-btn{ -webkit-tap-highlight-color:transparent; }
   .icon-btn:active{ background-color:rgba(79,70,229,0.08); }
   html.dark .icon-btn:active{ background-color:rgba(129,140,248,0.15); }
@@ -377,7 +381,7 @@ function indexTemplate(articles){
 </header>
 
 <!-- メニューパネル -->
-<div id="menuOverlay" class="hidden fixed inset-0 bg-black/40 z-40" style="max-width:430px; margin:0 auto;"></div>
+<div id="menuOverlay" class="hidden fixed inset-0 bg-black/40 z-40" style="max-width:var(--page-max-width); margin:0 auto;"></div>
 <div id="menuPanel" class="hidden fixed top-0 right-0 h-full bg-white dark:bg-slate-900 z-50 shadow-2xl" style="width:78%; max-width:340px;">
   <div class="flex items-center justify-between px-4 border-b border-[#E2E8F0] dark:border-slate-700" style="height:56px;">
     <span class="font-bold text-[15px] text-[#0F172A] dark:text-white">メニュー</span>
@@ -409,14 +413,14 @@ function indexTemplate(articles){
   <div class="inline-flex gap-2" id="filterChips"></div>
 </div>
 
-<main class="px-4 flex flex-col" id="articleList" style="gap:var(--gap-card);"></main>
+<main class="px-4" id="articleList" style="display:grid; gap:var(--gap-card); grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));"></main>
 <p id="emptyState" class="hidden text-center text-[#94A3B8] dark:text-slate-500 py-10 text-[13px]">このカテゴリの記事は準備中です。</p>
 
 <div class="px-4 mt-4">
   <a href="#" class="w-full flex items-center justify-center rounded-lg border border-[#E2E8F0] dark:border-slate-600 text-[#4F46E5] dark:text-indigo-300 font-bold hover:bg-[#F8FAFC] dark:hover:bg-slate-800" style="height:var(--h-btn);">もっと見る</a>
 </div>
 
-<nav class="fixed bottom-0 left-0 right-0 mx-auto bg-white dark:bg-slate-900 border-t border-[#E2E8F0] dark:border-slate-700 flex" style="max-width:430px; height:var(--h-nav); z-index:50;">
+<nav class="fixed bottom-0 left-0 right-0 mx-auto bg-white dark:bg-slate-900 border-t border-[#E2E8F0] dark:border-slate-700 flex" style="max-width:var(--page-max-width); height:var(--h-nav); z-index:50;">
   <a href="../index.html" class="flex-1 flex flex-col items-center justify-center gap-1 text-[#4F46E5]">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 11L12 4L21 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 10V20H19V10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
     <span class="font-bold" style="font-size:var(--fs-nav);">ホーム</span>
