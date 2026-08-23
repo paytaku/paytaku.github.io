@@ -451,5 +451,27 @@
       "epos-card-shindan"
     ],
     "customHtml": true
+  },
+  {
+    "slug": "kateene-bank-debit-shindan",
+    "category": "カード解説",
+    "title": "カテエネBANKデビットは「中部電力と契約してなくても」作れる｜月末200万円条件の実態とV NEOBANK後継としての実力",
+    "publishedDate": "2026-08-23",
+    "updatedDate": "2026-08-23",
+    "tags": [
+      "カテエネBANKデビット",
+      "住信SBIネット銀行",
+      "デビットカード",
+      "V NEOBANK",
+      "チャージルート",
+      "カテエネポイント"
+    ],
+    "overview": "「カテエネ」の名前から中部電力の顧客専用だと誤解されがちなカテエネBANKデビットですが、実際は電気・ガス契約不要で誰でも口座開設できます。月末残高200万円で還元率2.0%になる仕組みの実態、200万円を用意できない人の代替案、V NEOBANK改悪後の乗り換え先としての実力まで解説します。",
+    "related": [
+      "ana-pay-rakuten-edy-cash-route",
+      "aupay-seikyusho-max-route",
+      "epos-card-shindan"
+    ],
+    "customHtml": true
   }
 ]
