@@ -112,11 +112,18 @@ body{
   gap: 8px;
 }
 .site-logo{
-  font-size: 16px;
-  font-weight: 900;
-  color: var(--text);
+  display: flex;
+  align-items: center;
+  width: 132px;
+  height: 40px;
+  flex-shrink: 0;
   text-decoration: none;
-  letter-spacing: .01em;
+}
+.site-logo img{
+  display: block;
+  width: 84px;
+  height: auto;
+  object-fit: contain;
 }
 .site-logo span{ color: var(--foil-2); }
 .site-header-tagline{
