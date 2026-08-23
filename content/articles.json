@@ -386,5 +386,48 @@
       "charge-route-guide"
     ],
     "customHtml": true
+  },
+  {
+    "slug": "idare-card-katsuyo",
+    "category": "チャージルート",
+    "title": "IDAREカードは「使うほど」ではなく「置いておくほど」得なプリペイドカード｜具体的にいくら貯まるか計算した",
+    "publishedDate": "2026-08-20",
+    "updatedDate": "2026-08-20",
+    "tags": [
+      "IDARE",
+      "イデア",
+      "プリペイドカード",
+      "チャージルート",
+      "ワンバンク"
+    ],
+    "overview": "IDAREは決済利用額ではなく、毎月の残高に応じてボーナスがもらえる珍しいプリペイドカードです。2026年7月からのランク制度で最大年率2.2%。月いくら入れるといくら貯まるのか、具体的な金額で計算しました。",
+    "related": [
+      "charge-route-guide",
+      "aupay-seikyusho-max-route",
+      "seikyusho-barai-app-hikaku"
+    ],
+    "customHtml": true
+  },
+  {
+    "slug": "paypay-card-kaiaku-2026",
+    "category": "カード解説",
+    "title": "PayPayカードは2026年6月の改悪後も持つ価値があるか｜au PAY・ファミペイ・Suicaへのチャージが軒並り対象外に",
+    "publishedDate": "2026-08-20",
+    "updatedDate": "2026-08-20",
+    "tags": [
+      "PayPayカード",
+      "PayPayカードゴールド",
+      "改悪",
+      "チャージルート",
+      "PayPayステップ"
+    ],
+    "overview": "PayPayカードは2026年6月2日、公共料金半減・他社決済チャージ完全対象外・ポイント払い分の付与廃止など、複数の改定が一斉に入りました。当サイトのチャージルート特集で扱ってきたau PAY・ファミペイ・楽天Edy・Suicaは、すべて対象外リストに入っています。利用シーン別に、今も持つ価値があるかを整理しました。",
+    "related": [
+      "seikyusho-barai-app-hikaku",
+      "aupay-seikyusho-charge-route",
+      "smbc-nl-shindan",
+      "epos-card-shindan"
+    ],
+    "customHtml": true
   }
 ]
