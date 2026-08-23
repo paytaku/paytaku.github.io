@@ -6193,50 +6193,9 @@ document.getElementById("aiImportBtn").addEventListener("click", openAiImportMod
 document.getElementById("aiImportBtnCampaigns")?.addEventListener("click", openAiImportModal);
 
 // --- 紹介リンクの管理画面 ---
-document.getElementById("affiliateBtn").addEventListener("click", ()=>{
-  const overlay = document.getElementById("modalOverlay");
-  const box = document.getElementById("modalBox");
-
-  const rows = WALLET_OPTIONS.map(name => `
-    <div class="aff-row">
-      <label class="aff-name">${name}</label>
-      <input class="aff-input" data-card="${name}" type="url"
-             placeholder="https://... （未設定なら空欄）"
-             value="${affiliates[name] ? escapeAttr(affiliates[name]) : ""}">
-    </div>
-  `).join("");
-
-  box.innerHTML = `
-    <div class="modal-title">紹介リンク管理</div>
-    <p class="ai-hint" style="margin:-8px 0 16px;">
-      登録すると、そのカードが出てくる全タブに「申し込み」ボタンが並びます。
-      カード名は部分一致で照合するので、「三井住友カード」に登録すればゴールド（NL）にも適用されます。
-      リンクには rel="sponsored" が自動で付きます。
-    </p>
-    <div class="aff-list">${rows}</div>
-    <div class="modal-actions">
-      <button class="modal-btn cancel" id="affCancelBtn">閉じる</button>
-      <button class="modal-btn save" id="affSaveBtn">保存</button>
-    </div>
-  `;
-  overlay.style.display = "flex";
-
-  document.getElementById("affCancelBtn").addEventListener("click", ()=>{ overlay.style.display = "none"; });
-  document.getElementById("affSaveBtn").addEventListener("click", ()=>{
-    const next = {};
-    box.querySelectorAll(".aff-input").forEach(inp => {
-      const v = inp.value.trim();
-      if(v) next[inp.dataset.card] = v;
-    });
-    affiliates = next;
-    saveAffiliates();
-    pushAffiliatesToGithub();
-    renderStores();
-    renderInvest();
-    renderRoutes();
-    overlay.style.display = "none";
-  });
-});
+// 旧: モーダルでカードごとのアフィリンクを1件ずつ設定していたが、
+// admin/affiliates.html に一覧管理ページを作ったため、affiliateBtn は
+// そちらへの直接リンクに変更した（index.html側でhref設定済み、JSでの処理は不要）。
 
 // --- 保有カード設定 ---
 function updateWalletSummary(){
