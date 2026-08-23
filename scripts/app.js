@@ -1,5 +1,5 @@
 
-window.GA_MEASUREMENT_ID = "https://silent-scene-2981.ayana16371212.workers.dev"; // ← ここにG-XXXXXXXXXXを入れると有効化
+window.GA_MEASUREMENT_ID = ""; // ← ここにG-XXXXXXXXXXを入れると有効化
 if(window.GA_MEASUREMENT_ID){
   var s = document.createElement("script");
   s.async = true;
@@ -17,7 +17,7 @@ if(window.GA_MEASUREMENT_ID){
 // そのURLをここに入れる。Gemini APIはクレジットカード登録なしの無料枠がある。
 // デプロイ方法は cloudflare-worker/README.md を参照。
 // 空のままだと「✨ リンクから取り込む」は「設定が必要です」という案内を出すだけになる。
-window.AI_IMPORT_ENDPOINT = "https://silent-scene-2981.ayana16371212.workers.dev"; // ← 例: "https://paytaku-ai-import.your-name.workers.dev"
+window.AI_IMPORT_ENDPOINT = ""; // ← 例: "https://paytaku-ai-import.your-name.workers.dev"
 // アフィリエイトリンクのクリック計測（GA4のイベント形式で送信）
 document.addEventListener("click", function(e){
   var link = e.target.closest("a[href*='a8.net'], a[href*='accesstrade.net']");
@@ -68,9 +68,12 @@ function affiliateFor(cardName){
 }
 
 // 「公式」＋「申し込み」を並べたリンク列を返す
-function linkRowHtml(officialUrl, cardName){
+function linkRowHtml(officialUrl, cardName, articleUrl){
   const aff = affiliateFor(cardName);
   const parts = [];
+  if(articleUrl){
+    parts.push(`<a class="src-link" href="${articleUrl}">詳しく解説 →</a>`);
+  }
   if(officialUrl){
     parts.push(`<a class="src-link" href="${officialUrl}" target="_blank" rel="noopener noreferrer">公式 ↗</a>`);
   }
@@ -1091,6 +1094,7 @@ const DEFAULT_ROUTES = [
     },
     note: "【2026年8月から注意点が増えました】①月に動かせる金額が月1万円に制限（2026年8月1日から楽天Edy→楽天キャッシュの交換上限が月10万円→1万円に縮小）。②エポスゴールドは2026年8月1日からANA Payへのチャージがポイント対象外（0%）になったため、起点として使えなくなりました。現在の有力な起点は：リクルートカード（1.2%）、第一生命NEOBANKデビット Premium（1.5%）、カテエネBANKデビット（月末残高200万円で2.0%）。ANA Payのチャージ上限は本人確認済みで1日10万円・月30万円。iPhoneでは楽天Edyの物理カードが必要です。［確認日: 2026-08-12／出典: 楽天公式・各種情報サイト複数］",
     url: "https://cash.rakuten.co.jp/",
+    articleUrl: "articles/ana-pay-rakuten-edy-cash-route.html",
     caution: "楽天Edy→楽天キャッシュの交換上限が月1万円（2026年8月改悪済み）。エポスゴールドは現在チャージ起点として使用不可。iPhoneは楽天Edyの物理カードが必要。",
     starters: {
       "エポスゴールド": 0,
@@ -5612,7 +5616,7 @@ function renderRoutes(){
       ${r.caution ? `<div class="route-caution">${r.caution}</div>` : ""}
       ${noteHtml(r.note)}
       ${sourceMetaHtml(r.note)}
-      ${linkRowHtml(r.url, r.name)}
+      ${linkRowHtml(r.url, r.name, r.articleUrl)}
       <button class="route-save-btn ${isRouteFav(r.name) ? 'saved' : ''}" data-route-save="${r.name}">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21 12 16l-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16Z"/></svg>
         ${isRouteFav(r.name) ? '保存済み ✓' : 'このルートを保存する'}
