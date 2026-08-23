@@ -8,6 +8,10 @@
     "rakuten-premium": {
       "type": "direct",
       "url": "https://ad2.trafficgate.net/t/r/385/1396/318860_398517"
+    },
+    "eposukaado": {
+      "type": "direct",
+      "url": "https://admane.jp/ad/p/r?_site=1841&_article=658&_link=2922&_image=3165&_ns=1"
     }
   },
   "banners": {
