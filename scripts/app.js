@@ -56,15 +56,47 @@ function saveAffiliates(){
 
 let affiliates = loadAffiliates();
 
-// カード名から該当するアフィリリンクを引く。登録キーは部分一致で照合するので
-// 「三井住友カード」と登録しておけば「三井住友カード ゴールド（NL）」にも当たる。
-// より具体的なキー（長いキー）を優先する。
+// admin/affiliates.html の CARDS 配列のデフォルトと対応させたスラッグ→カード名の対応表。
+// 本来は affiliates.json 自体に含まれる "names" を優先して使うが、
+// まだ古い形式のまま（namesを含まない）のファイルが公開されている間の
+// フォールバックとして、この一覧も残しておく。
+const AFFILIATE_SLUG_FALLBACK_NAMES = {
+  "rakuten-card": "楽天カード",
+  "rakuten-premium": "楽天プレミアムカード",
+  "dcard-gold": "dカード GOLD",
+  "dcard-goldu": "dカード GOLD U",
+  "dcard-platinum": "dカード PLATINUM",
+  "jcb-card-w": "JCB CARD W",
+  "epos-card": "エポスカード",
+  "smbc-nl": "三井住友カード（NL）",
+  "dmm-kabu": "DMM 株",
+  "aupay-market": "au PAYマーケット",
+  "odakyu-op": "小田急ポイントカード（OPクレジット）",
+};
+
+// カード名から該当するアフィリリンクを引く。affiliates.json の links は
+// { スラッグ: {type,url,via} } という形（キーはカード名そのものではない）なので、
+// names（無ければ上のフォールバック表）でスラッグ→カード名に変換してから、
+// 部分一致で照合する。より具体的な（長い）カード名を優先する。
 function affiliateFor(cardName){
   if(!cardName) return null;
-  const hits = Object.keys(affiliates)
-    .filter(k => affiliates[k] && (cardName.includes(k) || k.includes(cardName.split("（")[0])))
-    .sort((a,b) => b.length - a.length);
-  return hits.length ? affiliates[hits[0]] : null;
+  const links = (affiliates && affiliates.links) || {};
+  const names = (affiliates && affiliates.names) || {};
+  const shortName = cardName.split("（")[0];
+
+  let best = null, bestLen = -1;
+  Object.keys(links).forEach(slug => {
+    const entry = links[slug];
+    const url = entry && (typeof entry === "string" ? entry : entry.url);
+    if(!url) return;
+    const name = names[slug] || AFFILIATE_SLUG_FALLBACK_NAMES[slug] || slug;
+    const matches = cardName.includes(name) || name.includes(cardName) || cardName.includes(name.split("（")[0]) || name.includes(shortName);
+    if(matches && name.length > bestLen){
+      best = url;
+      bestLen = name.length;
+    }
+  });
+  return best;
 }
 
 // 「公式」＋「申し込み」を並べたリンク列を返す
@@ -271,36 +303,39 @@ const FEATURED_CARDS = [
   {
     affiliate: "dmm",  // #/kabu-koza の LP に飛ぶアフィリエイト案件
     name: "DMM 株",
+    card: "DMM 株", // admin/affiliates.html の管理画面で設定したリンクをここから引く
     headline: "手数料が業界最安水準の株口座",
     reason: "クレカ積立を始めるならまず口座も必要。DMM 株はスマホ完結・最短即日開設。SBI証券やマネックス証券でのクレカ積立と併用しやすい。※株式投資には元本割れリスクがあります。",
     badge: "PR｜提携中",
     badgeColor: "#C8701A",
     articleUrl: "articles/dmm-kabu-shindan.html", // 詳細を見る＝この解説記事に飛ばす
     lpHash: "#/kabu-koza",
-    directUrl: "https://px.a8.net/svt/ejp?a8mat=4BA41D+C7ZCTU+1WP2+15QHIA",
+    directUrl: "https://px.a8.net/svt/ejp?a8mat=4BA41D+C7ZCTU+1WP2+15QHIA", // 管理画面が未設定のときのフォールバック
     trackingPixel: "https://www11.a8.net/0.gif?a8mat=4BA41D+C7ZCTU+1WP2+15QHIA"
   },
   {
     affiliate: "aupay-market",
     name: "au PAYマーケット",
+    card: "au PAYマーケット", // admin/affiliates.html の管理画面で設定したリンクをここから引く
     headline: "貯めたポイントの使い道",
     reason: "チャージルートで貯めたPontaポイント・au PAY残高をそのまま使えるネット通販。対象ショップならポイントアップで実質的な二重取り。",
     badge: "PR｜提携中",
     badgeColor: "#1A6EC8",
     lpHash: "#/nettsuuhan",
-    directUrl: "https://px.a8.net/svt/ejp?a8mat=4BA41D+FG2VSI+54O2+61JSH",
+    directUrl: "https://px.a8.net/svt/ejp?a8mat=4BA41D+FG2VSI+54O2+61JSH", // 管理画面が未設定のときのフォールバック
     trackingPixel: "https://www12.a8.net/0.gif?a8mat=4BA41D+FG2VSI+54O2+61JSH"
   },
   {
     affiliate: "odakyu",
     name: "小田急ポイントカード（OPクレジット）",
+    card: "小田急ポイントカード（OPクレジット）", // admin/affiliates.html の管理画面で設定したリンクをここから引く
     headline: "小田急沿線で最大10%還元",
     reason: "小田急百貨店で最大10%、Odakyu OXで5%OFF、PASMOオートチャージ対応。年会費は実質無料。小田急線沿線で暮らす人に。",
     badge: "PR｜提携中",
     badgeColor: "#0066B3",
     articleUrl: "articles/odakyu-point-card-shindan.html", // 詳細を見る＝この解説記事に飛ばす
     lpHash: "#/odakyu-point",
-    directUrl: "https://h.accesstrade.net/sp/cc?rk=0100kw0d00ox3w"
+    directUrl: "https://h.accesstrade.net/sp/cc?rk=0100kw0d00ox3w" // 管理画面が未設定のときのフォールバック
   }
 ];
 
@@ -314,7 +349,7 @@ function renderFeaturedCards(){
       <div class="featured-label">💳 今月のおすすめ</div>
       <div class="featured-scroll">
         ${FEATURED_CARDS.map(f => {
-          const aff = f.directUrl || (f.card ? affiliateFor(f.card) : null);
+          const aff = (f.card ? affiliateFor(f.card) : null) || f.directUrl || null;
           const displayName = f.name || f.card;
           return `
             <div class="featured-card">
@@ -515,7 +550,7 @@ const INVEST_PLANS = [
     rate: 0, rateLabel: "取引手数料の1%（DMM 株ポイント）",
     fee: "口座開設・維持費0円",
     note: "【他社のクレカ積立とは仕組みが違います】DMM 株は「クレカで積立」ではなく、「取引手数料の1%がポイント還元」される仕組み。例えば1日の国内株取引手数料が660円なら66ポイント（1pt=1円で現金化可能）。米国株は取引手数料が0円のためポイント対象外。現物取引の手数料は5万円以下55円・10万円以下88円・最大でも300万円超で880円と業界最安水準。単元未満株（S株）の取扱いはなし。新規口座開設で1ヶ月間の手数料無料キャンペーンも実施中。積立投信でクレカ積立をしたい場合はSBI証券や楽天証券が向く（DMM 株は個別株取引向け）。ペイ択では「クレカ積立とは別に、個別株取引の口座を持ちたい人」への選択肢として掲載。［確認日: 2026-08-13／出典: DMM.com証券公式］",
-    url: "https://px.a8.net/svt/ejp?a8mat=4BA41D+C7ZCTU+1WP2+15QHIA",
+    directUrlFallback: "https://px.a8.net/svt/ejp?a8mat=4BA41D+C7ZCTU+1WP2+15QHIA", // 管理画面（admin/affiliates.html）が未設定のときのフォールバック
     isAffiliate: true,
     lpHash: "#/kabu-koza",
     trackingPixel: "https://www11.a8.net/0.gif?a8mat=4BA41D+C7ZCTU+1WP2+15QHIA"
@@ -3924,7 +3959,7 @@ async function refreshAffiliatesFromGithubPages(){
     if(data && typeof data === "object" && !Array.isArray(data)){
       affiliates = data;
       saveAffiliates();
-      renderStores(); renderInvest(); renderRoutes();
+      renderStores(); renderInvest(); renderRoutes(); renderFeaturedCards();
     }
   } catch(e){
     console.info("affiliates.json の取得をスキップしました", e.message);
@@ -6468,6 +6503,7 @@ function renderInvest(){
       </div>` : "";
 
     const isAff = p.isAffiliate;
+    const affUrl = isAff ? (affiliateFor(p.broker) || p.directUrlFallback || null) : null;
     const resultBlock = isAff ? `
       <div class="invest-result">
         <div class="invest-result-item">
@@ -6501,9 +6537,9 @@ function renderInvest(){
       ${condsHtml}
       ${resultBlock}
       ${noteHtml(p.note)}
-      ${isAff && p.url ? `
+      ${isAff && affUrl ? `
         <div style="margin-top:10px;">
-          <a href="${p.url}" rel="sponsored nofollow noopener noreferrer" class="affiliate-dmm-btn">${p.broker}の口座開設ページを見る（PR）</a>
+          <a href="${affUrl}" rel="sponsored nofollow noopener noreferrer" class="affiliate-dmm-btn">${p.broker}の口座開設ページを見る（PR）</a>
           ${p.trackingPixel ? `<img border="0" width="1" height="1" src="${p.trackingPixel}" alt="" style="position:absolute;visibility:hidden;">` : ''}
           ${p.lpHash ? `<a href="${p.lpHash}" class="affiliate-detail-link">${p.broker}の詳細ページを見る →</a>` : ''}
           <div class="lp-risk-note" style="margin-top:10px;">⚠️ 株式投資には元本割れのリスクがあります。（2026年8月13日時点）</div>
