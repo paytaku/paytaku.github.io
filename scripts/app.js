@@ -1,5 +1,5 @@
 
-window.GA_MEASUREMENT_ID = "https://silent-scene-2981.ayana16371212.workers.dev"; // ← ここにG-XXXXXXXXXXを入れると有効化
+window.GA_MEASUREMENT_ID = ""; // ← ここにG-XXXXXXXXXXを入れると有効化
 if(window.GA_MEASUREMENT_ID){
   var s = document.createElement("script");
   s.async = true;
@@ -10,6 +10,14 @@ if(window.GA_MEASUREMENT_ID){
   gtag("js", new Date());
   gtag("config", window.GA_MEASUREMENT_ID);
 }
+
+// ========== AIキャンペーン取り込み：中継サーバーの設定 ==========
+// AI（Google Gemini API）のキーはブラウザに直接書けない（誰でも盗めてしまう）ため、
+// キーを安全に保持する小さな中継サーバー（Cloudflare Workers）を別途デプロイし、
+// そのURLをここに入れる。Gemini APIはクレジットカード登録なしの無料枠がある。
+// デプロイ方法は cloudflare-worker/README.md を参照。
+// 空のままだと「✨ リンクから取り込む」は「設定が必要です」という案内を出すだけになる。
+window.AI_IMPORT_ENDPOINT = ""; // ← 例: "https://paytaku-ai-import.your-name.workers.dev"
 // アフィリエイトリンクのクリック計測（GA4のイベント形式で送信）
 document.addEventListener("click", function(e){
   var link = e.target.closest("a[href*='a8.net'], a[href*='accesstrade.net']");
@@ -264,6 +272,7 @@ const FEATURED_CARDS = [
     reason: "クレカ積立を始めるならまず口座も必要。DMM 株はスマホ完結・最短即日開設。SBI証券やマネックス証券でのクレカ積立と併用しやすい。※株式投資には元本割れリスクがあります。",
     badge: "PR｜提携中",
     badgeColor: "#C8701A",
+    articleUrl: "articles/dmm-kabu-shindan.html", // 詳細を見る＝この解説記事に飛ばす
     lpHash: "#/kabu-koza",
     directUrl: "https://px.a8.net/svt/ejp?a8mat=4BA41D+C7ZCTU+1WP2+15QHIA",
     trackingPixel: "https://www11.a8.net/0.gif?a8mat=4BA41D+C7ZCTU+1WP2+15QHIA"
@@ -286,6 +295,7 @@ const FEATURED_CARDS = [
     reason: "小田急百貨店で最大10%、Odakyu OXで5%OFF、PASMOオートチャージ対応。年会費は実質無料。小田急線沿線で暮らす人に。",
     badge: "PR｜提携中",
     badgeColor: "#0066B3",
+    articleUrl: "articles/odakyu-point-card-shindan.html", // 詳細を見る＝この解説記事に飛ばす
     lpHash: "#/odakyu-point",
     directUrl: "https://h.accesstrade.net/sp/cc?rk=0100kw0d00ox3w"
   }
@@ -310,7 +320,7 @@ function renderFeaturedCards(){
               <div class="featured-headline">${f.headline}</div>
               <div class="featured-reason">${f.reason}</div>
               <div class="featured-actions">
-                ${f.lpHash ? `<a class="featured-detail-btn" href="${f.lpHash}" style="text-decoration:none;display:block;">詳細ページを見る</a>` : (f.card ? `<button class="featured-detail-btn" data-card="${f.card}">このカードの詳細を見る</button>` : "")}
+                ${f.articleUrl ? `<a class="featured-detail-btn" href="${f.articleUrl}" style="text-decoration:none;display:block;">詳細を見る（解説記事）</a>` : (f.lpHash ? `<a class="featured-detail-btn" href="${f.lpHash}" style="text-decoration:none;display:block;">詳細ページを見る</a>` : (f.card ? `<button class="featured-detail-btn" data-card="${f.card}">このカードの詳細を見る</button>` : ""))}
                 ${aff ? `<a class="featured-apply-btn" href="${aff}" target="_blank" rel="sponsored nofollow noopener noreferrer">申し込む（PR） ↗</a>` : ""}
               </div>
               ${f.trackingPixel ? `<img border="0" width="1" height="1" src="${f.trackingPixel}" alt="" style="position:absolute;visibility:hidden;">` : ""}
@@ -6056,42 +6066,12 @@ function toggleRouteFav(routeName){
 
 
 // ========== AIでキャンペーンを取り込む ==========
-// キャンペーンページのURL（または説明文）を渡すと、Claudeがweb検索でその内容を
-// 調べ、このアプリのデータ形式に整えて返す。ブラウザから他サイトを直接読むのは
-// CORSで塞がれるため、読み取りはAPI側のweb searchツールに任せている。
+// キャンペーンページのURL（または説明文）を渡すと、中継サーバー（Cloudflare Workers）が
+// 無料のGoogle Gemini APIを使って内容を読み取り、このアプリのデータ形式に整えて返す。
+// ページの取得（URLフェッチ）もCORSに阻まれるため中継サーバー側で行っている。
 // 反映前に必ずプレビューを挟み、人が確認してから保存する。
-
-function aiPrompt(input, categories, storeNames){
-  return `あなたは日本のキャッシュレス決済・クレジットカード還元の専門アシスタントです。
-以下の入力について web_search で最新情報を調べ、還元キャンペーンの情報を抽出してください。
-
-【入力】
-${input}
-
-入力がURLの場合、そのページを直接開けないことがあります。その場合はURLに含まれる企業名・キャンペーン名などの手がかりから web_search で検索し、該当する情報を探してください。1回の検索で見つからなければ、キーワードを変えて数回試してください。
-
-【出力形式】
-必ず次のJSONだけを返してください。前置き・後書き・マークダウンのコードフェンスは一切不要です。
-{
-  "store": "店舗・チェーン名",
-  "category": "次のいずれか: ${categories.join(" / ")}",
-  "card": "決済手段の名前（例: 三井住友カード / Olive、PayPay、dカード）",
-  "rate": "還元率（例: 7%、最大10〜11%、20倍）",
-  "method": "対象となる支払い方法と、対象外の条件",
-  "expires": "終了日をYYYY-MM-DD形式で。終了日が無い常設ならnull",
-  "note": "上限・エントリー要否・注意点を簡潔に。最後に［確認日: ${new Date().toISOString().slice(0,10)}／出典: 調べた媒体名］を付ける",
-  "url": "根拠になった公式ページのURL",
-  "confidence": "high / medium / low のいずれか",
-  "warning": "情報が不確かな点があれば書く。無ければ空文字"
-}
-
-【重要な注意】
-- 情報源の文章をそのまま引き写さず、条件を自分の言葉で要約してください。
-- 「スマホのタッチ決済のみ対象」「カード現物のタッチは対象外」のような、対象取引の細かい違いは還元を受けられるかどうかを左右するので必ず method に含めてください。
-- 確認できなかった項目は推測で埋めず、confidence を low にして warning に理由を書いてください。
-- category は必ず指定した選択肢の中から選んでください。
-- 既に登録済みの店舗名がある場合はその表記に合わせてください: ${storeNames.slice(0, 40).join("、")}`;
-}
+// プロンプト組み立てとAI呼び出しは cloudflare-worker/worker.js 側に集約している
+// （フロント側はどのAIプロバイダを使っているか気にしなくていい設計）。
 
 async function runAiImport(input, statusEl, previewEl, saveBtn){
   statusEl.className = "ai-status";
@@ -6099,44 +6079,28 @@ async function runAiImport(input, statusEl, previewEl, saveBtn){
   previewEl.innerHTML = "";
   saveBtn.style.display = "none";
 
+  if(!window.AI_IMPORT_ENDPOINT){
+    statusEl.className = "ai-status err";
+    statusEl.textContent = "この機能を使うには中継サーバーの設定が必要です。scripts/app.js 冒頭の AI_IMPORT_ENDPOINT にデプロイ済みのURLを設定してください（cloudflare-worker/README.md 参照）。";
+    return;
+  }
+
   try{
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
+    const res = await fetch(window.AI_IMPORT_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "claude-sonnet-4-6",
-        max_tokens: 4000,
-        messages: [{ role: "user", content: aiPrompt(input, CATEGORY_LIST, STORES.map(s=>s.name)) }],
-        tools: [{ type: "web_search_20250305", name: "web_search" }]
+        input,
+        categories: CATEGORY_LIST,
+        storeNames: STORES.map(s=>s.name)
       })
     });
-    if(!res.ok) throw new Error(`APIエラー（HTTP ${res.status}）`);
-    const data = await res.json();
-
-    if(data.error){
-      throw new Error(`APIがエラーを返しました：${data.error.message || JSON.stringify(data.error).slice(0,120)}`);
+    const data = await res.json().catch(()=>null);
+    if(!res.ok || !data || data.error){
+      throw new Error((data && data.error && data.error.message) || `中継サーバーがエラーを返しました（HTTP ${res.status}）`);
     }
 
-    const text = (data.content || [])
-      .map(b => b.type === "text" ? b.text : "")
-      .filter(Boolean).join("\n");
-
-    if(!text.trim()){
-      throw new Error("応答が空でした。検索で情報が見つからなかった可能性があります。");
-    }
-
-    const clean = text.replace(/```json/g, "").replace(/```/g, "").trim();
-    const s = clean.indexOf("{"), e = clean.lastIndexOf("}");
-    if(s === -1 || e === -1 || e <= s){
-      // JSONが返らなかったときは、実際に返ってきた文章を見せて原因を特定できるようにする
-      throw new Error(`JSON形式で返りませんでした。応答の冒頭：\n${clean.slice(0, 220)}`);
-    }
-    let r;
-    try{
-      r = JSON.parse(clean.slice(s, e + 1));
-    } catch(pe){
-      throw new Error(`読み取り結果を解釈できませんでした（応答が途中で切れた可能性）。応答の冒頭：\n${clean.slice(0, 220)}`);
-    }
+    const r = data;
     if(!r.store || !r.card){
       throw new Error("店舗名または決済手段を特定できませんでした。店名を明記して、もう一度お試しください。");
     }
@@ -6188,7 +6152,7 @@ async function runAiImport(input, statusEl, previewEl, saveBtn){
   }
 }
 
-document.getElementById("aiImportBtn").addEventListener("click", ()=>{
+function openAiImportModal(){
   const overlay = document.getElementById("modalOverlay");
   const box = document.getElementById("modalBox");
   box.innerHTML = `
@@ -6219,7 +6183,9 @@ document.getElementById("aiImportBtn").addEventListener("click", ()=>{
     statusEl.style.display = "block";
     runAiImport(v, statusEl, previewEl, saveBtn);
   });
-});
+}
+document.getElementById("aiImportBtn").addEventListener("click", openAiImportModal);
+document.getElementById("aiImportBtnCampaigns")?.addEventListener("click", openAiImportModal);
 
 // --- 紹介リンクの管理画面 ---
 document.getElementById("affiliateBtn").addEventListener("click", ()=>{
