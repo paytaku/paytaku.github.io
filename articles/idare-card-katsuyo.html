@@ -62,6 +62,24 @@ ARTICLE_META-->
       <a href="../index.html">ホーム</a> ＞ <a href="./index.html">チャージルート</a> ＞ IDAREカードは「使うほど」ではなく「置いておくほど」得…
     </nav>
 
+
+<!-- サムネイル：assets/thumbnails/idare-card-katsuyo.png 等があれば自動表示 -->
+<img class="lp-thumb" id="lpThumb" alt="idare-card-katsuyo" loading="lazy">
+<script>
+(function(){
+  function initThumbnail(){
+    var img=document.getElementById('lpThumb'); if(!img)return;
+    var slug=location.pathname.split('/').pop().replace(/\.html$/,'');
+    function tryLocal(i){
+      var exts=['png','jpg','jpeg','webp']; if(i>=exts.length)return;
+      var test=new Image(); test.onload=function(){img.src=test.src;img.style.display='block';}; test.onerror=function(){tryLocal(i+1);};
+      test.src='../assets/thumbnails/'+slug+'.'+exts[i];
+    }
+    fetch('../content/articles.json',{cache:'no-cache'}).then(function(r){return r.ok?r.json():null;}).then(function(list){var e=Array.isArray(list)?list.find(function(a){return a.slug===slug;}):null;if(e&&e.thumbnail){img.src=e.thumbnail;img.style.display='block';}else{tryLocal(0);}}).catch(function(){tryLocal(0);});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initThumbnail);else initThumbnail();
+})();
+</script>
     <div class="nl-hero">
       <p class="nl-hero-name">IDARE（イデア）</p>
       <p class="nl-hero-sub">使うほどではなく、置いておくほど得なカード</p>

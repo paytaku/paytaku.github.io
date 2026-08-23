@@ -50,6 +50,29 @@
       <a href="../index.html">ホーム</a> ＞ <a href="./index.html">カード解説</a> ＞ JCB CARD Wは「39歳まで」のラストチャンス…
     </nav>
 
+<!-- サムネイル：assets/thumbnails/jcb-card-w-shindan.png 等があれば自動表示 -->
+<img class="lp-thumb" id="lpThumb" alt="JCB CARD Wは「39歳まで」のラストチャンス｜還元率悪い説の真相と損しない使い方" loading="lazy">
+<script>
+(function(){
+  function initThumbnail(){
+    var img=document.getElementById('lpThumb'); if(!img)return;
+    var slug=location.pathname.split('/').pop().replace(/\.html$/,'');
+    function tryLocal(i){
+      var exts=['png','jpg','jpeg','webp']; if(i>=exts.length)return;
+      var test=new Image();
+      test.onload=function(){img.src=test.src;img.style.display='block';};
+      test.onerror=function(){tryLocal(i+1);};
+      test.src='../assets/thumbnails/'+slug+'.'+exts[i];
+    }
+    fetch('../content/articles.json',{cache:'no-cache'}).then(function(r){return r.ok?r.json():null;}).then(function(list){
+      var e=Array.isArray(list)?list.find(function(a){return a.slug===slug;}):null;
+      if(e&&e.thumbnail){img.src=e.thumbnail;img.style.display='block';}else{tryLocal(0);}
+    }).catch(function(){tryLocal(0);});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initThumbnail);else initThumbnail();
+})();
+</script>
+
     <div class="lp-hero">
       <div class="lp-badge">カード解説</div>
       <h1 class="lp-title">JCB CARD Wは「39歳まで」のラストチャンス｜還元率悪い説の真相と損しない使い方</h1>

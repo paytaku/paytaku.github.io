@@ -59,9 +59,10 @@
 // ② 無ければ assets/thumbnails/{slug}.{png|jpg|jpeg|webp} を探して見つかれば使う
 // ③ どちらも無ければ何も表示しない
 (function(){
-  var img = document.getElementById('lpThumb');
-  if(!img) return;
-  var slug = location.pathname.split('/').pop().replace(/\.html$/, '');
+  function initThumbnail(){
+    var img = document.getElementById('lpThumb');
+    if(!img) return;
+    var slug = location.pathname.split('/').pop().replace(/\.html$/, '');
 
   function tryLocalFile(){
     var exts = ['png', 'jpg', 'jpeg', 'webp'];
@@ -86,6 +87,12 @@
       }
     })
     .catch(tryLocalFile);
+  }
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', initThumbnail);
+  } else {
+    initThumbnail();
+  }
 })();
 </script>
 

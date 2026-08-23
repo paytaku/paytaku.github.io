@@ -190,6 +190,7 @@ function articleTemplate(a, bySlug){
   const pageTitle = `${a.title} | ${SITE_NAME}`;
   const description = metaDescriptionFor(a);
   const canonical = `${SITE_URL}/articles/${a.slug}.html`;
+  const thumbnail = resolveThumbnail(a.slug, a.thumbnail);
 
   return `<!DOCTYPE html>
 <html lang="ja" data-theme="dark">
@@ -242,6 +243,8 @@ function articleTemplate(a, bySlug){
     <nav class="lp-breadcrumb">
       <a href="../index.html">ホーム</a> ＞ <a href="./index.html">${esc(a.category || "記事")}</a> ＞ ${esc(a.title.length > 20 ? a.title.slice(0, 20) + "…" : a.title)}
     </nav>
+
+    ${thumbnail ? `<img class="lp-thumb" src="${esc(thumbnail)}" alt="${esc(a.title)}" loading="lazy">` : ""}
 
     <div class="lp-hero">
       <div class="lp-badge">${esc(a.category || "今月のおすすめ")}</div>
