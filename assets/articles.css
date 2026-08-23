@@ -112,13 +112,17 @@ body{
   gap: 8px;
 }
 .site-logo{
-  font-size: 16px;
-  font-weight: 900;
-  color: var(--text);
+  display: block;
+  width: 88px;
+  height: 42px;
+  flex: 0 0 88px;
+  background: url("../assets/logo.png") left center / contain no-repeat;
+  font-size: 0;
+  line-height: 0;
   text-decoration: none;
-  letter-spacing: .01em;
+  overflow: hidden;
 }
-.site-logo span{ color: var(--foil-2); }
+.site-logo span{ display: none; }
 .site-header-tagline{
   font-size: 11px;
   color: var(--dim);
