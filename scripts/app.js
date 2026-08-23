@@ -1,5 +1,5 @@
 
-window.GA_MEASUREMENT_ID = ""; // ← ここにG-XXXXXXXXXXを入れると有効化
+window.GA_MEASUREMENT_ID = "https://silent-scene-2981.ayana16371212.workers.dev"; // ← ここにG-XXXXXXXXXXを入れると有効化
 if(window.GA_MEASUREMENT_ID){
   var s = document.createElement("script");
   s.async = true;
