@@ -13,18 +13,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://paytaku.github.io/articles/kateene-bank-debit-shindan.html</loc>
-    <lastmod>2026-08-23</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://paytaku.github.io/articles/ana-pay-rakuten-edy-cash-route.html</loc>
-    <lastmod>2026-08-23</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://paytaku.github.io/articles/dmm-kabu-shindan.html</loc>
     <lastmod>2026-08-20</lastmod>
     <changefreq>monthly</changefreq>
@@ -117,6 +105,30 @@
   <url>
     <loc>https://paytaku.github.io/articles/seikyusho-barai-app-hikaku.html</loc>
     <lastmod>2026-08-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://paytaku.github.io/articles/idare-card-katsuyo.html</loc>
+    <lastmod>2026-08-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://paytaku.github.io/articles/paypay-card-kaiaku-2026.html</loc>
+    <lastmod>2026-08-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://paytaku.github.io/articles/ana-pay-rakuten-edy-cash-route.html</loc>
+    <lastmod>2026-08-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://paytaku.github.io/articles/kateene-bank-debit-shindan.html</loc>
+    <lastmod>2026-08-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
