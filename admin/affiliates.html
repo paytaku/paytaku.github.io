@@ -44,6 +44,8 @@ h1{font-size:20px;font-weight:900;margin:0 0 4px;}
 .badge{font-size:10.5px;font-weight:800;padding:2px 9px;border-radius:999px;}
 .badge.set  {background:var(--good-tint);color:var(--good);}
 .badge.unset{background:var(--warn-tint);color:var(--warn);}
+.badge.type-badge.direct{background:rgba(79,70,229,0.12);color:#4F46E5;}
+.badge.type-badge.point{background:rgba(217,70,239,0.12);color:#C026D3;}
 
 /* フィールド */
 .field{margin-bottom:10px;}
@@ -443,6 +445,7 @@ function buildLinkCard(card){
     '<div class="card-top">'
       +'<span class="card-name">'+esc(card.name)+'</span>'
       +'<span class="card-key">'+esc(key)+'</span>'
+      +'<span class="badge type-badge '+(s.type==='point'?'point':'direct')+'" id="typebadge-'+key+'">'+(s.type==='point'?'🎯 ポイントサイト経由':'🔗 直アフィリエイト')+'</span>'
       +'<span class="badge '+(s.url?'set':'unset')+'" id="badge-'+key+'">'+(s.url?'設定済み':'未設定')+'</span>'
       +(card.custom?'<button class="card-del-btn" data-del-key="'+key+'" title="削除">削除</button>':'')
     +'</div>'
@@ -452,7 +455,12 @@ function buildLinkCard(card){
     +'</div>'
     +'<div class="field"><label>申し込みURL</label><input type="url" id="url-'+key+'" placeholder="https://..." value="'+esc(s.url)+'"></div>'
     +'<div class="via-row'+(s.type==='point'?' show':'')+'" id="via-'+key+'">'
-      +'<div class="field"><label>ポイントサイト名（例：ハピタス）</label><input type="text" id="via-input-'+key+'" placeholder="ハピタス" value="'+esc(s.via||'')+'"></div>'
+      +'<div class="field"><label>ポイントサイト名</label>'
+      +'<select id="via-input-'+key+'">'
+        +'<option value="">選択してください</option>'
+        +POINT_SITES.map(function(name){ return '<option value="'+esc(name)+'"'+(s.via===name?' selected':'')+'>'+esc(name)+'</option>'; }).join('')
+        +'<option value="__add_new__">＋ 新しいポイントサイトを追加...</option>'
+      +'</select></div>'
     +'</div>'
     +'<div class="sep"></div>'
     +'<div class="banner-head"><span class="banner-head-label">バナー（任意・複数登録可）</span></div>'
@@ -469,6 +477,11 @@ function bindLinkCard(card){
       var type=btn.getAttribute('data-type'); s.type=type;
       document.querySelectorAll('.type-btn[data-key="'+key+'"]').forEach(function(b){ b.classList.toggle('active',b===btn); });
       document.getElementById('via-'+key).classList.toggle('show',type==='point');
+      var tb=document.getElementById('typebadge-'+key);
+      if(tb){
+        tb.className='badge type-badge '+(type==='point'?'point':'direct');
+        tb.textContent=type==='point'?'🎯 ポイントサイト経由':'🔗 直アフィリエイト';
+      }
       updatePreview();
     });
   });
@@ -477,7 +490,31 @@ function bindLinkCard(card){
     el.classList.toggle('has-value',!!el.value);
     el.addEventListener('input',function(){ s[sk]=el.value.trim(); el.classList.toggle('has-value',!!el.value); if(sk==='url'){ var b=document.getElementById('badge-'+key); b.textContent=el.value?'設定済み':'未設定'; b.className='badge '+(el.value?'set':'unset'); } updatePreview(); });
   }
-  bi('url-'+key,'url'); bi('via-input-'+key,'via');
+  // ポイントサイトのプルダウンは、選択中の値をlinkStateに反映するほか、
+  // 「＋ 新しいポイントサイトを追加...」を選んだ場合は名前を聞いてマスタに登録し、
+  // 他のカードのプルダウンにも即座に反映されるようにする（selectを作り直す）。
+  function bindViaSelect(key){
+    var el=document.getElementById('via-input-'+key); if(!el) return;
+    el.addEventListener('change',function(){
+      if(el.value === '__add_new__'){
+        var name = prompt('追加するポイントサイト名を入力してください（例：ワラウ）');
+        if(name && name.trim()){
+          addPointSite(name.trim());
+          refreshAllViaSelects(); // 全カードのプルダウンを最新のPOINT_SITESで作り直す
+          linkState[key].via = name.trim();
+          var newEl = document.getElementById('via-input-'+key);
+          if(newEl) newEl.value = name.trim();
+        } else {
+          el.value = linkState[key].via || '';
+        }
+      } else {
+        linkState[key].via = el.value;
+      }
+      updatePreview();
+    });
+  }
+  bi('url-'+key,'url');
+  bindViaSelect(key);
   s.banners.forEach(function(_,i){ bindBannerItem(key,i); });
   document.getElementById('badd-'+key).addEventListener('click',function(){
     var i=s.banners.length; s.banners.push({title:'',href:'',img:''});
@@ -638,7 +675,44 @@ document.getElementById('rewardFileInput').addEventListener('change',function(e)
   reader.readAsText(file); e.target.value='';
 });
 
-/* ===== カスタムカード管理 ===== */
+/* ===== ポイントサイトのマスタ管理 =====
+   「ワラウ経由で三菱UFJカードをアフィリエイトしたい」のように、複数のカードが
+   同じポイントサイトを経由するケースが多いため、ポイントサイト名を一度だけ
+   登録しておき、各カードの「経由」欄はここから選択する方式にする。
+   毎回手入力すると「ワラウ」「warau」のような表記ゆれが起きやすいための対策。 */
+var DEFAULT_POINT_SITES = ['ハピタス','モッピー','ちょびリッチ','ポイントインカム','ワラウ','ECナビ','げん玉'];
+function loadPointSites(){
+  var saved = LS.get('paytaku-point-sites');
+  if(Array.isArray(saved) && saved.length) return saved;
+  return DEFAULT_POINT_SITES.slice();
+}
+function savePointSites(){
+  LS.set('paytaku-point-sites', POINT_SITES);
+}
+var POINT_SITES = loadPointSites();
+
+function addPointSite(name){
+  name = (name||'').trim();
+  if(!name) return false;
+  if(POINT_SITES.indexOf(name) !== -1) return true; // 既にある
+  POINT_SITES.push(name);
+  savePointSites();
+  return true;
+}
+// 新しいポイントサイトが追加されたとき、既に表示済みの全カードのプルダウンに
+// 選択肢を反映させる（保存中の選択値は維持する）。
+function refreshAllViaSelects(){
+  CARDS.forEach(function(card){
+    var el = document.getElementById('via-input-'+card.key);
+    if(!el) return;
+    var current = linkState[card.key].via || '';
+    el.innerHTML = '<option value="">選択してください</option>'
+      + POINT_SITES.map(function(name){ return '<option value="'+esc(name)+'"'+(current===name?' selected':'')+'>'+esc(name)+'</option>'; }).join('')
+      + '<option value="__add_new__">＋ 新しいポイントサイトを追加...</option>';
+  });
+}
+
+/* カスタムカード管理 */
 function saveCustomCards(){
   LS.set('paytaku-custom-cards', CARDS.filter(function(c){ return c.custom; }));
 }
