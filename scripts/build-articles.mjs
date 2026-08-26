@@ -17,7 +17,7 @@
  * 再実行するだけでよい（GitHub Actionsで自動実行する設定は .github/workflows/build-articles.yml を参照）。
  */
 
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
@@ -667,6 +667,72 @@ function main(){
   console.log(`generated: sitemap.xml`);
 
   console.log(`\n合計 ${articles.length} 件の記事を生成しました。`);
+
+  checkInternalLinks(articles);
+}
+
+// ========== 内部リンク切れチェック ==========
+// 記事同士の「あわせて読みたい」・本文中のリンク・ARTICLE_METAのrelated配列が
+// 実在する記事を指しているかを、ビルドのたびに自動チェックする。
+// 見つかったら警告を出す（ビルド自体は止めない。CIでは別途 --strict を付けると失敗させられる）。
+function checkInternalLinks(articles){
+  const knownSlugs = new Set(articles.map(a => a.slug));
+  const problems = []; // { file, href }
+
+  const files = readdirSync(OUT_DIR).filter(
+    f => f.endsWith(".html") && f !== "index.html" && !f.startsWith("_")
+  );
+  // 記事一覧（content/articles.json）には無いが、articles/フォルダに実在する
+  // 静的HTML（about.html・privacy.html等）へのリンクは「壊れていない」とみなす。
+  const existingFiles = new Set(files);
+
+  files.forEach(file => {
+    const path = join(OUT_DIR, file);
+    const content = readFileSync(path, "utf-8");
+
+    // href="./slug.html" 形式のリンクをチェック（index.htmlは記事一覧自体への正当なリンクなので除外）
+    const hrefRe = /href="\.\/([a-zA-Z0-9_-]+)\.html"/g;
+    let m;
+    while((m = hrefRe.exec(content))){
+      const slug = m[1];
+      if(slug === "index") continue;
+      if(knownSlugs.has(slug)) continue;
+      if(existingFiles.has(`${slug}.html`)) continue; // 実ファイルとして存在すればOK
+      problems.push({ file, kind: "リンク切れ", detail: `./${slug}.html` });
+    }
+
+    // ARTICLE_META内のrelated配列もチェック（こちらは記事一覧に載る前提の項目なので、
+    // content/articles.jsonのslugと厳密に一致している必要がある）
+    const metaMatch = content.match(/<!--ARTICLE_META\s*(\{[\s\S]*?\})\s*ARTICLE_META-->/);
+    if(metaMatch){
+      try{
+        const meta = JSON.parse(metaMatch[1]);
+        (meta.related || []).forEach(slug => {
+          if(!knownSlugs.has(slug)){
+            problems.push({ file, kind: "ARTICLE_META related切れ", detail: slug });
+          }
+        });
+      }catch(e){ /* JSONとして壊れている場合は別の問題なのでここでは無視 */ }
+    }
+  });
+
+  if(problems.length === 0){
+    console.log(`✅ 内部リンク切れはありません（${files.length}件チェック済み）。`);
+    return;
+  }
+
+  console.log(`\n⚠️  内部リンクの問題が ${problems.length} 件見つかりました：`);
+  const byFile = {};
+  problems.forEach(p => { byFile[p.file] = byFile[p.file] || []; byFile[p.file].push(p); });
+  Object.entries(byFile).forEach(([file, list]) => {
+    console.log(`  ${file}`);
+    list.forEach(p => console.log(`    - [${p.kind}] ${p.detail}`));
+  });
+
+  if(process.argv.includes("--strict")){
+    console.error("\n--strict指定のため、リンク切れがあるとビルドを失敗させます。");
+    process.exit(1);
+  }
 }
 
 // 記事一覧（content/articles.json）には含まれない、固定の静的ページ。
