@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<!--ARTICLE_META
+{
+  "slug": "cosmo-the-card-opus-shindan",
+  "category": "カード解説",
+  "title": "コスモ・ザ・カード・オーパスは車に乗らない人には不要｜給油量別シミュレーションと2026年8月特典まとめ",
+  "publishedDate": "2026-08-26",
+  "updatedDate": "2026-08-26",
+  "tags": ["コスモ・ザ・カード・オーパス", "コスモ石油", "イオンカード", "ETC", "ガソリンカード", "WAON POINT"],
+  "overview": "コスモ・ザ・カード・オーパスは、コスモ石油での給油とETC利用に強い年会費無料カード。通常還元率は0.5%と平凡ですが、給油量・ETC利用額次第で実質還元は跳ね上がります。2026年8月開催中の入会特典の期限、イオンカードとの重複可否まで、具体的な金額で整理しました。",
+  "related": ["epos-card-shindan", "rakuten-card-shindan", "kateene-bank-debit-shindan"],
+  "customHtml": true
+}
+ARTICLE_META-->
+<html lang="ja" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>コスモ・ザ・カード・オーパスは車に乗らない人には不要｜給油量別シミュレーションと2026年8月特典まとめ | ペイ択（Paytaku）</title>
+<meta name="description" content="コスモ・ザ・カード・オーパスの通常還元率は0.5%と平凡ですが、給油量・ETC利用額次第で実質還元は跳ね上がります。2026年8月開催中の入会特典の期限、イオンカードとの重複可否まで具体的な金額で整理しました。">
+<link rel="canonical" href="https://paytaku.github.io/articles/cosmo-the-card-opus-shindan.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="コスモ・ザ・カード・オーパスは車に乗らない人には不要｜給油量別シミュレーションと2026年8月特典まとめ | ペイ択（Paytaku）">
+<meta property="og:description" content="通常還元率0.5%の実力を、給油量別シミュレーションと2026年8月特典の期限まで具体的な金額で整理しました。">
+<meta property="og:url" content="https://paytaku.github.io/articles/cosmo-the-card-opus-shindan.html">
+<meta property="og:site_name" content="ペイ択（Paytaku）">
+<meta name="twitter:card" content="summary">
+<link rel="stylesheet" href="../assets/articles.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="site-header-inner">
+    <a class="site-logo" href="../index.html" aria-label="ペイ択トップへ"><img src="../assets/logo.png" alt="ペイ択 -PayTaku-" width="132" height="63"></a>
+    <span class="site-header-tagline">還元率比較・お得情報</span>
+    <button class="theme-toggle" id="themeToggle" aria-label="ダークモード切替" title="ダークモード切替">🌙</button>
+  </div>
+</header>
+<script>
+(function(){
+  var STORAGE_KEY = 'paytaku-theme';
+  var DEFAULT = 'dark';
+  var saved = localStorage.getItem(STORAGE_KEY) || DEFAULT;
+  document.documentElement.setAttribute('data-theme', saved);
+  window.addEventListener('DOMContentLoaded', function(){
+    var btn = document.getElementById('themeToggle');
+    if(!btn) return;
+    btn.textContent = saved === 'dark' ? '☀️' : '🌙';
+    btn.addEventListener('click', function(){
+      var cur = document.documentElement.getAttribute('data-theme');
+      var next = cur === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem(STORAGE_KEY, next);
+      btn.textContent = next === 'dark' ? '☀️' : '🌙';
+    });
+  });
+})();
+
+(function(){
+  function initThumbnail(){
+    var img = document.getElementById('lpThumb');
+    if(!img) return;
+    var slug = location.pathname.split('/').pop().replace(/\.html$/, '');
+
+  function tryLocalFile(){
+    var exts = ['png', 'jpg', 'jpeg', 'webp'];
+    (function tryNext(i){
+      if(i >= exts.length) return;
+      var test = new Image();
+      test.onload = function(){ img.src = test.src; img.style.display = 'block'; };
+      test.onerror = function(){ tryNext(i + 1); };
+      test.src = '../assets/thumbnails/' + slug + '.' + exts[i];
+    })(0);
+  }
+
+  fetch('../content/articles.json', { cache: 'no-cache' })
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(list){
+      var entry = Array.isArray(list) ? list.find(function(a){ return a.slug === slug; }) : null;
+      if(entry && entry.thumbnail){
+        img.src = entry.thumbnail;
+        img.style.display = 'block';
+      } else {
+        tryLocalFile();
+      }
+    })
+    .catch(tryLocalFile);
+  }
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', initThumbnail);
+  } else {
+    initThumbnail();
+  }
+})();
+</script>
+
+<div class="lp-page card-shindan-page">
+  <div class="lp-wrap">
+    <a href="../index.html" class="lp-back">← ペイ択トップに戻る</a>
+    <nav class="lp-breadcrumb">
+      <a href="../index.html">ホーム</a> ＞ <a href="./index.html">カード解説</a> ＞ コスモ・ザ・カード・オーパスは車に乗らない人には…
+    </nav>
+
+    <img class="lp-thumb" id="lpThumb" alt="コスモ・ザ・カード・オーパス">
+
+    <div class="lp-hero">
+      <div class="lp-badge">カード解説</div>
+      <h1 class="lp-title">コスモ・ザ・カード・オーパスは車に乗らない人には不要｜給油量別シミュレーションと2026年8月特典まとめ</h1>
+      <p class="lp-tagline">「還元率0.5%ってパッとしない」「結局何リットル給油すればいくら得なの？」──車に乗る人だけが読めばいい理由を、具体的な金額で整理しました。</p>
+      <div class="lp-byline">更新日：2026-08-26　|　ペイ択編集部</div>
+    </div>
+
+    <div class="nl-hero">
+      <p class="nl-hero-name">コスモ・ザ・カード・オーパス</p>
+      <p class="nl-hero-sub">コスモ石油とETCに強い、年会費無料カード</p>
+      <div class="nl-hero-big">
+        <span class="num">1.5</span><span class="unit">%</span><span class="kanji">ETC還元</span>
+      </div>
+      <p class="nl-hero-cap">対象高速道路のETC利用で200円につき3 WAON POINT（還元率1.5%）。通常のショッピング還元は0.5%相当ですが、コスモ石油での給油では会員価格の割引に加えてポイントも別途貯まります。</p>
+      <div class="nl-spec-row">
+        <div class="nl-spec"><div class="nl-spec-label">年会費</div><div class="nl-spec-value">無料（本人・ETC）</div></div>
+        <div class="nl-spec"><div class="nl-spec-label">通常還元</div><div class="nl-spec-value">0.5%相当</div></div>
+        <div class="nl-spec"><div class="nl-spec-label">ETC還元</div><div class="nl-spec-value accent">1.5%</div></div>
+      </div>
+      <a data-aff="cosmo-the-card-opus" href="#" class="nl-cta-btn" target="_blank" rel="noopener noreferrer nofollow sponsored">公式サイトを見る（PR）</a>
+      <p class="nl-cta-hint">その前に ── あなたにこのカードが必要か、下の2問でチェックできます。</p>
+    </div>
+
+    <nav class="lp-toc">
+      <div class="lp-toc-title">この記事の流れ</div>
+      <ol>
+        <li><a href="#quiz">2問チェック：あなたに必要なカード？</a></li>
+        <li><a href="#conc">結論：車に乗らない人は不要、乗る人は年会費無料で持つ価値あり</a></li>
+        <li><a href="#sim">結局いくら得？給油量別シミュレーション</a></li>
+        <li><a href="#etc">ETC1.5%＋イオン特典の合わせ技</a></li>
+        <li><a href="#campaign">2026年8月の入会特典、期限を整理</a></li>
+        <li><a href="#aeon">イオンカードを持っている人はどうすべきか</a></li>
+        <li><a href="#hikaku">他のガソリンカードとの比較</a></li>
+        <li><a href="#chuii">注意点</a></li>
+        <li><a href="#faq">よくある質問</a></li>
+        <li><a href="#summary">まとめ</a></li>
+      </ol>
+    </nav>
+
+    <!-- STEP1: 診断 -->
+    <section class="nl-block" id="quiz">
+      <p class="nl-quiz-hero-h">あなたに<span class="em">このカード</span>は<br>必要？</p>
+      <p class="nl-quiz-hero-sub">2問で分かります。</p>
+      <div class="nl-quiz">
+        <div class="nl-quiz-group">
+          <p class="nl-quiz-q"><span class="qn">Q1</span>車を運転しますか？（給油の機会があるか）</p>
+          <div class="nl-opts" data-q="1">
+            <button type="button" class="nl-opt" data-val="yes">運転する</button>
+            <button type="button" class="nl-opt" data-val="no">ほとんど運転しない</button>
+          </div>
+        </div>
+        <div class="nl-quiz-group">
+          <p class="nl-quiz-q"><span class="qn">Q2</span>近くにコスモ石油の給油所、または対象高速道路を使う機会はありますか？</p>
+          <div class="nl-opts" data-q="2">
+            <button type="button" class="nl-opt" data-val="yes">ある</button>
+            <button type="button" class="nl-opt" data-val="no">あまりない</button>
+          </div>
+        </div>
+        <div class="nl-quiz-result" id="nlQuizResult">
+          <p class="verdict" id="nlVerdict"></p>
+          <p class="rtext" id="nlRtext"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- STEP2: 結論 -->
+    <section class="nl-block" id="conc">
+      <h2 class="nl-h2">結論：車に乗らない人は不要、乗る人は年会費無料で持つ価値あり</h2>
+      <p class="nl-text">正直に言うと、<b>車に乗らない・給油しない人にとってこのカードの旨味はほぼゼロ</b>です。通常のショッピング還元率は0.5%相当で、還元率だけを比べれば平凡なカードの一枚に過ぎません。</p>
+      <p class="nl-text">一方で、<b>コスモ石油で定期的に給油する・対象高速道路のETCをよく使う</b>という人にとっては話が変わります。年会費が本人カード・ETCカードともに無料なので、条件に当てはまるなら「持っておいて損はない1枚」として財布に入れておく価値があります。</p>
+    </section>
+
+    <!-- STEP3: シミュレーション（穴を埋める） -->
+    <section class="nl-block" id="sim">
+      <h2 class="nl-h2">結局いくら得？給油量別シミュレーション</h2>
+      <p class="nl-text">「結局何リットル給油すればいくら得なのか」が一番気になるところだと思うので、具体的な金額で整理しました。コスモ石油での給油では、会員価格の割引（店舗により概ね1〜6円/L程度）に加えて、クレジット払い分とWAON POINT選択分の合計2ポイント（約1%相当）が別途貯まります。</p>
+      <div class="nl-table-wrap">
+        <table class="nl-compare">
+          <thead>
+            <tr><th>月間給油量</th><th>会員価格割引の目安（3円/L換算）</th><th>ポイント還元の目安（1%）</th></tr>
+          </thead>
+          <tbody>
+            <tr><th>20L</th><td>約60円</td><td>約20円相当</td></tr>
+            <tr><th>40L</th><td>約120円</td><td>約40円相当</td></tr>
+            <tr><th>60L</th><td>約180円</td><td>約60円相当</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="nl-text" style="margin-top:14px;">月20〜40L程度の一般的な利用でも、割引とポイントを合わせて月100〜200円前後、年間では1,000〜2,000円程度の差になります。「大きく儲ける」カードというより、<b>普段の給油をそのままお得にする</b>という位置づけで捉えるのが現実的です。</p>
+    </section>
+
+    <!-- STEP4: ETC+イオン特典 -->
+    <section class="nl-block" id="etc">
+      <h2 class="nl-h2">ETC1.5%＋イオン特典の合わせ技で実質どこまで伸びるか</h2>
+      <p class="nl-text">対象高速道路のETC利用では、200円（税込）につき3 WAON POINTが貯まり、還元率に換算すると1.5%になります。よく高速を使う人にとっては、ショッピング利用より還元率の高い使い道です。</p>
+      <div class="nl-stack">
+        <div class="nl-stack-row"><span class="l">給油の基本還元</span><span class="r">約1%</span></div>
+        <div class="nl-stack-plus">＋</div>
+        <div class="nl-stack-row"><span class="l">ETC利用時</span><span class="r">1.5%</span></div>
+        <div class="nl-stack-plus">＋</div>
+        <div class="nl-stack-row"><span class="l">イオングループ20日・30日</span><span class="r">5%OFF</span></div>
+        <div class="nl-stack-plus">↓</div>
+        <div class="nl-stack-total"><span class="l">組み合わせ次第で</span><span class="r">最大3%前後</span></div>
+      </div>
+      <p class="nl-text" style="margin-top:14px;">コスモ・ザ・カード・オーパスは券面上イオンカードでもあるため、イオングループの「お客さま感謝デー」などの割引日と組み合わせると、実質的な還元は給油分だけでなく日常の買い物にも広がります。</p>
+    </section>
+
+    <!-- STEP5: キャンペーン期限 -->
+    <section class="nl-block" id="campaign">
+      <h2 class="nl-h2">2026年8月の入会特典、期限を整理</h2>
+      <p class="nl-text">2026年8月時点で、2つの入会特典が同時に走っています。期限がそれぞれ違うので整理しておきます。</p>
+      <ul class="nl-list">
+        <li><b>コスモSS Pay登録特典</b>：新規入会かつ期限内にコスモSS Payに登録すると、対象コスモステーションでの給油が最大400Lまで10円/Lキャッシュバック（最大4,000円相当）。</li>
+        <li><b>発行20周年キャンペーン</b>：2026年8月1日〜9月30日の新規入会で1,500 WAON POINT進呈。ただし2026年10月31日までにカードが発行されている必要があるため、申し込みは早めに済ませておくのが安全です。</li>
+      </ul>
+      <div class="nl-caution">
+        <span class="nl-caution-mark">!</span>
+        <p class="nl-caution-text">特典の内容・期限は変更される場合があります。申し込み前に必ず公式サイトで最新の開催状況を確認してください。［確認日: 2026-08-26］</p>
+      </div>
+    </section>
+
+    <!-- STEP6: イオンカードとの重複 -->
+    <section class="nl-block" id="aeon">
+      <h2 class="nl-h2">イオンカードを持っている人はどうすべきか</h2>
+      <p class="nl-text">コスモ・ザ・カード・オーパスは、イオンフィナンシャルサービスが発行するイオンカードの一種でもあります。すでに通常のイオンカードを持っている場合、日常の買い物での還元率（0.5%相当）や「お客さま感謝デー」の割引はどちらのカードでも同じように使えるため、<b>コスモ石油での給油やETC利用がない人にとっては、あえて2枚目として作るメリットは薄い</b>です。</p>
+      <p class="nl-text">逆に、コスモ石油の会員価格やETCの1.5%還元を活かしたい人は、通常のイオンカードと役割を分けて（日常の買い物は既存のイオンカード、給油とETCはコスモ・ザ・カード・オーパス）持つ、という使い分けが現実的です。</p>
+    </section>
+
+    <!-- STEP7: 他カードとの比較 -->
+    <section class="nl-block" id="hikaku">
+      <h2 class="nl-h2">他のガソリンカードとの比較</h2>
+      <div class="nl-table-wrap">
+        <table class="nl-compare">
+          <thead><tr><th></th><th>コスモ・ザ・カード・オーパス</th><th>シェルPontaクレジットカード</th><th>apollostation card</th></tr></thead>
+          <tbody>
+            <tr><th>年会費</th><td>無料</td><td>条件付き無料</td><td>永年無料</td></tr>
+            <tr><th>通常還元</th><td>0.5%相当</td><td>1.0%</td><td>―（都度割引方式）</td></tr>
+            <tr><th>給油の特典</th><td>会員価格＋ポイント約1%</td><td>1L=2ポイント程度</td><td>いつでも2円/L割引</td></tr>
+            <tr><th>ETC特典</th><td>1.5%</td><td>通常還元と同等</td><td>特になし</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="nl-text">よく使う給油所のブランドで選ぶのが基本ですが、ETCを頻繁に使うならコスモ・ザ・カード・オーパスの1.5%は他の2枚より頭一つ抜けています。</p>
+      <a data-aff="cosmo-the-card-opus" href="#" class="nl-cta-btn" target="_blank" rel="noopener noreferrer nofollow sponsored">コスモ・ザ・カード・オーパスの公式サイトを見る（PR）</a>
+    </section>
+
+    <!-- STEP8: 注意点 -->
+    <section class="nl-block" id="chuii">
+      <h2 class="nl-h2-plain">注意点</h2>
+      <ul class="nl-list">
+        <li><b>海外・国内旅行傷害保険は付帯していません</b>：旅行保険を重視するなら、他のカードと併用したほうがよいでしょう。</li>
+        <li><b>イオンゴールドカードへの切替特典は無し</b>：年間利用額を積み上げてもゴールドカードへのインビテーションにはつながりません。</li>
+        <li><b>会員価格の割引額は店舗により異なる</b>：店頭の会員価格表示で必ず確認してください。</li>
+      </ul>
+    </section>
+
+    <section class="nl-block" id="faq">
+      <h2 class="nl-h2-plain">よくある質問</h2>
+      <div class="nl-faq">
+        <div class="nl-faq-item">
+          <button type="button" class="nl-faq-q">審査に落ちることはある？<span class="mark">＋</span></button>
+          <div class="nl-faq-a"><div class="nl-faq-a-inner">18歳以上（高校生を除く）であれば学生・主婦（主夫）でも申し込み可能です。ただし信販会社の審査があるため、絶対に通るとは限りません。</div></div>
+        </div>
+        <div class="nl-faq-item">
+          <button type="button" class="nl-faq-q">解約はすぐできる？<span class="mark">＋</span></button>
+          <div class="nl-faq-a"><div class="nl-faq-a-inner">会員専用窓口・サイトから解約手続きが可能です。年会費無料のカードなので、使わなくなった場合の解約に急ぐ必要は基本的にありません。</div></div>
+        </div>
+        <div class="nl-faq-item">
+          <button type="button" class="nl-faq-q">WAON POINTはどこで使える？<span class="mark">＋</span></button>
+          <div class="nl-faq-a"><div class="nl-faq-a-inner">イオングループの対象店舗や提携先で1ポイント1円として使えるほか、他社ポイントへの交換にも対応しています。</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="nl-block" id="summary">
+      <h2 class="nl-h2-plain">まとめ</h2>
+      <p class="nl-text">コスモ・ザ・カード・オーパスは、通常還元率こそ0.5%相当と平凡ですが、コスモ石油での給油とETC利用（1.5%）に強みを持つ年会費無料カードです。車に乗らない・給油しない人には旨味がほぼありませんが、条件に当てはまる人にとっては、2026年8月開催中の入会特典も含めて検討する価値があります。</p>
+      <div class="nl-tags">
+        <span class="nl-tag">コスモ・ザ・カード・オーパス</span>
+        <span class="nl-tag">コスモ石油</span>
+        <span class="nl-tag">イオンカード</span>
+        <span class="nl-tag">ETC</span>
+        <span class="nl-tag">ガソリンカード</span>
+      </div>
+    </section>
+
+    <section class="nl-block">
+      <h2 class="nl-h2-plain">あわせて読みたい</h2>
+      <div class="lp-related">
+        <a class="lp-related-item" href="./epos-card-shindan.html">エポスカードは向いている？年間ボーナスの損益分岐点を診断</a>
+        <a class="lp-related-item" href="./rakuten-card-shindan.html">楽天カードは向いている？SPUの実効還元率を診断</a>
+        <a class="lp-related-item" href="./kateene-bank-debit-shindan.html">カテエネBANKデビットは向いている？2%還元の条件を診断</a>
+      </div>
+    </section>
+
+    <!-- 最終CTA -->
+    <div class="nl-cta">
+      <p class="nl-cta-name">コスモ・ザ・カード・オーパスを申し込む</p>
+      <p class="nl-cta-spec">年会費無料・ETC還元1.5%・コスモ石油会員価格</p>
+      <a data-aff="cosmo-the-card-opus" href="#" class="nl-cta-btn" target="_blank" rel="noopener noreferrer nofollow sponsored">公式サイトで申し込む（PR）</a>
+      <p class="nl-cta-note">還元率・特典・キャンペーンは変更される場合があります。申し込み前に必ず公式サイトで最新情報をご確認ください。</p>
+    </div>
+
+    <div class="lp-disclosure">本ページの情報は掲載時点のものです。還元率・特典・キャンペーン内容は変更される場合があるため、利用前に必ず公式サイトでご確認ください。本サイトはアフィリエイト広告を含みます。［確認日: 2026-08-26］</div>
+    <a href="../index.html" class="lp-back lp-back-bottom">← ペイ択トップに戻る</a>
+  </div>
+</div>
+
+<script>
+(function(){
+  var root = document.querySelector('.card-shindan-page');
+  if(!root) return;
+
+  var answers = { 1: null, 2: null };
+  var resultBox = document.getElementById('nlQuizResult');
+  var verdictEl = document.getElementById('nlVerdict');
+  var rtextEl   = document.getElementById('nlRtext');
+
+  function judge(){
+    if(!answers[1] || !answers[2]) return;
+    var q1 = answers[1], q2 = answers[2];
+    var cls, verdict, text;
+    if(q1 === 'no'){
+      cls = 'low';
+      verdict = '不要';
+      text = '車に乗らないなら、給油特典もETC特典も使いようがありません。通常のショッピング還元も0.5%相当と平凡なので、無理に作る必要はありません。';
+    } else if(q2 === 'no'){
+      cls = 'mid';
+      verdict = '優先度は低め';
+      text = '車には乗るものの、コスモ石油や対象高速道路をあまり使わないなら、このカードならではの強み（会員価格・ETC1.5%）を活かせません。他の高還元カードを検討したほうがよいかもしれません。';
+    } else {
+      cls = 'good';
+      verdict = 'かなりおすすめ';
+      text = 'コスモ石油での給油やETC利用があるなら、年会費無料でその分を確実にお得にできます。まず作っておいて損はありません。';
+    }
+    resultBox.className = 'nl-quiz-result show ' + cls;
+    verdictEl.textContent = verdict;
+    rtextEl.textContent = text;
+  }
+
+  root.querySelectorAll('.nl-opts').forEach(function(group){
+    var q = group.getAttribute('data-q');
+    group.querySelectorAll('.nl-opt').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        group.querySelectorAll('.nl-opt').forEach(function(b){ b.classList.remove('selected'); });
+        btn.classList.add('selected');
+        answers[q] = btn.getAttribute('data-val');
+        judge();
+      });
+    });
+  });
+
+  root.querySelectorAll('.nl-faq-item').forEach(function(item){
+    var q = item.querySelector('.nl-faq-q');
+    var a = item.querySelector('.nl-faq-a');
+    q.addEventListener('click', function(){
+      var open = item.classList.toggle('open');
+      a.style.maxHeight = open ? (a.scrollHeight + 'px') : '0';
+    });
+  });
+})();
+</script>
+<script src="../assets/affiliates.js"></script>
+</body>
+</html>

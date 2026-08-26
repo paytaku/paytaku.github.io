@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<!--ARTICLE_META
+{
+  "slug": "lawson-ponta-plus-shindan",
+  "category": "カード解説",
+  "title": "ローソンPontaプラスは「楽Pay」に手を出す前に読んでほしい｜2026年6月改悪後の現実的な還元率",
+  "publishedDate": "2026-08-26",
+  "updatedDate": "2026-08-26",
+  "tags": ["ローソンPontaプラス", "Pontaポイント", "楽Pay", "リボ払い", "ローソン", "対象店舗"],
+  "overview": "ローソンPontaプラスは年会費無料・基本還元率1.0%、条件次第で対象店舗最大15%を狙えるカードです。ただし+5%を得る「楽Pay」は自動リボ払いで、2026年6月には対象店舗の還元上限も新設されました。手数料とのトレードオフ、現実的な還元率を正直に試算しました。",
+  "related": ["epos-card-shindan", "kateene-bank-debit-shindan", "rakuten-card-shindan"],
+  "customHtml": true
+}
+ARTICLE_META-->
+<html lang="ja" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ローソンPontaプラスは「楽Pay」に手を出す前に読んでほしい｜2026年6月改悪後の現実的な還元率 | ペイ択（Paytaku）</title>
+<meta name="description" content="ローソンPontaプラスは年会費無料・基本1.0%、条件次第で対象店舗最大15%。ただし+5%の「楽Pay」は自動リボ払いで手数料が発生します。2026年6月の改悪後の現実的な還元率を正直に試算しました。">
+<link rel="canonical" href="https://paytaku.github.io/articles/lawson-ponta-plus-shindan.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ローソンPontaプラスは「楽Pay」に手を出す前に読んでほしい｜2026年6月改悪後の現実的な還元率 | ペイ択（Paytaku）">
+<meta property="og:description" content="+5%の「楽Pay」は自動リボ払い。手数料とのトレードオフ、2026年6月改悪後の現実的な還元率を正直に試算しました。">
+<meta property="og:url" content="https://paytaku.github.io/articles/lawson-ponta-plus-shindan.html">
+<meta property="og:site_name" content="ペイ択（Paytaku）">
+<meta name="twitter:card" content="summary">
+<link rel="stylesheet" href="../assets/articles.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="site-header-inner">
+    <a class="site-logo" href="../index.html" aria-label="ペイ択トップへ"><img src="../assets/logo.png" alt="ペイ択 -PayTaku-" width="132" height="63"></a>
+    <span class="site-header-tagline">還元率比較・お得情報</span>
+    <button class="theme-toggle" id="themeToggle" aria-label="ダークモード切替" title="ダークモード切替">🌙</button>
+  </div>
+</header>
+<script>
+(function(){
+  var STORAGE_KEY = 'paytaku-theme';
+  var DEFAULT = 'dark';
+  var saved = localStorage.getItem(STORAGE_KEY) || DEFAULT;
+  document.documentElement.setAttribute('data-theme', saved);
+  window.addEventListener('DOMContentLoaded', function(){
+    var btn = document.getElementById('themeToggle');
+    if(!btn) return;
+    btn.textContent = saved === 'dark' ? '☀️' : '🌙';
+    btn.addEventListener('click', function(){
+      var cur = document.documentElement.getAttribute('data-theme');
+      var next = cur === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem(STORAGE_KEY, next);
+      btn.textContent = next === 'dark' ? '☀️' : '🌙';
+    });
+  });
+})();
+
+(function(){
+  function initThumbnail(){
+    var img = document.getElementById('lpThumb');
+    if(!img) return;
+    var slug = location.pathname.split('/').pop().replace(/\.html$/, '');
+
+  function tryLocalFile(){
+    var exts = ['png', 'jpg', 'jpeg', 'webp'];
+    (function tryNext(i){
+      if(i >= exts.length) return;
+      var test = new Image();
+      test.onload = function(){ img.src = test.src; img.style.display = 'block'; };
+      test.onerror = function(){ tryNext(i + 1); };
+      test.src = '../assets/thumbnails/' + slug + '.' + exts[i];
+    })(0);
+  }
+
+  fetch('../content/articles.json', { cache: 'no-cache' })
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(list){
+      var entry = Array.isArray(list) ? list.find(function(a){ return a.slug === slug; }) : null;
+      if(entry && entry.thumbnail){
+        img.src = entry.thumbnail;
+        img.style.display = 'block';
+      } else {
+        tryLocalFile();
+      }
+    })
+    .catch(tryLocalFile);
+  }
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', initThumbnail);
+  } else {
+    initThumbnail();
+  }
+})();
+</script>
+
+<div class="lp-page card-shindan-page">
+  <div class="lp-wrap">
+    <a href="../index.html" class="lp-back">← ペイ択トップに戻る</a>
+    <nav class="lp-breadcrumb">
+      <a href="../index.html">ホーム</a> ＞ <a href="./index.html">カード解説</a> ＞ ローソンPontaプラスは「楽Pay」に手を出す前に…
+    </nav>
+
+    <img class="lp-thumb" id="lpThumb" alt="ローソンPontaプラス">
+
+    <div class="lp-hero">
+      <div class="lp-badge">カード解説</div>
+      <h1 class="lp-title">ローソンPontaプラスは「楽Pay」に手を出す前に読んでほしい｜2026年6月改悪後の現実的な還元率</h1>
+      <p class="lp-tagline">「最大15%ってすごいけど、条件が複雑すぎる」「楽Payって結局リボ払いだよね？」──手数料とのトレードオフを正直に試算しました。</p>
+      <div class="lp-byline">更新日：2026-08-26　|　ペイ択編集部</div>
+    </div>
+
+    <div class="nl-hero">
+      <p class="nl-hero-name">ローソンPontaプラス</p>
+      <p class="nl-hero-sub">基本1.0%、条件次第で対象店舗最大15%</p>
+      <div class="nl-hero-big">
+        <span class="num">1.0</span><span class="unit">%</span><span class="kanji">基本還元</span>
+      </div>
+      <p class="nl-hero-cap">200円につき2ポイントで基本還元率1.0%。対象店舗（オーケー・くら寿司・スシロー等）ではさらに上乗せがありますが、条件のひとつ「楽Pay」は自動リボ払いです。手数料が発生する点は要注意。</p>
+      <div class="nl-spec-row">
+        <div class="nl-spec"><div class="nl-spec-label">年会費</div><div class="nl-spec-value">永年無料</div></div>
+        <div class="nl-spec"><div class="nl-spec-label">基本還元</div><div class="nl-spec-value">1.0%</div></div>
+        <div class="nl-spec"><div class="nl-spec-label">対象店舗上限</div><div class="nl-spec-value accent">最大15%</div></div>
+      </div>
+      <a data-aff="lawson-ponta-plus" href="#" class="nl-cta-btn" target="_blank" rel="noopener noreferrer nofollow sponsored">公式サイトを見る（PR）</a>
+      <p class="nl-cta-hint">その前に ── あなたに必要なカードか、下の2問でチェックできます。</p>
+    </div>
+
+    <nav class="lp-toc">
+      <div class="lp-toc-title">この記事の流れ</div>
+      <ol>
+        <li><a href="#quiz">2問チェック：あなたに必要なカード？</a></li>
+        <li><a href="#conc">結論：基本1%、2026年6月の改悪で現実的な上限は下がった</a></li>
+        <li><a href="#rakupay">楽Pay（自動リボ）は使うべきか？手数料とのトレードオフ</a></li>
+        <li><a href="#target">対象店舗で実際いくら得するか</a></li>
+        <li><a href="#points">Pontaポイントの賢い使い道</a></li>
+        <li><a href="#hikaku">他のPontaカード・競合カードとの比較</a></li>
+        <li><a href="#chuii">注意点</a></li>
+        <li><a href="#faq">よくある質問</a></li>
+        <li><a href="#summary">まとめ</a></li>
+      </ol>
+    </nav>
+
+    <!-- STEP1: 診断 -->
+    <section class="nl-block" id="quiz">
+      <p class="nl-quiz-hero-h">あなたに<span class="em">このカード</span>は<br>必要？</p>
+      <p class="nl-quiz-hero-sub">2問で分かります。</p>
+      <div class="nl-quiz">
+        <div class="nl-quiz-group">
+          <p class="nl-quiz-q"><span class="qn">Q1</span>ローソン、またはオーケー・くら寿司・スシローなどの対象店舗を月に何度も利用しますか？</p>
+          <div class="nl-opts" data-q="1">
+            <button type="button" class="nl-opt" data-val="yes">よく利用する</button>
+            <button type="button" class="nl-opt" data-val="no">あまり利用しない</button>
+          </div>
+        </div>
+        <div class="nl-quiz-group">
+          <p class="nl-quiz-q"><span class="qn">Q2</span>リボ払い（手数料）の仕組みを理解した上で、自分で管理する自信はありますか？</p>
+          <div class="nl-opts" data-q="2">
+            <button type="button" class="nl-opt" data-val="yes">ある（もしくは楽Payは使わない）</button>
+            <button type="button" class="nl-opt" data-val="no">正直、不安がある</button>
+          </div>
+        </div>
+        <div class="nl-quiz-result" id="nlQuizResult">
+          <p class="verdict" id="nlVerdict"></p>
+          <p class="rtext" id="nlRtext"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- STEP2: 結論 -->
+    <section class="nl-block" id="conc">
+      <h2 class="nl-h2">結論：基本1%、2026年6月の改悪で現実的な上限は下がった</h2>
+      <p class="nl-text">ローソンPontaプラスは、年会費永年無料で基本還元率1.0%（200円につき2ポイント）の高還元カードです。ローソン・ローソンストア100・ナチュラルローソンでの利用では、時間帯によってさらに上乗せがあり、0:00〜15:59は最大3%、16:00〜23:59は最大6%になります。</p>
+      <p class="nl-text">対象店舗（オーケー・くら寿司・コカ・コーラ自販機・スシロー・ピザハット・松屋・松のや・U-NEXT）では、条件をすべて満たせば最大15%という数字が話題になりますが、<b>2026年6月のルール変更で、対象店舗での還元対象上限が月間3万円（税込）に設定され、条件も厳格化</b>されました。「最大15%」という見出しだけを見て期待しすぎないことをおすすめします。</p>
+    </section>
+
+    <!-- STEP3: 楽Payの穴埋め -->
+    <section class="nl-block" id="rakupay">
+      <h2 class="nl-h2">楽Pay（自動リボ）は使うべきか？手数料とのトレードオフ</h2>
+      <p class="nl-text">対象店舗での還元アップ条件のひとつに「楽Payの登録」があります。楽Payとは、カードの利用分がすべて自動的にリボ払いになる仕組みで、<b>これに登録すると+5%分のPontaポイントが上乗せされる</b>一方、<b>リボ払いには手数料（実質年率15%前後、時期により変動）が発生</b>します。</p>
+      <div class="nl-table-wrap">
+        <table class="nl-compare">
+          <thead><tr><th></th><th>楽Pay登録あり</th><th>楽Pay登録なし</th></tr></thead>
+          <tbody>
+            <tr><th>対象店舗還元（条件達成時）</th><td>最大15%</td><td>最大10%</td></tr>
+            <tr><th>支払い方法</th><td>自動リボ（手数料発生）</td><td>1回払い（手数料なし）</td></tr>
+            <tr><th>繰り上げ返済</th><td>コンビニATM等で可能</td><td>該当なし</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="nl-text" style="margin-top:14px;">リボ残高を毎月きちんと繰り上げ返済すれば手数料は最小限に抑えられますが、<b>「+5%のためだけに」リボ払いを設定するのは、管理を怠ると本末転倒になりかねません</b>。ローソン店頭での支払いは、楽Payを設定していない限り基本的に1回払いになるので、「+5%は無理に狙わず、対象店舗の基本8%までで十分」と割り切るのも十分に合理的な選択です。</p>
+      <div class="nl-caution">
+        <span class="nl-caution-mark">!</span>
+        <p class="nl-caution-text">リボ払いの手数料率は変更される場合があります（2026年11月利用分から手数料引き上げの告知あり）。楽Payを設定する場合は、繰り上げ返済の手順を先に確認しておくことを強くおすすめします。［確認日: 2026-08-26］</p>
+      </div>
+    </section>
+
+    <!-- STEP4: 対象店舗シミュレーション -->
+    <section class="nl-block" id="target">
+      <h2 class="nl-h2">対象店舗で実際いくら得するか</h2>
+      <p class="nl-text">対象店舗での還元は「基本1% ＋ 対象店舗利用7% ＋（楽Pay設定5%）＋（月5万円以上利用2%）」の積み上げです。2026年6月以降は還元対象の利用上限が月3万円になったので、その上限で試算します。</p>
+      <div class="nl-table-wrap">
+        <table class="nl-compare">
+          <thead><tr><th>月間利用額（対象店舗）</th><th>基本＋対象店舗（8%）</th><th>楽Pay込み（13%）</th></tr></thead>
+          <tbody>
+            <tr><th>1万円</th><td>800円相当</td><td>1,300円相当</td></tr>
+            <tr><th>2万円</th><td>1,600円相当</td><td>2,600円相当</td></tr>
+            <tr><th>3万円（上限）</th><td>2,400円相当</td><td>3,900円相当</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="nl-text" style="margin-top:14px;">月3万円を対象店舗で使い切ったとしても、楽Payなしで2,400円相当、ありでも3,900円相当が上限です。「最大15%」の数字ほどの派手さはありませんが、年会費無料でこの還元が得られると考えれば十分魅力的です。</p>
+    </section>
+
+    <!-- STEP5: ポイントの使い道 -->
+    <section class="nl-block" id="points">
+      <h2 class="nl-h2-plain">Pontaポイントの賢い使い道</h2>
+      <p class="nl-text">貯まったPontaポイントは、ローソン店頭の「お試し引換券」に交換すると、1ポイントの価値が2〜3円相当にアップすることがあります。単純な1ポイント1円換算より高い価値で使えるため、ローソンをよく利用する人はこの交換方法を覚えておくと良いでしょう。</p>
+    </section>
+
+    <!-- STEP6: 比較 -->
+    <section class="nl-block" id="hikaku">
+      <h2 class="nl-h2">他のPontaカード・競合カードとの比較</h2>
+      <div class="nl-table-wrap">
+        <table class="nl-compare">
+          <thead><tr><th></th><th>ローソンPontaプラス</th><th>三菱UFJカード</th></tr></thead>
+          <tbody>
+            <tr><th>年会費</th><td>永年無料</td><td>永年無料</td></tr>
+            <tr><th>基本還元</th><td>1.0%</td><td>0.5%</td></tr>
+            <tr><th>対象店舗還元</th><td>最大15%（条件複雑）</td><td>最大20%（条件も複雑）</td></tr>
+            <tr><th>条件のシンプルさ</th><td>比較的シンプル</td><td>MUFGグループ利用等が必要</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="nl-text">三菱UFJカードはより高い還元率を狙えますが、条件（引き落とし口座・MUFGグループ利用など）が複雑です。対象店舗のみで完結させたいなら、条件がシンプルなローソンPontaプラスの方が扱いやすいという声もあります。</p>
+      <a data-aff="lawson-ponta-plus" href="#" class="nl-cta-btn" target="_blank" rel="noopener noreferrer nofollow sponsored">ローソンPontaプラスの公式サイトを見る（PR）</a>
+    </section>
+
+    <!-- STEP7: 注意点 -->
+    <section class="nl-block" id="chuii">
+      <h2 class="nl-h2-plain">注意点</h2>
+      <ul class="nl-list">
+        <li><b>電子マネー・プリカへのチャージはポイント対象外との情報あり</b>：au PAY等へのチャージでPontaポイントが付くかどうかは要確認です。</li>
+        <li><b>2026年6月からの改悪</b>：対象店舗での還元対象利用上限が月3万円に、楽Payの条件も厳格化されています。</li>
+        <li><b>ローソン店頭は基本1回払い</b>：楽Payを設定していない限り、店頭での支払い方法の指定はできず1回払いになります。</li>
+      </ul>
+    </section>
+
+    <section class="nl-block" id="faq">
+      <h2 class="nl-h2-plain">よくある質問</h2>
+      <div class="nl-faq">
+        <div class="nl-faq-item">
+          <button type="button" class="nl-faq-q">審査は厳しい？<span class="mark">＋</span></button>
+          <div class="nl-faq-a"><div class="nl-faq-a-inner">年会費無料の一般カードで、公式サイトから最短5分で申込が完結する案内もあります。ただし信販会社の審査があるため、必ず発行されるとは限りません。</div></div>
+        </div>
+        <div class="nl-faq-item">
+          <button type="button" class="nl-faq-q">解約は簡単？<span class="mark">＋</span></button>
+          <div class="nl-faq-a"><div class="nl-faq-a-inner">会員専用窓口・Webサービスから手続き可能です。リボ残高が残っている場合は、先に一括返済を済ませておくとスムーズです。</div></div>
+        </div>
+        <div class="nl-faq-item">
+          <button type="button" class="nl-faq-q">auユーザーじゃないと使えない？<span class="mark">＋</span></button>
+          <div class="nl-faq-a"><div class="nl-faq-a-inner">Pontaポイントは共通ポイントなので、auユーザーでなくても発行・利用できます。ただしau経済圏を使っている人は、貯まったポイントをau PAYで使うなど、さらに活用の幅が広がります。</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="nl-block" id="summary">
+      <h2 class="nl-h2-plain">まとめ</h2>
+      <p class="nl-text">ローソンPontaプラスは、年会費無料で基本還元率1.0%と扱いやすいカードです。「最大15%」という数字は魅力的ですが、その一部（+5%）は自動リボ払いである楽Payが前提になっている点、2026年6月から対象店舗の還元対象上限が月3万円になった点は踏まえておく必要があります。楽Payに手を出さなくても、対象店舗の基本8%だけで十分な還元は得られるので、リボ払いに不安があるなら無理に設定しない、という選択も十分にありです。</p>
+      <div class="nl-tags">
+        <span class="nl-tag">ローソンPontaプラス</span>
+        <span class="nl-tag">Pontaポイント</span>
+        <span class="nl-tag">楽Pay</span>
+        <span class="nl-tag">リボ払い</span>
+        <span class="nl-tag">ローソン</span>
+      </div>
+    </section>
+
+    <section class="nl-block">
+      <h2 class="nl-h2-plain">あわせて読みたい</h2>
+      <div class="lp-related">
+        <a class="lp-related-item" href="./epos-card-shindan.html">エポスカードは向いている？年間ボーナスの損益分岐点を診断</a>
+        <a class="lp-related-item" href="./kateene-bank-debit-shindan.html">カテエネBANKデビットは向いている？2%還元の条件を診断</a>
+        <a class="lp-related-item" href="./rakuten-card-shindan.html">楽天カードは向いている？SPUの実効還元率を診断</a>
+      </div>
+    </section>
+
+    <!-- 最終CTA -->
+    <div class="nl-cta">
+      <p class="nl-cta-name">ローソンPontaプラスを申し込む</p>
+      <p class="nl-cta-spec">年会費永年無料・基本還元率1.0%・対象店舗最大15%</p>
+      <a data-aff="lawson-ponta-plus" href="#" class="nl-cta-btn" target="_blank" rel="noopener noreferrer nofollow sponsored">公式サイトで申し込む（PR）</a>
+      <p class="nl-cta-note">還元率・特典・キャンペーンは変更される場合があります。申し込み前に必ず公式サイトで最新情報をご確認ください。</p>
+    </div>
+
+    <div class="lp-disclosure">本ページの情報は掲載時点のものです。還元率・特典・リボ手数料は変更される場合があるため、利用前に必ず公式サイトでご確認ください。本サイトはアフィリエイト広告を含みます。［確認日: 2026-08-26］</div>
+    <a href="../index.html" class="lp-back lp-back-bottom">← ペイ択トップに戻る</a>
+  </div>
+</div>
+
+<script>
+(function(){
+  var root = document.querySelector('.card-shindan-page');
+  if(!root) return;
+
+  var answers = { 1: null, 2: null };
+  var resultBox = document.getElementById('nlQuizResult');
+  var verdictEl = document.getElementById('nlVerdict');
+  var rtextEl   = document.getElementById('nlRtext');
+
+  function judge(){
+    if(!answers[1] || !answers[2]) return;
+    var q1 = answers[1], q2 = answers[2];
+    var cls, verdict, text;
+    if(q1 === 'no'){
+      cls = 'low';
+      verdict = '優先度は低め';
+      text = 'ローソンや対象店舗をあまり利用しないなら、基本還元率1.0%以外の強みを活かせません。無理に作る必要はありません。';
+    } else if(q2 === 'no'){
+      cls = 'mid';
+      verdict = '楽Payは使わずに';
+      text = 'リボ払いの管理に不安があるなら、楽Payは設定せずに使うのがおすすめです。それでも対象店舗では基本8%の還元が得られます。';
+    } else {
+      cls = 'good';
+      verdict = 'かなりおすすめ';
+      text = 'ローソンや対象店舗をよく利用し、リボ払いも自分で管理できるなら、条件を満たして最大15%まで狙えます。年会費無料なので気軽に試せます。';
+    }
+    resultBox.className = 'nl-quiz-result show ' + cls;
+    verdictEl.textContent = verdict;
+    rtextEl.textContent = text;
+  }
+
+  root.querySelectorAll('.nl-opts').forEach(function(group){
+    var q = group.getAttribute('data-q');
+    group.querySelectorAll('.nl-opt').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        group.querySelectorAll('.nl-opt').forEach(function(b){ b.classList.remove('selected'); });
+        btn.classList.add('selected');
+        answers[q] = btn.getAttribute('data-val');
+        judge();
+      });
+    });
+  });
+
+  root.querySelectorAll('.nl-faq-item').forEach(function(item){
+    var q = item.querySelector('.nl-faq-q');
+    var a = item.querySelector('.nl-faq-a');
+    q.addEventListener('click', function(){
+      var open = item.classList.toggle('open');
+      a.style.maxHeight = open ? (a.scrollHeight + 'px') : '0';
+    });
+  });
+})();
+</script>
+<script src="../assets/affiliates.js"></script>
+</body>
+</html>
