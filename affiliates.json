@@ -9,6 +9,30 @@
       "type": "direct",
       "url": "https://ad2.trafficgate.net/t/r/385/1396/318860_398517"
     },
+    "dcard-platinum": {
+      "type": "point",
+      "url": "",
+      "via": "ハピタス",
+      "isPointSite": true
+    },
+    "jcb-card-w": {
+      "type": "point",
+      "url": "",
+      "via": "ハピタス",
+      "isPointSite": true
+    },
+    "epos-card": {
+      "type": "point",
+      "url": "",
+      "via": "ハピタス",
+      "isPointSite": true
+    },
+    "smbc-nl": {
+      "type": "point",
+      "url": "",
+      "via": "ハピタス",
+      "isPointSite": true
+    },
     "dmm-kabu": {
       "type": "direct",
       "url": "https://h.accesstrade.net/sp/cc?rk=0100mjw400ox3w"
