@@ -25,7 +25,7 @@
       "url": "#",
       "isPointSite": true
     },
-    "eposukaado": {
+    "epos-card": {
       "type": "direct",
       "url": "https://admane.jp/ad/p/r?_site=1841&_article=658&_link=2922&_image=3165&_ns=1"
     }
@@ -45,9 +45,8 @@
     "hapitas-signup": "ハピタス",
     "moppy-signup": "モッピー",
     "custom-1787211123687": "小田急ポイントカード",
-    "eposukaado": "eposukaado",
     "pointoinkamu": "ポイントインカム",
-    "kosumo-za-kaado-oopasu": "コスモ・ザ・カード・オーパス"
+    "cosmo-the-card-opus": "コスモ・ザ・カード・オーパス"
   },
   "banners": {
     "rakuten-card": [
@@ -114,7 +113,7 @@
         "img": "https://h.accesstrade.net/sp/rr?rk=01004q8100ox3w"
       }
     ],
-    "kosumo-za-kaado-oopasu": [
+    "cosmo-the-card-opus": [
       {
         "href": "https://px.a8.net/svt/ejp?a8mat=4BA41D+AY4Z8Y+5XGQ+5YJRM",
         "img": "https://www18.a8.net/0.gif?a8mat=4BA41D+AY4Z8Y+5XGQ+5YJRM"
