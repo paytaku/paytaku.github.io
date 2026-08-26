@@ -2,6 +2,7 @@ name: build-articles
 
 # content/articles.json や articles/*.html、affiliates.json を変更してmainにpushすると、
 # 記事一覧（articles/index.html）とsitemap.xmlを自動生成してコミットし直す。
+# あわせて、内部リンク切れ・未収益化のアフィリエイトリンク・確認日の鮮度も自動チェックする。
 
 on:
   push:
@@ -10,7 +11,12 @@ on:
       - "content/articles.json"
       - "articles/**"
       - "scripts/**"
+      - "affiliates.json"
   workflow_dispatch: {}
+  schedule:
+    # 毎週月曜9:00(UTC, 日本時間18:00)に、記事を編集していなくても定期チェックだけ走らせる。
+    # 確認日の鮮度チェックは「時間が経つだけで古くなる」ため、pushトリガーだけでは検知できない。
+    - cron: "0 9 * * 1"
 
 permissions:
   contents: write
@@ -30,8 +36,14 @@ jobs:
       - name: 記事HTMLのARTICLE_METAをarticles.jsonへ同期
         run: node scripts/sync-articles-meta.mjs
 
-      - name: 記事一覧・sitemapを生成
-        run: node scripts/build-articles.mjs
+      - name: 記事一覧・sitemapを生成（内部リンク切れがあれば失敗させる）
+        run: node scripts/build-articles.mjs --strict
+
+      - name: 未収益化のアフィリエイトリンクをチェック（警告のみ・ビルドは止めない）
+        run: node scripts/check-affiliates.mjs || echo "::warning::未収益化のアフィリエイトリンクがあります。ログを確認してください。"
+
+      - name: 確認日の鮮度をチェック（90日基準・警告のみ）
+        run: node scripts/check-freshness.mjs 90
 
       - name: 変更があればコミット・push
         run: |
