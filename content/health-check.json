@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-26T09:04:01.576Z",
+  "generatedAt": "2026-08-26T09:13:32.592Z",
   "brokenLinks": [],
   "unmonetizedLinks": [
     {
@@ -11,12 +11,6 @@
     {
       "file": "aupay-seikyusho-max-route.html",
       "key": "au-pay-gold-card",
-      "href": "#",
-      "kind": "未登録・href=#（完全にダミー）"
-    },
-    {
-      "file": "aupay-seikyusho-max-route.html",
-      "key": "epos-card",
       "href": "#",
       "kind": "未登録・href=#（完全にダミー）"
     },
@@ -37,12 +31,6 @@
       "key": "dcard-platinum",
       "href": "https://ad2.trafficgate.net/t/r/519/1396/dcard-platinum",
       "kind": "未登録だがそれらしいURLが直書きされている（本物か要確認）"
-    },
-    {
-      "file": "epos-card-shindan.html",
-      "key": "epos-card",
-      "href": "#",
-      "kind": "未登録・href=#（完全にダミー）"
     },
     {
       "file": "idare-card-katsuyo.html",
