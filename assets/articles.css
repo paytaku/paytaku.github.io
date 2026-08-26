@@ -738,6 +738,35 @@ body{
   cursor: pointer;
   flex-shrink: 0;
 }
+.aff-point-promo{
+  margin-top: 8px;
+  padding: 12px 14px;
+  border: 1.5px solid #C026D3;
+  border-radius: 10px;
+  background: rgba(217, 70, 239, 0.06);
+}
+.aff-point-promo-text{
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--text);
+  margin: 0 0 8px;
+}
+.aff-point-promo-link{
+  display: inline-block;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #C026D3;
+  text-decoration: none;
+  margin-bottom: 8px;
+}
+.aff-point-promo-link:hover{ text-decoration: underline; }
+.aff-point-promo-banner{ display: block; }
+.aff-point-promo-banner img{
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+}
 .card-shindan-page .nl-cta-note{
   font-size: 11px;
   color: var(--dim);
