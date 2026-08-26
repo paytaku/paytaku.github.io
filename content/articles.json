@@ -392,7 +392,7 @@
     "category": "チャージルート",
     "title": "IDAREカードは「使うほど」ではなく「置いておくほど」得なプリペイドカード｜具体的にいくら貯まるか計算した",
     "publishedDate": "2026-08-20",
-    "updatedDate": "2026-08-20",
+    "updatedDate": "2026-08-26",
     "tags": [
       "IDARE",
       "イデア",
@@ -400,7 +400,7 @@
       "チャージルート",
       "ワンバンク"
     ],
-    "overview": "IDAREは決済利用額ではなく、毎月の残高に応じてボーナスがもらえる珍しいプリペイドカードです。2026年7月からのランク制度で最大年率2.2%。月いくら入れるといくら貯まるのか、具体的な金額で計算しました。",
+    "overview": "IDAREは決済利用額ではなく、毎月の残高に応じてボーナスがもらえる珍しいプリペイドカードです。2026年7月からのランク制度で最大年率2.2%。月いくら入れるといくら貯まるのか、具体的な金額で計算しました。出口は6種類、2026年3月の規約改定の安全ラインまで解説します。",
     "related": [
       "charge-route-guide",
       "aupay-seikyusho-max-route",
@@ -471,6 +471,28 @@
       "ana-pay-rakuten-edy-cash-route",
       "aupay-seikyusho-max-route",
       "epos-card-shindan"
+    ],
+    "customHtml": true
+  },
+  {
+    "slug": "smaho-prepaid-toha",
+    "category": "チャージルート",
+    "title": "「スマホプリペイド」とは何？nanacoルートで必ず出てくる名前の正体｜還元の出どころも解説",
+    "publishedDate": "2026-08-26",
+    "updatedDate": "2026-08-26",
+    "tags": [
+      "スマホプリペイド",
+      "nanaco",
+      "バニラVISA",
+      "ポイントサイト",
+      "チャージルート",
+      "セブンイレブン"
+    ],
+    "overview": "チャージルート図に必ず出てくる「スマホプリペイド」。実はこれ、特定のプリカ会社の名前ではなく、セブン‐イレブンが運営する公式サービスの名前です。還元の出どころ、使い方、現在のポイントサイト別還元率まで、名前だけ知っていて仕組みを知らない人向けに整理しました。",
+    "related": [
+      "idare-card-katsuyo",
+      "ana-pay-rakuten-edy-cash-route",
+      "aupay-seikyusho-max-route"
     ],
     "customHtml": true
   }
