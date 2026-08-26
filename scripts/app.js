@@ -1351,6 +1351,157 @@ const DEFAULT_ROUTES = [
     starters: {
       "カテエネBANKデビット": 2.0
     }
+  },
+  {
+    name: "JQセゾン(JCB) → ファミペイ → JAL Pay → IDARE → ワンバンク",
+    pays: ["IDARE", "ワンバンク"],
+    total: "合計 1.6%＋IDARE残高保有ボーナス（年率最大2.2%）",
+    steps: [
+      "JQセゾン(JCB)",
+      "ファミペイ",
+      "JAL Pay",
+      "IDARE",
+      "ワンバンク"
+    ],
+    gains: [
+      "JQセゾン(JCB)→ファミペイチャージ：1.5%（月2万円まで）",
+      "ファミペイ→JAL Payチャージ：0%（月30万円まで）",
+      "JAL Pay→IDAREチャージ：0.1%",
+      "IDARE残高保有ボーナス：年率最大2.2%（2026年7月〜ランク制、チャージ時ではなく月平均残高に対して付与）",
+      "IDARE→ワンバンク出金：0%"
+    ],
+    split: [
+      { pt: "永久不滅ポイント等", rate: 1.5, note: "起点カード→ファミペイチャージ分（起点カードにより変動）" },
+      { pt: "ポイント", rate: 0.1, note: "JAL Pay→IDAREチャージ分" }
+    ],
+    starter: "JQセゾン(JCB)（ファミペイチャージで1.5%・月2万円まで）。楽天カードやPayPayカードなど、ファミペイにチャージできる他のカードでも起点にできます。",
+    howto: {
+      prep: [
+        "JQセゾン(JCB)（または楽天カード／PayPayカードなど、ファミペイにチャージできるカード）を用意する",
+        "ファミペイ・JAL Pay・IDARE・ワンバンクの各アプリを用意する"
+      ],
+      flow: [
+        "ファミペイにJQセゾン(JCB)からチャージする（月2万円まで）",
+        "ファミペイ残高でJAL Payにチャージする（月30万円まで）",
+        "JAL Pay残高でIDAREにチャージする",
+        "IDAREは残高として置いておくと年率最大2.2%のボーナスが付く。使うときはワンバンクへ出金する"
+      ],
+      time: "カード発行に1〜2週間。以降のチャージ操作は月15分ほど"
+    },
+    note: "IDAREは決済のたびに還元がつくカードではなく、毎月の平均残高に応じて年率でボーナスがつく珍しい仕組みです。チャージ後すぐに使い切らず、ある程度の残高を置いておくほど有利になります。出口はワンバンクのほか、モバイルSuica・Amazonギフト券・PayPay/楽天ペイ/d払いへの直接登録も選べます。［確認日: 2026-08-26／出典: IDARE公式ヘルプ・各種情報サイト複数・要最新確認］",
+    url: "https://idare.jp/",
+    articleUrl: "articles/idare-card-katsuyo.html",
+    caution: "IDAREの残高保有ボーナスはチャージした瞬間ではなく、月平均残高に対して付与される。2026年3月25日の規約改定で「通常利用の範囲を超える頻度・金額」でのチャージが禁止行為に明記されたため、短期間の大量入出金は避けること。ファミペイへのチャージは月2万円、JAL Payへのチャージは月30万円が上限。",
+    atStore: {
+      rate: "1.6%＋IDARE残高ボーナス",
+      method: "ワンバンクとして支払う、またはPayPay/楽天ペイ/d払いに登録して支払う"
+    },
+    starters: {
+      "JQセゾン(JCB)": 1.5,
+      "楽天カード": 1.0,
+      "PayPayカード": 0.5
+    }
+  },
+  {
+    name: "JQセゾン(JCB) → ファミペイ → JAL Pay → IDARE → モバイルSuica",
+    pays: ["IDARE", "モバイルSuica"],
+    total: "合計 1.6%＋IDARE残高保有ボーナス（年率最大2.2%）",
+    steps: [
+      "JQセゾン(JCB)",
+      "ファミペイ",
+      "JAL Pay",
+      "IDARE",
+      "モバイルSuica"
+    ],
+    gains: [
+      "JQセゾン(JCB)→ファミペイチャージ：1.5%（月2万円まで）",
+      "ファミペイ→JAL Payチャージ：0%（月30万円まで）",
+      "JAL Pay→IDAREチャージ：0.1%",
+      "IDARE残高保有ボーナス：年率最大2.2%（2026年7月〜ランク制）",
+      "IDARE→モバイルSuicaチャージ：0%"
+    ],
+    split: [
+      { pt: "永久不滅ポイント等", rate: 1.5, note: "起点カード→ファミペイチャージ分（起点カードにより変動）" },
+      { pt: "ポイント", rate: 0.1, note: "JAL Pay→IDAREチャージ分" }
+    ],
+    starter: "JQセゾン(JCB)（ファミペイチャージで1.5%・月2万円まで）。楽天カードやPayPayカードなど、ファミペイにチャージできる他のカードでも起点にできます。",
+    howto: {
+      prep: [
+        "JQセゾン(JCB)（または楽天カード／PayPayカードなど、ファミペイにチャージできるカード）を用意する",
+        "ファミペイ・JAL Pay・IDARE・モバイルSuicaを用意する"
+      ],
+      flow: [
+        "ファミペイにJQセゾン(JCB)からチャージする（月2万円まで）",
+        "ファミペイ残高でJAL Payにチャージする（月30万円まで）",
+        "JAL Pay残高でIDAREにチャージする",
+        "普段電車やお店で使うなら、IDARE残高をモバイルSuicaへ出金する"
+      ],
+      time: "カード発行に1〜2週間。以降のチャージ操作は月15分ほど"
+    },
+    note: "普段からSuicaを使う人向けの出口です。IDAREの本体価値は残高保有ボーナス（年率最大2.2%）で、この区間自体のチャージ還元は0%です。［確認日: 2026-08-26／出典: IDARE公式ヘルプ・各種情報サイト複数・要最新確認］",
+    url: "https://idare.jp/",
+    articleUrl: "articles/idare-card-katsuyo.html",
+    caution: "IDARE→モバイルSuicaのチャージは500円以上・1回20,000円までの制限がある。ファミペイへのチャージは月2万円、JAL Payへのチャージは月30万円が上限。",
+    atStore: {
+      rate: "1.6%＋IDARE残高ボーナス",
+      method: "モバイルSuicaとして交通機関・お店で支払う"
+    },
+    starters: {
+      "JQセゾン(JCB)": 1.5,
+      "楽天カード": 1.0,
+      "PayPayカード": 0.5
+    }
+  },
+  {
+    name: "JQセゾン(JCB) → ファミペイ → JAL Pay → IDARE → Amazonギフト券",
+    pays: ["IDARE", "Amazonギフト券"],
+    total: "合計 1.6%＋IDARE残高保有ボーナス（年率最大2.2%）",
+    steps: [
+      "JQセゾン(JCB)",
+      "ファミペイ",
+      "JAL Pay",
+      "IDARE",
+      "Amazonギフト券"
+    ],
+    gains: [
+      "JQセゾン(JCB)→ファミペイチャージ：1.5%（月2万円まで）",
+      "ファミペイ→JAL Payチャージ：0%（月30万円まで）",
+      "JAL Pay→IDAREチャージ：0.1%",
+      "IDARE残高保有ボーナス：年率最大2.2%（2026年7月〜ランク制）",
+      "IDARE→Amazonギフト券購入：0%"
+    ],
+    split: [
+      { pt: "永久不滅ポイント等", rate: 1.5, note: "起点カード→ファミペイチャージ分（起点カードにより変動）" },
+      { pt: "ポイント", rate: 0.1, note: "JAL Pay→IDAREチャージ分" }
+    ],
+    starter: "JQセゾン(JCB)（ファミペイチャージで1.5%・月2万円まで）。楽天カードやPayPayカードなど、ファミペイにチャージできる他のカードでも起点にできます。",
+    howto: {
+      prep: [
+        "JQセゾン(JCB)（または楽天カード／PayPayカードなど、ファミペイにチャージできるカード）を用意する",
+        "ファミペイ・JAL Pay・IDAREを用意する",
+        "Amazonの支払い方法設定でIDAREカード番号を登録する"
+      ],
+      flow: [
+        "ファミペイにJQセゾン(JCB)からチャージする（月2万円まで）",
+        "ファミペイ残高でJAL Payにチャージする（月30万円まで）",
+        "JAL Pay残高でIDAREにチャージする",
+        "解約前や残高を使い切りたいときは、IDARE残高でAmazonギフト券（Eメールタイプ）を購入して使い切る"
+      ],
+      time: "カード発行に1〜2週間。以降のチャージ操作は月15分ほど"
+    },
+    note: "IDAREは現金化できないカードなので、残高を細かく調整して使い切りたいときはAmazonギフト券（有効期限10年）での出口が便利です。［確認日: 2026-08-26／出典: IDARE公式ヘルプ・各種情報サイト複数・要最新確認］",
+    url: "https://idare.jp/",
+    articleUrl: "articles/idare-card-katsuyo.html",
+    caution: "ファミペイへのチャージは月2万円、JAL Payへのチャージは月30万円が上限。",
+    atStore: {
+      rate: "1.6%＋IDARE残高ボーナス",
+      method: "Amazon・Amazon Pay対応サイトでの支払いに使う"
+    },
+    starters: {
+      "JQセゾン(JCB)": 1.5,
+      "楽天カード": 1.0,
+      "PayPayカード": 0.5
+    }
   }
 ];
 
@@ -3998,13 +4149,14 @@ async function refreshRoutesFromGithubPages(){
     }
     CHARGE_ROUTES = data;
     saveRoutesToCache();
+    refreshWalletOptions();
     renderRoutes();
   } catch(e){
     console.info("routes.json の取得をスキップしました", e.message);
   }
 }
 
-let storeState = { search: "", category: "all", sortByRate: false };
+let storeState = { search: "", category: "コンビニ", sortByRate: false };
 
 // 表示用に、その店舗のカード一覧＋（設定がONなら）全店共通のスマホ決済を合流させる。
 // 同名の決済がすでに店舗側にある場合（例：スシローのauPAY限定キャンペーン）は、
@@ -5378,8 +5530,58 @@ const STARTER_CARDS = [
     note: "Revolut経由なら0.5%還元（Mastercard版のみ・手数料無料）。ANA Pay・au PAY・JAL Payへの直接チャージはポイント対象外。" },
   { name: "PayPayカード", rate: 0, pt: "PayPayポイント",
     note: "2026年6月から他社決済サービスへのチャージは対象外になりました。" },
+  { name: "JQセゾン(JCB)", rate: 1.5, pt: "永久不滅ポイント等",
+    note: "ファミペイチャージで1.5%（月2万円まで）。IDAREルートなどの起点として使えます。楽天カード・PayPayカードでも代用できますが還元率は変わります。" },
 ];
 let starterIdx = 0;
+
+// 起点カード・経由地の選び方を「リスト（プルダウン）」か「ボタン」かで切り替えられるようにする。
+// 端末に保存して次回も覚えておく。
+const PICKER_MODE_KEY = "kangenchou_picker_mode";
+let pickerMode = localStorage.getItem(PICKER_MODE_KEY) || "list"; // "list" | "button"
+function setPickerMode(mode){
+  pickerMode = mode;
+  try{ localStorage.setItem(PICKER_MODE_KEY, mode); }catch(e){}
+  renderRoutes();
+}
+
+// ========== 経由地（waypoint）から選ぶ ==========
+// 「IDAREを経由地として使いたい」のように、起点ではなく途中のノードで
+// ルートを絞り込みたいケースに対応する。全ルートのstepsから、起点（先頭）と
+// 末尾の行動ステップを除いた「中間ノード」をユニークに集めて選択肢にする。
+let waypointName = null; // null = 指定なし
+function getWaypointOptions(){
+  const set = new Set();
+  (CHARGE_ROUTES || []).forEach(r => {
+    const steps = r.steps || [];
+    steps.slice(1, -1).forEach(s => {
+      if(WALLET_OPTIONS_EXCLUDE.has(s) || isDescriptiveStep(s)) return;
+      set.add(s);
+    });
+  });
+  return [...set].sort();
+}
+function routeHasWaypoint(route){
+  if(!waypointName) return true;
+  return (route.steps || []).includes(waypointName);
+}
+
+// 選んだ経由地から、どの決済へ進めるか（＝そのノードの次のステップ）を集める。
+// 「経由したい決済を選択できるようにする」の部分：経由地を選んだ後、
+// さらにそこから先の行き先を絞りたい場合に使う。
+function getDestinationOptionsFor(waypoint){
+  const set = new Set();
+  (CHARGE_ROUTES || []).forEach(r => {
+    const steps = r.steps || [];
+    const idx = steps.indexOf(waypoint);
+    if(idx >= 0 && idx + 1 < steps.length){
+      const next = steps[idx + 1];
+      if(!isDescriptiveStep(next)) set.add(next);
+    }
+  });
+  return [...set].sort();
+}
+let destinationName = null; // null = 指定なし（経由地から先はすべて表示）
 
 // 選んだ起点カードで、このルートが実行できるか／いくらになるかを返す。
 // starters に載っていないカードでは、そもそもそのルートを組めない。
@@ -5404,14 +5606,60 @@ function routeSortValue(route){
   return m ? parseFloat(m[1]) : 0;
 }
 
+function pickerModeToggleHtml(){
+  return `<div class="picker-mode-toggle" role="group" aria-label="表示形式">
+    <button type="button" class="picker-mode-btn${pickerMode==="list"?" on":""}" data-picker-mode="list">リスト</button>
+    <button type="button" class="picker-mode-btn${pickerMode==="button"?" on":""}" data-picker-mode="button">ボタン</button>
+  </div>`;
+}
+
 function starterPickerHtml(){
   const st = STARTER_CARDS[starterIdx];
+  const body = pickerMode === "button"
+    ? `<div class="starter-btn-grid">
+        ${STARTER_CARDS.map((c,i)=>`<button type="button" class="starter-opt-btn${i===starterIdx?" on":""}" data-starter-idx="${i}">${c.name}</button>`).join("")}
+      </div>`
+    : `<select id="starterSel" class="answer-select">
+        ${STARTER_CARDS.map((c,i)=>`<option value="${i}" ${i===starterIdx?"selected":""}>${c.name}</option>`).join("")}
+      </select>`;
+
+  const waypoints = getWaypointOptions();
+  const destinations = waypointName ? getDestinationOptionsFor(waypointName) : [];
+  const waypointBody = pickerMode === "button"
+    ? `<div class="starter-btn-grid">
+        <button type="button" class="starter-opt-btn${!waypointName?" on":""}" data-waypoint="">指定なし</button>
+        ${waypoints.map(w=>`<button type="button" class="starter-opt-btn${w===waypointName?" on":""}" data-waypoint="${w}">${w}</button>`).join("")}
+      </div>`
+    : `<select id="waypointSel" class="answer-select">
+        <option value="" ${!waypointName?"selected":""}>指定なし（経由地で絞り込まない）</option>
+        ${waypoints.map(w=>`<option value="${w}" ${w===waypointName?"selected":""}>${w}</option>`).join("")}
+      </select>`;
+
+  const destinationBody = waypointName && destinations.length
+    ? (pickerMode === "button"
+      ? `<div class="starter-btn-grid" style="margin-top:8px;">
+          <button type="button" class="starter-opt-btn${!destinationName?" on":""}" data-destination="">指定なし</button>
+          ${destinations.map(d=>`<button type="button" class="starter-opt-btn${d===destinationName?" on":""}" data-destination="${d}">${d}</button>`).join("")}
+        </div>`
+      : `<select id="destinationSel" class="answer-select" style="margin-top:8px;">
+          <option value="" ${!destinationName?"selected":""}>指定なし（${waypointName}から先はすべて表示）</option>
+          ${destinations.map(d=>`<option value="${d}" ${d===destinationName?"selected":""}>${d}</option>`).join("")}
+        </select>`)
+    : "";
+
   return `<div class="starter-picker">
-    <span class="mypanel-label">チャージの起点にするカード</span>
-    <select id="starterSel" class="answer-select">
-      ${STARTER_CARDS.map((c,i)=>`<option value="${i}" ${i===starterIdx?"selected":""}>${c.name}</option>`).join("")}
-    </select>
+    <div class="starter-picker-head">
+      <span class="mypanel-label">チャージの起点にするカード</span>
+      ${pickerModeToggleHtml()}
+    </div>
+    ${body}
     ${st.note ? `<div class="starter-note">${st.note}</div>` : ""}
+
+    <div class="starter-picker-head" style="margin-top:14px;">
+      <span class="mypanel-label">経由地から選ぶ（例：IDAREを経由するルートだけ見る）</span>
+    </div>
+    ${waypointBody}
+    ${destinationBody}
   </div>`;
 }
 
@@ -5425,6 +5673,7 @@ function withStarterName(text){
     .replace(/対象クレカ|高還元クレカ|^クレカ$|クレカ(?=から|の|→|で)/g, short)
     .replace(/Visa\/Mastercardブランドのクレカ/g, short);
 }
+
 
 // 起点カードで実際にどのポイントが貯まるかを示す
 function starterGainHtml(route){
@@ -5556,15 +5805,65 @@ function renderRoutes(){
   const sb = document.getElementById("starterBox");
   if(sb){
     sb.innerHTML = starterPickerHtml();
+
+    // リスト形式（プルダウン）
     document.getElementById("starterSel")?.addEventListener("change", (e)=>{
       starterIdx = parseInt(e.target.value, 10) || 0;
       renderRoutes();
+    });
+    document.getElementById("waypointSel")?.addEventListener("change", (e)=>{
+      waypointName = e.target.value || null;
+      destinationName = null; // 経由地を変えたら行き先の絞り込みはリセット
+      renderRoutes();
+    });
+    document.getElementById("destinationSel")?.addEventListener("change", (e)=>{
+      destinationName = e.target.value || null;
+      renderRoutes();
+    });
+
+    // ボタン形式
+    sb.querySelectorAll("[data-starter-idx]").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        starterIdx = parseInt(btn.dataset.starterIdx, 10) || 0;
+        renderRoutes();
+      });
+    });
+    sb.querySelectorAll("[data-waypoint]").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        waypointName = btn.dataset.waypoint || null;
+        destinationName = null;
+        renderRoutes();
+      });
+    });
+    sb.querySelectorAll("[data-destination]").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        destinationName = btn.dataset.destination || null;
+        renderRoutes();
+      });
+    });
+
+    // リスト／ボタンの表示切り替え
+    sb.querySelectorAll("[data-picker-mode]").forEach(btn=>{
+      btn.addEventListener("click", ()=> setPickerMode(btn.dataset.pickerMode));
     });
   }
   const list = document.getElementById("routeList");
   list.innerHTML = "";
   let shown = CHARGE_ROUTES.filter(r =>
     routeFilter === "all" || (r.pays || []).includes(routeFilter));
+
+  // 経由地・行き先で絞り込み（「IDAREを経由するルートだけ見る」等）
+  if(waypointName){
+    shown = shown.filter(routeHasWaypoint);
+    if(destinationName){
+      shown = shown.filter(r => {
+        const steps = r.steps || [];
+        const idx = steps.indexOf(waypointName);
+        return idx >= 0 && steps[idx + 1] === destinationName;
+      });
+    }
+  }
+
   // 起点カードを選んでいるときは、そのカードで実行できるルートだけを、
   // そのカードでの還元率が高い順に並べる。
   const st0 = STARTER_CARDS[starterIdx];
@@ -5999,13 +6298,19 @@ const FAV_KEY    = "kangenchou_favs";
 const ROUTE_FAV_KEY = "kangenchou_route_favs";
 
 // 選択肢として出す決済手段。データ中のカード名と部分一致で照合する。
-const WALLET_OPTIONS = [
+// WALLET_OPTIONS_BASE：チャージルートに依存しない、汎用カードの手動リスト。
+// WALLET_OPTIONS：実際に画面で使う一覧。BASE ＋ CHARGE_ROUTES から自動収集した
+// 決済名をマージしたもの。チャージルートを追加・編集するだけで、ここにも
+// 自動で反映されるようにするため（refreshWalletOptions() を参照）。
+const WALLET_OPTIONS_BASE = [
   // 汎用の高還元カード
   "三井住友カード / Olive", "三井住友カード ゴールド（NL）",
   "三菱UFJカード", "JCBオリジナルシリーズ", "JCB CARD W", "JCBゴールド",
   "dカード", "リクルートカード", "セゾンゴールドプレミアム", "セゾンパール・アメックス",
+  "JQセゾン(JCB)", "エポスGカード",
   // 店舗系カード
   "イオンカード", "セブンカード・プラス", "ビックカメラSuicaカード", "ローソンPontaプラス", "OPクレジットカード",
+  "コスモ・ザ・カード・オーパス",
   // 交通系
   "J-WESTカード", "ビューカード", "Wesmo!",
   // デビットカード
@@ -6013,7 +6318,49 @@ const WALLET_OPTIONS = [
   // スマホ決済・共通ポイント
   "楽天カード", "PayPay", "PayPayカード ゴールド",
   "楽天ペイ", "d払い", "auPAY", "FamiPay", "AEON Pay",
+  // チャージルート関連（残高・経由地）
+  "IDARE", "ワンバンク", "nanaco", "スマホプリペイド", "バニラVISA（Visa eギフト）",
+  "JAL Pay", "ANA Pay", "楽天Edy", "楽天キャッシュ", "モバイルSuica", "Kyash", "バンドルカード",
 ];
+
+// steps・starters に混ざる「まだ起点カードを選んでいない」ときのプレースホルダー的な
+// 表記は、決済名として一覧に出すと紛らわしいので除外する。
+const WALLET_OPTIONS_EXCLUDE = new Set([
+  "高還元クレカ", "クレカ", "対象クレカ", "起点カード", "指定なし（基準）",
+]);
+// 「お店で〜支払い」のような、決済名ではなく行動の説明になっているstepsも除外する。
+function isDescriptiveStep(s){
+  return /^お店で|支払い$|決済$|で支払う$/.test(s);
+}
+
+let WALLET_OPTIONS = [...WALLET_OPTIONS_BASE];
+
+// CHARGE_ROUTESの内容（starters・steps）から決済名を自動収集し、
+// WALLET_OPTIONS_BASEに無いものだけ末尾に追加する。
+// チャージルートを追加・編集してこの関数を呼べば、都度「お店から選ぶ」側の
+// 選択肢にも自動反映される（二重管理が不要になる）。
+function refreshWalletOptions(){
+  const known = new Set(WALLET_OPTIONS_BASE);
+  const extra = [];
+  (CHARGE_ROUTES || []).forEach(r => {
+    if(r.starters){
+      Object.keys(r.starters).forEach(name => {
+        if(!known.has(name) && !WALLET_OPTIONS_EXCLUDE.has(name)){
+          known.add(name); extra.push(name);
+        }
+      });
+    }
+    (r.steps || []).forEach(step => {
+      if(known.has(step) || WALLET_OPTIONS_EXCLUDE.has(step)) return;
+      if(isDescriptiveStep(step)) return;
+      known.add(step); extra.push(step);
+    });
+  });
+  WALLET_OPTIONS = [...WALLET_OPTIONS_BASE, ...extra];
+}
+// 初回読み込み時点のCHARGE_ROUTESで一覧を組み立てる
+// （CHARGE_ROUTES自体はこれより前の行ですでに読み込み済み）。
+refreshWalletOptions();
 
 function loadSet(key){
   try{
@@ -7606,6 +7953,7 @@ function persistStores(){
 
 function persistRoutes(){
   saveRoutesToCache();
+  refreshWalletOptions(); // ルートを追加・編集・削除するたびに「持っているカード・決済」の選択肢も自動更新する
   pushRoutesToGithub(); // 非同期。設定が無ければ内部で何もしない
 }
 
@@ -7895,4 +8243,14 @@ applyRoute();
       else if(type==="articles") window.location.href="articles/";
     });
   });
+
+  // 記事一覧ページ等からの直リンク対応（例: index.html#mode=stores）
+  // ハッシュルーティング（applyRoute）とは別に、シンプルなモード起動だけを行う。
+  (function(){
+    const m = window.location.hash.match(/^#mode=([a-z]+)$/);
+    if(!m) return;
+    const mode = m[1];
+    history.replaceState(null, "", window.location.pathname);
+    requestAnimationFrame(()=>{ activateMode(mode); });
+  })();
 })();
