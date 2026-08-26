@@ -495,5 +495,49 @@
       "aupay-seikyusho-max-route"
     ],
     "customHtml": true
+  },
+  {
+    "slug": "cosmo-the-card-opus-shindan",
+    "category": "カード解説",
+    "title": "コスモ・ザ・カード・オーパスは車に乗らない人には不要｜給油量別シミュレーションと2026年8月特典まとめ",
+    "publishedDate": "2026-08-26",
+    "updatedDate": "2026-08-26",
+    "tags": [
+      "コスモ・ザ・カード・オーパス",
+      "コスモ石油",
+      "イオンカード",
+      "ETC",
+      "ガソリンカード",
+      "WAON POINT"
+    ],
+    "overview": "コスモ・ザ・カード・オーパスは、コスモ石油での給油とETC利用に強い年会費無料カード。通常還元率は0.5%と平凡ですが、給油量・ETC利用額次第で実質還元は跳ね上がります。2026年8月開催中の入会特典の期限、イオンカードとの重複可否まで、具体的な金額で整理しました。",
+    "related": [
+      "epos-card-shindan",
+      "rakuten-card-shindan",
+      "kateene-bank-debit-shindan"
+    ],
+    "customHtml": true
+  },
+  {
+    "slug": "lawson-ponta-plus-shindan",
+    "category": "カード解説",
+    "title": "ローソンPontaプラスは「楽Pay」に手を出す前に読んでほしい｜2026年6月改悪後の現実的な還元率",
+    "publishedDate": "2026-08-26",
+    "updatedDate": "2026-08-26",
+    "tags": [
+      "ローソンPontaプラス",
+      "Pontaポイント",
+      "楽Pay",
+      "リボ払い",
+      "ローソン",
+      "対象店舗"
+    ],
+    "overview": "ローソンPontaプラスは年会費無料・基本還元率1.0%、条件次第で対象店舗最大15%を狙えるカードです。ただし+5%を得る「楽Pay」は自動リボ払いで、2026年6月には対象店舗の還元上限も新設されました。手数料とのトレードオフ、現実的な還元率を正直に試算しました。",
+    "related": [
+      "epos-card-shindan",
+      "kateene-bank-debit-shindan",
+      "rakuten-card-shindan"
+    ],
+    "customHtml": true
   }
 ]
