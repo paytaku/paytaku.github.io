@@ -112,15 +112,15 @@ body{
   gap: 8px;
 }
 .site-logo{
-  display: block;
-  width: 88px;
-  height: 42px;
-  flex: 0 0 88px;
-  background: url("../assets/logo.png") left center / contain no-repeat;
-  font-size: 0;
-  line-height: 0;
+  display: flex;
+  align-items: center;
   text-decoration: none;
   overflow: hidden;
+}
+.site-logo img{
+  display: block;
+  height: 40px;
+  width: auto;
 }
 .site-logo span{ display: none; }
 .site-header-tagline{
