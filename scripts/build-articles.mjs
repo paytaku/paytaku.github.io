@@ -668,16 +668,115 @@ function main(){
 
   console.log(`\n合計 ${articles.length} 件の記事を生成しました。`);
 
-  checkInternalLinks(articles);
+  const brokenLinks = checkInternalLinks(articles);
+  const unmonetizedLinks = checkAffiliateLinks();
+  const staleContent = checkFreshness(90);
+  writeHealthCheckJson({ brokenLinks, unmonetizedLinks, staleContent });
+
+  if(process.argv.includes("--strict") && brokenLinks.length > 0){
+    console.error("\n--strict指定のため、内部リンク切れがあるとビルドを失敗させます。");
+    process.exit(1);
+  }
+}
+
+// ========== サイト運営の健全性チェック（結果をJSONにまとめて出力） ==========
+// GitHub Actionsのログを見に行かなくても、ペイ択の編集モード内で直接警告を
+// 表示できるように、チェック結果を content/health-check.json として書き出す。
+// 編集モードをONにすると、scripts/app.js側がこのファイルを読み込んで
+// 画面内にバナー表示する（renderHealthCheckBanner を参照）。
+function writeHealthCheckJson({ brokenLinks, unmonetizedLinks, staleContent }){
+  const data = {
+    generatedAt: new Date().toISOString(),
+    brokenLinks,
+    unmonetizedLinks,
+    staleContent,
+  };
+  writeFileSync(join(ROOT, "content", "health-check.json"), JSON.stringify(data, null, 2), "utf-8");
+  const total = brokenLinks.length + unmonetizedLinks.length + staleContent.length;
+  console.log(`\ngenerated: content/health-check.json（検出件数: 合計${total}件）`);
+}
+
+// ========== ①未収益化のアフィリエイトリンクチェック ==========
+function checkAffiliateLinks(){
+  const affiliatesPath = join(ROOT, "affiliates.json");
+  let affiliates = { links: {} };
+  try{ affiliates = JSON.parse(readFileSync(affiliatesPath, "utf-8")); }catch(e){ /* ファイルが無ければ空扱い */ }
+  const knownKeys = new Set(Object.keys(affiliates.links || {}));
+
+  const files = readdirSync(OUT_DIR).filter(
+    f => f.endsWith(".html") && f !== "index.html" && !f.startsWith("_")
+  );
+
+  const problems = [];
+  files.forEach(file => {
+    const content = readFileSync(join(OUT_DIR, file), "utf-8");
+    const re = /<a\s+data-aff="([^"]+)"\s+href="([^"]*)"/g;
+    let m;
+    const seen = new Set();
+    while((m = re.exec(content))){
+      const [, key, href] = m;
+      if(seen.has(key)) continue;
+      seen.add(key);
+      if(knownKeys.has(key)) continue;
+
+      let kind = "未登録（affiliates.jsonにキーが無い）";
+      if(href === "#" || href === ""){
+        kind = "未登録・href=#（完全にダミー）";
+      } else if(/trafficgate\.net|accesstrade\.net|a8\.net|admane\.jp/.test(href)){
+        kind = "未登録だがそれらしいURLが直書きされている（本物か要確認）";
+      }
+      problems.push({ file, key, href, kind });
+    }
+  });
+
+  if(problems.length === 0){
+    console.log(`✅ 未収益化のアフィリエイトリンクはありません。`);
+  } else {
+    console.log(`\n⚠️  未収益化のアフィリエイトリンクが ${problems.length} 件あります（content/health-check.jsonに記録）。`);
+  }
+  return problems;
+}
+
+// ========== ②確認日の鮮度チェック ==========
+function checkFreshness(thresholdDays){
+  const files = readdirSync(OUT_DIR).filter(
+    f => f.endsWith(".html") && f !== "index.html" && !f.startsWith("_")
+  );
+  const today = new Date();
+  const re = /確認日[：:]\s*(\d{4}-\d{2}-\d{2})/g;
+  const stale = [];
+
+  files.forEach(file => {
+    const content = readFileSync(join(OUT_DIR, file), "utf-8");
+    const datesInFile = new Set();
+    let m;
+    while((m = re.exec(content))){ datesInFile.add(m[1]); }
+    datesInFile.forEach(date => {
+      const d = new Date(date);
+      if(Number.isNaN(d.getTime())) return;
+      const days = Math.floor((today - d) / (1000 * 60 * 60 * 24));
+      if(days >= thresholdDays){
+        stale.push({ file, date, days });
+      }
+    });
+  });
+
+  if(stale.length === 0){
+    console.log(`✅ ${thresholdDays}日を超えて古い確認日はありません。`);
+  } else {
+    console.log(`\n⚠️  確認日が${thresholdDays}日以上経過した記述が ${stale.length} 件あります（content/health-check.jsonに記録）。`);
+  }
+  return stale;
 }
 
 // ========== 内部リンク切れチェック ==========
 // 記事同士の「あわせて読みたい」・本文中のリンク・ARTICLE_METAのrelated配列が
 // 実在する記事を指しているかを、ビルドのたびに自動チェックする。
-// 見つかったら警告を出す（ビルド自体は止めない。CIでは別途 --strict を付けると失敗させられる）。
+// 見つかったら警告を出す（ビルド自体は止めない。呼び出し元でproblemsを見て
+// --strict指定時のみビルドを失敗させる）。
 function checkInternalLinks(articles){
   const knownSlugs = new Set(articles.map(a => a.slug));
-  const problems = []; // { file, href }
+  const problems = []; // { file, kind, detail }
 
   const files = readdirSync(OUT_DIR).filter(
     f => f.endsWith(".html") && f !== "index.html" && !f.startsWith("_")
@@ -718,7 +817,7 @@ function checkInternalLinks(articles){
 
   if(problems.length === 0){
     console.log(`✅ 内部リンク切れはありません（${files.length}件チェック済み）。`);
-    return;
+    return problems;
   }
 
   console.log(`\n⚠️  内部リンクの問題が ${problems.length} 件見つかりました：`);
@@ -729,10 +828,7 @@ function checkInternalLinks(articles){
     list.forEach(p => console.log(`    - [${p.kind}] ${p.detail}`));
   });
 
-  if(process.argv.includes("--strict")){
-    console.error("\n--strict指定のため、リンク切れがあるとビルドを失敗させます。");
-    process.exit(1);
-  }
+  return problems;
 }
 
 // 記事一覧（content/articles.json）には含まれない、固定の静的ページ。
