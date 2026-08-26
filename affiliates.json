@@ -1,5 +1,5 @@
 {
-  "_comment": "アフィリエイトリンクの一元管理ファイル。このファイルを更新するだけで全記事に反映されます。",
+  "_comment": "アフィリエイトリンクの一元管理ファイル。このファイルを更新するだけで全記事・本体サイトに反映されます。",
   "links": {
     "rakuten-card": {
       "type": "direct",
@@ -13,22 +13,38 @@
       "type": "direct",
       "url": "https://h.accesstrade.net/sp/cc?rk=0100mjw400ox3w"
     },
-    "eposukaado": {
-      "type": "direct",
-      "url": "https://admane.jp/ad/p/r?_site=1841&_article=658&_link=2922&_image=3165&_ns=1"
-    },
     "hapitas-signup": {
       "type": "point",
+      "url": "https://hapitas.jp/appinvite?i=25513097&route=text",
       "via": "ハピタス",
-      "url": "#",
-      "_note": "要対応：A8.netで「ハピタス」を検索し提携申請 → 承認後に発行されるa8mat付きリンクをurlに設定してください。まだ提携前のため現状は#（ダミー）です。"
+      "isPointSite": true
     },
     "moppy-signup": {
       "type": "point",
-      "via": "モッピー",
       "url": "#",
-      "_note": "要対応：A8.netまたはバリューコマースで「モッピー」を検索し提携申請 → 承認後に発行されるリンクをurlに設定してください。まだ提携前のため現状は#（ダミー）です。"
+      "via": "モッピー"
+    },
+    "eposukaado": {
+      "type": "direct",
+      "url": "https://admane.jp/ad/p/r?_site=1841&_article=658&_link=2922&_image=3165&_ns=1"
     }
+  },
+  "names": {
+    "rakuten-card": "楽天カード",
+    "rakuten-premium": "楽天プレミアムカード",
+    "dcard-gold": "dカード GOLD",
+    "dcard-goldu": "dカード GOLD U",
+    "dcard-platinum": "dカード PLATINUM",
+    "jcb-card-w": "JCB CARD W",
+    "epos-card": "エポスカード",
+    "smbc-nl": "三井住友カード（NL）",
+    "dmm-kabu": "DMM 株",
+    "aupay-market": "au PAYマーケット",
+    "odakyu-op": "小田急ポイントカード（OPクレジット）",
+    "hapitas-signup": "ハピタス",
+    "moppy-signup": "モッピー",
+    "custom-1787211123687": "小田急ポイントカード",
+    "eposukaado": "eposukaado"
   },
   "banners": {
     "rakuten-card": [
@@ -77,16 +93,11 @@
         "img": "https://h.accesstrade.net/sp/rr?rk=0100mkk200ox3w"
       }
     ],
-    "odakyu-pointokaado": [
+    "hapitas-signup": [
       {
-        "href": "https://h.accesstrade.net/sp/cc?rk=01004q8100ox3w",
-        "img": "https://h.accesstrade.net/sp/rr?rk=01004q8100ox3w"
-      }
-    ],
-    "kosumo-za-kaado-oopasu": [
-      {
-        "href": "https://px.a8.net/svt/ejp?a8mat=4BA41D+AY4Z8Y+5XGQ+5YJRM",
-        "img": "https://www18.a8.net/0.gif?a8mat=4BA41D+AY4Z8Y+5XGQ+5YJRM"
+        "title": "バナー",
+        "href": "https://hapitas.jp/register/?i=25513097",
+        "img": "https://hapitas.jp/published-assets/admin/uploads/202604081658437859.png"
       }
     ]
   }
