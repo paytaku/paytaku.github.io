@@ -28,6 +28,13 @@
     "eposukaado": {
       "type": "direct",
       "url": "https://admane.jp/ad/p/r?_site=1841&_article=658&_link=2922&_image=3165&_ns=1"
+    },
+    "pointoinkamu": {
+      "type": "point",
+      "url": "https://sp.pointi.jp/p/?a=rbf882486752",
+      "via": "ポイントインカム",
+      "code": "rbf882486752",
+      "isPointSite": true
     }
   },
   "names": {
@@ -45,7 +52,8 @@
     "hapitas-signup": "ハピタス",
     "moppy-signup": "モッピー",
     "custom-1787211123687": "小田急ポイントカード",
-    "eposukaado": "eposukaado"
+    "eposukaado": "eposukaado",
+    "pointoinkamu": "ポイントインカム"
   },
   "banners": {
     "rakuten-card": [
@@ -119,6 +127,12 @@
         "title": "券面",
         "href": "https://h.accesstrade.net/sp/cc?rk=01004q8200ox3w",
         "img": "https://h.accesstrade.net/sp/rr?rk=01004q8200ox3w"
+      }
+    ],
+    "pointoinkamu": [
+      {
+        "href": "https://sp.pointi.jp/p/?a=rbf882486752",
+        "img": "https://sp.pointi.jp/share_cpn/img/bnr/intro_12_200y_1080_1080.png"
       }
     ]
   }
