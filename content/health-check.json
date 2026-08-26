@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-26T08:58:01.862Z",
+  "generatedAt": "2026-08-26T08:58:46.182Z",
   "brokenLinks": [],
   "unmonetizedLinks": [
     {
@@ -78,6 +78,12 @@
       "file": "odakyu-point-card-shindan.html",
       "key": "custom-1787211123687",
       "href": "https://h.accesstrade.net/sp/cc?rk=01004q8200ox3w",
+      "kind": "未登録だがそれらしいURLが直書きされている（本物か要確認）"
+    },
+    {
+      "file": "smbc-nl-shindan.html",
+      "key": "smbc-nl",
+      "href": "https://ad2.trafficgate.net/t/r/519/1396/smbc-nl",
       "kind": "未登録だがそれらしいURLが直書きされている（本物か要確認）"
     }
   ],
