@@ -16,6 +16,18 @@
     "eposukaado": {
       "type": "direct",
       "url": "https://admane.jp/ad/p/r?_site=1841&_article=658&_link=2922&_image=3165&_ns=1"
+    },
+    "hapitas-signup": {
+      "type": "point",
+      "via": "ハピタス",
+      "url": "#",
+      "_note": "要対応：A8.netで「ハピタス」を検索し提携申請 → 承認後に発行されるa8mat付きリンクをurlに設定してください。まだ提携前のため現状は#（ダミー）です。"
+    },
+    "moppy-signup": {
+      "type": "point",
+      "via": "モッピー",
+      "url": "#",
+      "_note": "要対応：A8.netまたはバリューコマースで「モッピー」を検索し提携申請 → 承認後に発行されるリンクをurlに設定してください。まだ提携前のため現状は#（ダミー）です。"
     }
   },
   "banners": {
