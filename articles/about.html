@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ja" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>運営者情報 | ペイ択</title>
+<meta name="description" content="ペイ択の運営者・お問い合わせ先・情報の正確性についてのご案内。">
+<link rel="canonical" href="https://paytaku.github.io/pages/about.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="運営者情報 | ペイ択">
+<meta property="og:description" content="ペイ択の運営者・お問い合わせ先・情報の正確性についてのご案内。">
+<meta property="og:url" content="https://paytaku.github.io/pages/about.html">
+<meta property="og:site_name" content="ペイ択（Paytaku）">
+<meta name="twitter:card" content="summary">
+<link rel="stylesheet" href="../assets/articles.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="site-header-inner">
+    <a class="site-logo" href="../index.html" aria-label="ペイ択トップへ"><img src="../assets/logo.png" alt="ペイ択 -PayTaku-" width="132" height="63"></a>
+    <span class="site-header-tagline">還元率比較・お得情報</span>
+    <button class="theme-toggle" id="themeToggle" aria-label="ダークモード切替" title="ダークモード切替">🌙</button>
+  </div>
+</header>
+<script>
+(function(){
+  var STORAGE_KEY = 'paytaku-theme';
+  var DEFAULT = 'dark';
+  var saved = localStorage.getItem(STORAGE_KEY) || DEFAULT;
+  document.documentElement.setAttribute('data-theme', saved);
+  window.addEventListener('DOMContentLoaded', function(){
+    var btn = document.getElementById('themeToggle');
+    if(!btn) return;
+    btn.textContent = saved === 'dark' ? '☀️' : '🌙';
+    btn.addEventListener('click', function(){
+      var cur = document.documentElement.getAttribute('data-theme');
+      var next = cur === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem(STORAGE_KEY, next);
+      btn.textContent = next === 'dark' ? '☀️' : '🌙';
+    });
+  });
+})();
+</script>
+
+<div class="lp-page card-shindan-page">
+  <div class="lp-wrap">
+    <a href="../index.html" class="lp-back" id="lpAboutBack">← ペイ択に戻る</a>
+    <div class="lp-hero">
+      <h1 class="lp-title">運営者情報</h1>
+      <p class="lp-tagline">ペイ択について</p>
+    </div>
+
+    <section class="lp-section">
+      <h2 class="lp-section-title">サイト情報</h2>
+      <table class="lp-info-table">
+        <tr><th>サイト名</th><td>ペイ択（Paytaku）</td></tr>
+        <tr><th>URL</th><td>https://paytaku.github.io/</td></tr>
+        <tr><th>運営者</th><td>個人運営（キャッシュレス決済愛好家）</td></tr>
+        <tr><th>開設</th><td>2026年8月</td></tr>
+      </table>
+    </section>
+
+    <section class="lp-section">
+      <h2 class="lp-section-title">サイトの目的</h2>
+      <p class="lp-body-text">ペイ択は「レジの前で、どのカード・どの決済で払うのが一番おトクか」を3秒で判断できることを目的にした個人運営のキャッシュレス決済情報サイトです。実際にキャッシュレス決済を日常的に使いながら情報を集めて運営しています。</p>
+    </section>
+
+    <section class="lp-section">
+      <h2 class="lp-section-title">掲載情報の確認体制</h2>
+      <p class="lp-body-text">掲載する還元率・キャンペーン情報は、各社公式サイト・IR資料・比較メディアを参照して運営者が独自にまとめています。各項目には確認日と出典を可能な限り記載しています。</p>
+      <p class="lp-body-text">情報の変更が確認された場合は随時更新します。ただし、還元率や条件は各社の判断で予告なく変更されることがあります。実際に決済する前には、必ず各社の公式サイトで最新の条件をご確認ください。本サイトの情報を利用したことによる損害について、運営者は責任を負いません。</p>
+    </section>
+
+    <section class="lp-section">
+      <h2 class="lp-section-title">比較・掲載の方針</h2>
+      <p class="lp-body-text">ペイ択では「基本還元率・年会費・利用可能店舗・チャージ先・ポイントの使いやすさ」などを基準にカード・決済サービスを比較しています。</p>
+      <ul class="lp-body-list">
+        <li>広告掲載の有無によって、比較結果や還元率の表示を意図的に変更することはしません</li>
+        <li>アフィリエイト広告を掲載している場合は、ページ内に明記します</li>
+        <li>情報の誤りや変更の指摘は、お問い合わせフォームからお知らせください。確認のうえ修正します</li>
+      </ul>
+    </section>
+
+    <section class="lp-section">
+      <h2 class="lp-section-title">お問い合わせ・情報提供</h2>
+      <p class="lp-body-text">お店・キャンペーンの追加リクエスト、掲載内容の誤りの指摘、その他のお問い合わせは以下のフォームからお願いします。</p>
+      <a href="https://forms.gle/tBTgQ2b5ELC1K3vg6" id="aboutContactBtn" class="lp-apply-btn" style="margin-top:8px;" target="_blank" rel="noopener noreferrer">お問い合わせフォームを開く ↗</a>
+    </section>
+
+    <section class="lp-section">
+      <h2 class="lp-section-title">アフィリエイトプログラム</h2>
+      <p class="lp-body-text">本サイトは、A8.netを含むアフィリエイトプログラムに参加しています。詳しくは <a href="./privacy.html" style="color:var(--foil-2);">プライバシーポリシー</a> をご覧ください。</p>
+    </section>
+
+    <a href="../index.html" class="lp-back lp-back-bottom" id="lpAboutBack2">← ペイ択に戻る</a>
+  </div>
+</div>
+
+</body>
+</html>

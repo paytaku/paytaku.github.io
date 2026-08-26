@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ja" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>プライバシーポリシー | ペイ択</title>
+<meta name="description" content="ペイ択における個人情報の取り扱い・Cookie・アフィリエイトプログラムの利用について。">
+<link rel="canonical" href="https://paytaku.github.io/pages/privacy.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="プライバシーポリシー | ペイ択">
+<meta property="og:description" content="ペイ択における個人情報の取り扱い・Cookie・アフィリエイトプログラムの利用について。">
+<meta property="og:url" content="https://paytaku.github.io/pages/privacy.html">
+<meta property="og:site_name" content="ペイ択（Paytaku）">
+<meta name="twitter:card" content="summary">
+<link rel="stylesheet" href="../assets/articles.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="site-header-inner">
+    <a class="site-logo" href="../index.html" aria-label="ペイ択トップへ"><img src="../assets/logo.png" alt="ペイ択 -PayTaku-" width="132" height="63"></a>
+    <span class="site-header-tagline">還元率比較・お得情報</span>
+    <button class="theme-toggle" id="themeToggle" aria-label="ダークモード切替" title="ダークモード切替">🌙</button>
+  </div>
+</header>
+<script>
+(function(){
+  var STORAGE_KEY = 'paytaku-theme';
+  var DEFAULT = 'dark';
+  var saved = localStorage.getItem(STORAGE_KEY) || DEFAULT;
+  document.documentElement.setAttribute('data-theme', saved);
+  window.addEventListener('DOMContentLoaded', function(){
+    var btn = document.getElementById('themeToggle');
+    if(!btn) return;
+    btn.textContent = saved === 'dark' ? '☀️' : '🌙';
+    btn.addEventListener('click', function(){
+      var cur = document.documentElement.getAttribute('data-theme');
+      var next = cur === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem(STORAGE_KEY, next);
+      btn.textContent = next === 'dark' ? '☀️' : '🌙';
+    });
+  });
+})();
+</script>
+
+<div class="lp-page card-shindan-page">
+  <div class="lp-wrap">
+    <a href="../index.html" class="lp-back" id="lpPrivacyBack">← ペイ択に戻る</a>
+    <div class="lp-hero">
+      <h1 class="lp-title">プライバシーポリシー</h1>
+      <p class="lp-tagline">ペイ択（以下「本サイト」）における個人情報の取り扱いについて定めます。</p>
+    </div>
+
+    <section class="lp-section">
+      <h2 class="lp-section-title">1. 収集する情報</h2>
+      <p class="lp-body-text">本サイトは、以下の情報を必要に応じて取得します。</p>
+      <ul class="lp-body-list">
+        <li><b>Cookie等の識別子</b>：Google Analytics及びアフィリエイトプログラム提供元が、閲覧履歴の集計・広告成果測定のために使用します。</li>
+        <li><b>位置情報</b>：「近くのお店を探す」機能を使用する場合のみ、お使いのブラウザの位置情報APIを利用します。本サイトは位置情報を保存しません。</li>
+        <li><b>編集モードで入力された情報</b>：店舗情報・キャンペーン情報等はGitHubリポジトリに保存され、公開されます。</li>
+      </ul>
+    </section>
+
+    <section class="lp-section">
+      <h2 class="lp-section-title">2. 利用目的</h2>
+      <p class="lp-body-text">取得した情報は、以下の目的で利用します。</p>
+      <ul class="lp-body-list">
+        <li>サイトの利用状況の分析および改善</li>
+        <li>アフィリエイト広告の成果測定</li>
+        <li>お店・キャンペーン情報の公開・更新</li>
+      </ul>
+    </section>
+
+    <section class="lp-section">
+      <h2 class="lp-section-title">3. アフィリエイトプログラムの利用</h2>
+      <p class="lp-body-text">本サイトは、以下のアフィリエイトプログラムに参加しています。これらのプログラムは、利用者の閲覧・購入行動に基づき、Cookieを用いて成果を測定しています。</p>
+      <ul class="lp-body-list">
+        <li>A8.net（株式会社ファンコミュニケーションズ）</li>
+        <li>アクセストレード（株式会社インタースペース）</li>
+      </ul>
+      <p class="lp-body-text">「(PR)」「PR」等の表示があるリンク・バナーはアフィリエイト広告です。景品表示法（ステルスマーケティング規制）に基づき、広告であることを明示しています。</p>
+    </section>
+
+    <section class="lp-section">
+      <h2 class="lp-section-title">4. アクセス解析ツール</h2>
+      <p class="lp-body-text">本サイトはGoogle社のアクセス解析ツール「Google Analytics」を利用しています。Google Analyticsはトラフィックデータの収集のためにCookieを使用しています。このトラフィックデータは匿名で収集されており、個人を特定するものではありません。</p>
+      <p class="lp-body-text">この機能はCookieを無効にすることで収集を拒否できます。詳しくはお使いのブラウザの設定をご確認ください。</p>
+    </section>
+
+    <section class="lp-section">
+      <h2 class="lp-section-title">5. 第三者への提供</h2>
+      <p class="lp-body-text">法令に基づく場合を除き、本サイトが取得した情報を第三者に提供することはありません。</p>
+    </section>
+
+    <section class="lp-section">
+      <h2 class="lp-section-title">6. 免責事項</h2>
+      <p class="lp-body-text">本サイトに掲載する還元率・キャンペーン情報等は、各社公式情報を元に運営者が独自にまとめたものです。掲載時点の情報であり、その後変更される場合があります。利用の際は必ず各社公式サイトで最新情報をご確認ください。本サイトの情報を利用したことによる損害について、運営者は一切の責任を負いません。</p>
+    </section>
+
+    <section class="lp-section">
+      <h2 class="lp-section-title">7. お問い合わせ</h2>
+      <p class="lp-body-text">本ポリシーに関するお問い合わせは、下記の「運営者情報」ページの問い合わせ窓口までお願いします。</p>
+      <p class="lp-body-text" style="margin-top:12px;"><a href="./about.html" style="color:var(--foil-2);">→ 運営者情報を見る</a></p>
+    </section>
+
+    <section class="lp-section">
+      <h2 class="lp-section-title">8. 改定</h2>
+      <p class="lp-body-text">本ポリシーの内容は、必要に応じて改定することがあります。改定後の内容は本ページに掲載した時点で効力を生じます。</p>
+      <p class="lp-body-text" style="margin-top:12px;color:var(--dim);font-size:11px;">最終更新日：2026年8月13日</p>
+    </section>
+
+    <a href="../index.html" class="lp-back lp-back-bottom" id="lpPrivacyBack2">← ペイ択に戻る</a>
+  </div>
+</div>
+
+</body>
+</html>
