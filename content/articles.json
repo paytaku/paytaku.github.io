@@ -539,5 +539,26 @@
       "rakuten-card-shindan"
     ],
     "customHtml": true
+  },
+  {
+    "slug": "aupay-seikyusho-charge-route",
+    "category": "チャージルート",
+    "title": "au PAY請求書払いは実は還元0%｜「お得」の正体とチャージ側で稼げる現実的な上限",
+    "publishedDate": "2026-08-26",
+    "updatedDate": "2026-08-26",
+    "tags": [
+      "au PAY",
+      "請求書払い",
+      "チャージルート",
+      "Pontaポイント",
+      "たぬきの抽選会"
+    ],
+    "overview": "au PAYの請求書払いは、支払い自体には還元が一切つきません（「たぬきの抽選会」の対象にはなります）。お得の正体は「チャージに使うクレジットカード側」のポイントです。2026年3月・6月の改悪を踏まえた、現実的に狙える上限を整理しました。",
+    "related": [
+      "aupay-seikyusho-max-route",
+      "seikyusho-barai-app-hikaku",
+      "idare-card-katsuyo"
+    ],
+    "customHtml": true
   }
 ]
