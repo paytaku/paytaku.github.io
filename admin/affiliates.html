@@ -978,11 +978,42 @@ function init(){
   updatePreview();
   updateRewardSummary();
 
+  // 記事HTMLが実際に使っているdata-affキー一覧を読み込み、まだCARDSに無いものを
+  // 自動でカード候補として追加する。手入力でキーを作ると「かな→ローマ字」の
+  // 自動変換と記事側のキーが一致せず、アフィリエイトリンクが繋がらない事故が
+  // 起きていたため、これを防ぐための恒久対策（content/aff-keys.jsonはビルド時に
+  // scripts/build-articles.mjs が自動生成する）。
+  loadArticleAffKeys();
+
   // GitHub APIからaffiliates.jsonを自動読み込み（PAT設定済みの場合）
   var gh=LS.get('paytaku-gh-settings');
   if(gh&&gh.token&&gh.owner&&gh.repo){
     fetchFromGitHub(true); // 初回は静かに読み込む
   }
+}
+
+function loadArticleAffKeys(){
+  fetch('../content/aff-keys.json', { cache: 'no-cache' })
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(list){
+      if(!Array.isArray(list)) return;
+      var added = [];
+      list.forEach(function(item){
+        if(CARDS.find(function(c){ return c.key === item.key; })) return; // 既にある
+        var card = { key: item.key, name: item.name, custom: true, fromArticle: true };
+        CARDS.push(card);
+        linkState[item.key]   = {type:'direct',url:'',via:'',code:'',banners:[],isPointSite:false};
+        rewardState[item.key] = {asp:'',aspOther:'',reward:'',rewardNote:'',memo:''};
+        added.push(card);
+      });
+      if(added.length){
+        saveCustomCards();
+        added.forEach(function(card){ buildLinkCard(card); buildRewardCard(card); });
+        updatePreview();
+        setStatus(added.length + '件のカードを記事から自動検出しました（' + added.map(function(c){return c.name;}).join('、') + '）。キーは記事のdata-aff属性と完全に一致しています。', 'good');
+      }
+    })
+    .catch(function(){ /* content/aff-keys.json が無い/取得できない場合は何もしない */ });
 }
 
 /* GitHub APIから読み込む関数 */
