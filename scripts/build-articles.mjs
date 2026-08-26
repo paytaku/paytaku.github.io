@@ -672,11 +672,62 @@ function main(){
   const unmonetizedLinks = checkAffiliateLinks();
   const staleContent = checkFreshness(90);
   writeHealthCheckJson({ brokenLinks, unmonetizedLinks, staleContent });
+  writeAffKeysJson();
 
   if(process.argv.includes("--strict") && brokenLinks.length > 0){
     console.error("\n--strict指定のため、内部リンク切れがあるとビルドを失敗させます。");
     process.exit(1);
   }
+}
+
+// ========== 記事が実際に使っているdata-affキーの一覧を出力 ==========
+// 管理画面で「カード追加」するとき、かな→ローマ字の自動キー生成が記事側の
+// キー（英語スラッグ等）と一致せず、リンクが繋がらない事故が起きていた。
+// これを恒久的に防ぐため、記事HTMLに実際に書かれているdata-affキーを
+// ビルドのたびに自動でスキャンし、そのキー＋推定カード名を
+// content/aff-keys.json として書き出す。管理画面はこれを読み込んで、
+// 記事で使われているキーをそのまま候補として提示できるようにする
+// （手入力によるキーの表記ゆれを無くすのが目的）。
+function writeAffKeysJson(){
+  const files = readdirSync(OUT_DIR).filter(
+    f => f.endsWith(".html") && f !== "index.html" && !f.startsWith("_")
+  );
+
+  const found = new Map(); // key -> {name, articles: Set}
+  files.forEach(file => {
+    const content = readFileSync(join(OUT_DIR, file), "utf-8");
+
+    // このファイル内でキー→推定カード名を拾うためのヒント。
+    // 優先順位：nl-hero-name（カード名そのもの） > nl-cta-name（「〜を申し込む」から抽出）
+    let heroName = null;
+    const heroMatch = content.match(/<p class="nl-hero-name">([^<]+)<\/p>/);
+    if(heroMatch) heroName = heroMatch[1].trim();
+
+    let ctaName = null;
+    const ctaMatch = content.match(/<p class="nl-cta-name">([^<]+)<\/p>/);
+    if(ctaMatch) ctaName = ctaMatch[1].replace(/を(申し込む|始める|見る).*$/, "").trim();
+
+    const guessedName = heroName || ctaName || null;
+
+    const re = /data-aff="([^"]+)"/g;
+    let m;
+    while((m = re.exec(content))){
+      const key = m[1];
+      if(!found.has(key)) found.set(key, { name: guessedName, articles: new Set() });
+      const entry = found.get(key);
+      if(!entry.name && guessedName) entry.name = guessedName;
+      entry.articles.add(file);
+    }
+  });
+
+  const list = [...found.entries()].map(([key, v]) => ({
+    key,
+    name: v.name || key, // 名前を推定できなければキーをそのまま仮名にする
+    articles: [...v.articles],
+  })).sort((a, b) => a.key.localeCompare(b.key));
+
+  writeFileSync(join(ROOT, "content", "aff-keys.json"), JSON.stringify(list, null, 2), "utf-8");
+  console.log(`generated: content/aff-keys.json（記事内で使われているdata-affキー ${list.length} 件）`);
 }
 
 // ========== サイト運営の健全性チェック（結果をJSONにまとめて出力） ==========
