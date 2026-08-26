@@ -9,6 +9,10 @@
       "type": "direct",
       "url": "https://ad2.trafficgate.net/t/r/385/1396/318860_398517"
     },
+    "epos-card": {
+      "type": "direct",
+      "url": "https://admane.jp/ad/p/r?_site=1841&_article=658&_link=2922&_image=3165&_ns=1"
+    },
     "dmm-kabu": {
       "type": "direct",
       "url": "https://h.accesstrade.net/sp/cc?rk=0100mjw400ox3w"
@@ -24,10 +28,6 @@
       "type": "direct",
       "url": "#",
       "isPointSite": true
-    },
-    "epos-card": {
-      "type": "direct",
-      "url": "https://admane.jp/ad/p/r?_site=1841&_article=658&_link=2922&_image=3165&_ns=1"
     }
   },
   "names": {
@@ -45,8 +45,9 @@
     "hapitas-signup": "ハピタス",
     "moppy-signup": "モッピー",
     "custom-1787211123687": "小田急ポイントカード",
+    "eposukaado": "eposukaado",
     "pointoinkamu": "ポイントインカム",
-    "cosmo-the-card-opus": "コスモ・ザ・カード・オーパス"
+    "kosumo-za-kaado-oopasu": "コスモ・ザ・カード・オーパス"
   },
   "banners": {
     "rakuten-card": [
@@ -111,12 +112,6 @@
       {
         "href": "https://h.accesstrade.net/sp/cc?rk=01004q8100ox3w",
         "img": "https://h.accesstrade.net/sp/rr?rk=01004q8100ox3w"
-      }
-    ],
-    "cosmo-the-card-opus": [
-      {
-        "href": "https://px.a8.net/svt/ejp?a8mat=4BA41D+AY4Z8Y+5XGQ+5YJRM",
-        "img": "https://www18.a8.net/0.gif?a8mat=4BA41D+AY4Z8Y+5XGQ+5YJRM"
       }
     ]
   }
