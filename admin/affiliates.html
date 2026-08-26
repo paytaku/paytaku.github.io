@@ -389,7 +389,14 @@ function buildLinksJson(){
   if(Object.keys(banners).length) obj.banners=banners;
   return obj;
 }
-function updatePreview(){ document.getElementById('preview').textContent=JSON.stringify(buildLinksJson(),null,2); }
+function updatePreview(){
+  document.getElementById('preview').textContent=JSON.stringify(buildLinksJson(),null,2);
+  // 「GitHubに保存」を押す前に閉じる・再読み込みすると入力内容が消えていた問題の対策。
+  // 編集するたびに、下書きとしてブラウザのlocalStorageへ自動保存しておく。
+  // GitHubへの反映には引き続き「GitHubに保存」ボタンが必要（誤操作防止のため）。
+  LS.set('paytaku-link-state', linkState);
+  LS.set('paytaku-reward-state', rewardState);
+}
 
 /* ===== GitHub保存 ===== */
 document.getElementById('saveBtn').addEventListener('click',async function(){
@@ -985,10 +992,14 @@ function init(){
   // scripts/build-articles.mjs が自動生成する）。
   loadArticleAffKeys();
 
-  // GitHub APIからaffiliates.jsonを自動読み込み（PAT設定済みの場合）
+  // GitHub APIからaffiliates.jsonを自動読み込み（PAT設定済みの場合）。
+  // ただし、既にこの端末にローカル下書き（前回の編集内容）がある場合は、
+  // それを勝手にGitHubの内容で上書きしない（未保存の編集が消える事故を防ぐため）。
+  // 最新のGitHubの内容を取り込みたいときは、手動で「GitHubから読み込む」を押す。
   var gh=LS.get('paytaku-gh-settings');
-  if(gh&&gh.token&&gh.owner&&gh.repo){
-    fetchFromGitHub(true); // 初回は静かに読み込む
+  var hasLocalDraft = !!LS.get('paytaku-link-state');
+  if(gh&&gh.token&&gh.owner&&gh.repo&&!hasLocalDraft){
+    fetchFromGitHub(true); // 初回（下書きが無いとき）だけ静かに読み込む
   }
 }
 
