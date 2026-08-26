@@ -70,6 +70,7 @@ h1{font-size:20px;font-weight:900;margin:0 0 4px;}
 .type-btn.active{background:var(--ptint);border-color:var(--primary);color:var(--primary);}
 .via-row{display:none;}
 .via-row.show{display:block;}
+.via-hint{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.5;}
 
 /* バナー */
 .sep{border:none;border-top:1px solid var(--line);margin:14px 0;}
@@ -290,7 +291,7 @@ var ASP_LIST = ['トラフィックゲート','A8.net','afb','バリューコマ
 var linkState   = {}; // key -> {type,url,via,banners:[],isPointSite}
 var rewardState = {}; // key -> {asp,reward,rewardNote,memo}
 CARDS.forEach(function(c){
-  linkState[c.key]   = {type:'direct',url:'',via:'',banners:[],isPointSite:!!c.isPointSite};
+  linkState[c.key]   = {type:'direct',url:'',via:'',code:'',banners:[],isPointSite:!!c.isPointSite};
   rewardState[c.key] = {asp:'',aspOther:'',reward:'',rewardNote:'',memo:''};
 });
 
@@ -369,6 +370,7 @@ function buildLinksJson(){
     if(s.url || s.isPointSite){
       var entry={type:s.type,url:s.url||''};
       if(s.type==='point'&&s.via) entry.via=s.via;
+      if(s.type==='point'&&s.code) entry.code=s.code;
       if(s.isPointSite) entry.isPointSite=true;
       links[card.key]=entry;
     }
@@ -470,6 +472,8 @@ function buildLinkCard(card){
         +getPointSiteOptions().map(function(name){ return '<option value="'+esc(name)+'"'+(s.via===name?' selected':'')+'>'+esc(name)+'</option>'; }).join('')
         +'<option value="__add_new__">＋ 新しいポイントサイトを追加...</option>'
       +'</select></div>'
+      +'<div class="field"><label>紹介コード（任意・招待コード等があれば）</label><input type="text" id="code-'+key+'" placeholder="例：ABC1234" value="'+esc(s.code||'')+'"></div>'
+      +'<p class="via-hint">ポイントサイト経由は「紹介リンク・紹介コード・バナー」の3点セットで出せます。コードを入れると、サイト上のボタン付近に自動で表示されます。バナーは下のフォームから登録してください。</p>'
     +'</div>'
     +'<div class="sep"></div>'
     +'<div class="banner-head"><span class="banner-head-label">バナー（任意・複数登録可）</span></div>'
@@ -523,6 +527,7 @@ function bindLinkCard(card){
     });
   }
   bi('url-'+key,'url');
+  bi('code-'+key,'code');
   bindViaSelect(key);
   document.getElementById('ispoint-'+key).addEventListener('change',function(e){
     s.isPointSite = e.target.checked;
@@ -752,7 +757,7 @@ function loadCustomCards(){
   saved.forEach(function(c){
     if(!CARDS.find(function(x){ return x.key===c.key; })){
       CARDS.push({key:c.key,name:c.name,custom:true});
-      linkState[c.key]  ={type:'direct',url:'',via:'',banners:[],isPointSite:false};
+      linkState[c.key]  ={type:'direct',url:'',via:'',code:'',banners:[],isPointSite:false};
       rewardState[c.key]={asp:'',aspOther:'',reward:'',rewardNote:'',memo:''};
     }
   });
@@ -893,7 +898,7 @@ document.getElementById('addCardConfirm').addEventListener('click',function(){
   }
   var card={key:key,name:name,custom:true};
   CARDS.push(card);
-  linkState[key]  ={type:'direct',url:'',via:'',banners:[],isPointSite:false};
+  linkState[key]  ={type:'direct',url:'',via:'',code:'',banners:[],isPointSite:false};
   rewardState[key]={asp:'',aspOther:'',reward:'',rewardNote:'',memo:''};
   buildLinkCard(card);
   buildRewardCard(card);
@@ -912,7 +917,7 @@ function applyLinksJson(data){
     if(!CARDS.find(function(c){ return c.key===key; })){
       var card={key:key,name:key,custom:true};
       CARDS.push(card);
-      linkState[key]  ={type:'direct',url:'',via:'',banners:[],isPointSite:false};
+      linkState[key]  ={type:'direct',url:'',via:'',code:'',banners:[],isPointSite:false};
       rewardState[key]={asp:'',aspOther:'',reward:'',rewardNote:'',memo:''};
       saveCustomCards();
     }
@@ -924,6 +929,7 @@ function applyLinksJson(data){
       linkState[card.key].type=typeof l==='string'?'direct':(l.type||'direct');
       linkState[card.key].url =typeof l==='string'?l:(l.url||'');
       linkState[card.key].via =typeof l==='string'?'':(l.via||'');
+      linkState[card.key].code =typeof l==='string'?'':(l.code||'');
       linkState[card.key].isPointSite = typeof l==='string'?false:!!l.isPointSite;
     }
     var b=banners[card.key];
