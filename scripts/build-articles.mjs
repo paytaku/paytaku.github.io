@@ -226,6 +226,9 @@ function articleTemplate(a, bySlug){
 <meta property="og:site_name" content="${esc(SITE_NAME)}">
 <meta name="twitter:card" content="summary">
 <link rel="stylesheet" href="../assets/articles.css">
+<link rel="apple-touch-icon" sizes="180x180" href="../assets/apple-touch-icon-512.png">
+<link rel="icon" type="image/png" sizes="512x512" href="../assets/apple-touch-icon-512.png">
+<link rel="shortcut icon" href="../favicon.ico">
 <script type="application/ld+json">
 ${articleJsonLd}
 </script>
@@ -340,6 +343,9 @@ function indexTemplate(articles){
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:url" content="${canonical}">
 <meta property="og:site_name" content="${esc(SITE_NAME)}">
+<link rel="apple-touch-icon" sizes="180x180" href="../assets/apple-touch-icon-512.png">
+<link rel="icon" type="image/png" sizes="512x512" href="../assets/apple-touch-icon-512.png">
+<link rel="shortcut icon" href="../favicon.ico">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>tailwind.config = { darkMode: 'class' };</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -386,8 +392,7 @@ function indexTemplate(articles){
 <header class="sticky top-0 z-50 bg-white dark:bg-slate-900 border-b border-[#E2E8F0] dark:border-slate-700" style="height:56px;">
   <div class="h-full flex items-center justify-between px-4">
     <a href="../index.html" class="flex items-center gap-2">
-      <img src="../assets/logo.png" alt="ペイ択" width="22" height="22" class="shrink-0">
-      <span class="font-bold text-[15px] text-[#0F172A] dark:text-white">ペイ<span class="text-[#4F46E5]">択</span></span>
+      <img src="../assets/logo.png" alt="ペイ択 -PayTaku-" width="84" height="40" class="shrink-0">
     </a>
     <div class="flex items-center gap-1">
       <button id="fontToggle" aria-label="文字サイズ切替" class="icon-btn w-9 h-9 rounded-full flex items-center justify-center text-[13px] font-bold text-[#4F46E5] dark:text-indigo-300 bg-[#EEF2FF] dark:bg-indigo-950/60">A+</button>
