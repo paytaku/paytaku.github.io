@@ -20,8 +20,10 @@
       "url": "https://h.accesstrade.net/sp/cc?rk=0100mjw400ox3w"
     },
     "hapitas-signup": {
-      "type": "direct",
-      "url": "#",
+      "type": "point",
+      "url": "https://hapitas.jp/appinvite?i=25513097&route=text",
+      "via": "ハピタス",
+      "code": "MNECIZ",
       "isPointSite": true
     },
     "moppy-signup": {
