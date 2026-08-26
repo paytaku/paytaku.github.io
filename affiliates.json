@@ -1,5 +1,5 @@
 {
-  "_comment": "アフィリエイトリンクの一元管理ファイル。このファイルを更新するだけで全記事・本体サイトに反映されます。",
+  "_comment": "アフィリエイトリンクの一元管理ファイル。このファイルを更新するだけで全記事に反映されます。",
   "links": {
     "rakuten-card": {
       "type": "direct",
@@ -9,75 +9,34 @@
       "type": "direct",
       "url": "https://ad2.trafficgate.net/t/r/385/1396/318860_398517"
     },
-    "dcard-platinum": {
-      "type": "point",
-      "url": "",
-      "via": "ハピタス",
-      "isPointSite": true
-    },
-    "jcb-card-w": {
-      "type": "point",
-      "url": "",
-      "via": "ハピタス",
-      "isPointSite": true
-    },
-    "epos-card": {
-      "type": "point",
-      "url": "",
-      "via": "ハピタス",
-      "isPointSite": true
-    },
-    "smbc-nl": {
-      "type": "point",
-      "url": "",
-      "via": "ハピタス",
-      "isPointSite": true
-    },
     "dmm-kabu": {
       "type": "direct",
       "url": "https://h.accesstrade.net/sp/cc?rk=0100mjw400ox3w"
-    },
-    "hapitas-signup": {
-      "type": "point",
-      "url": "https://hapitas.jp/appinvite?i=25513097&route=text",
-      "via": "ハピタス",
-      "code": "MNECIZ",
-      "isPointSite": true
-    },
-    "moppy-signup": {
-      "type": "point",
-      "url": "#",
-      "via": "モッピー"
     },
     "eposukaado": {
       "type": "direct",
       "url": "https://admane.jp/ad/p/r?_site=1841&_article=658&_link=2922&_image=3165&_ns=1"
     },
-    "pointoinkamu": {
-      "type": "point",
-      "url": "https://sp.pointi.jp/p/?a=rbf882486752",
-      "via": "ポイントインカム",
-      "code": "rbf882486752",
-      "isPointSite": true
+    "hapitas-signup": {
+      "type": "direct",
+      "url": "#",
+      "isPointSite": true,
+      "_note": "要対応：A8.netで「ハピタス」を検索し提携申請 → 承認後に発行されるa8mat付きリンクをurlに設定してください。まだ提携前のため現状は#（ダミー）です。"
+    },
+    "moppy-signup": {
+      "type": "direct",
+      "url": "#",
+      "isPointSite": true,
+      "_note": "要対応：A8.netまたはバリューコマースで「モッピー」を検索し提携申請 → 承認後に発行されるリンクをurlに設定してください。まだ提携前のため現状は#（ダミー）です。"
     }
   },
   "names": {
     "rakuten-card": "楽天カード",
     "rakuten-premium": "楽天プレミアムカード",
-    "dcard-gold": "dカード GOLD",
-    "dcard-goldu": "dカード GOLD U",
-    "dcard-platinum": "dカード PLATINUM",
-    "jcb-card-w": "JCB CARD W",
-    "epos-card": "エポスカード",
-    "smbc-nl": "三井住友カード（NL）",
     "dmm-kabu": "DMM 株",
-    "aupay-market": "au PAYマーケット",
-    "odakyu-op": "小田急ポイントカード（OPクレジット）",
+    "eposukaado": "エポスカード",
     "hapitas-signup": "ハピタス",
-    "moppy-signup": "モッピー",
-    "custom-1787211123687": "小田急ポイントカード",
-    "eposukaado": "eposukaado",
-    "pointoinkamu": "ポイントインカム"
+    "moppy-signup": "モッピー"
   },
   "banners": {
     "rakuten-card": [
@@ -126,37 +85,16 @@
         "img": "https://h.accesstrade.net/sp/rr?rk=0100mkk200ox3w"
       }
     ],
-    "hapitas-signup": [
+    "odakyu-pointokaado": [
       {
-        "title": "バナー",
-        "href": "https://hapitas.jp/register/?i=25513097",
-        "img": "https://hapitas.jp/published-assets/admin/uploads/202604081658437859.png"
-      }
-    ],
-    "custom-1787211123687": [
-      {
-        "title": "ゴールド券面",
         "href": "https://h.accesstrade.net/sp/cc?rk=01004q8100ox3w",
         "img": "https://h.accesstrade.net/sp/rr?rk=01004q8100ox3w"
-      },
-      {
-        "href": "https://h.accesstrade.net/sp/cc?rk=0100kw0d00ox3w",
-        "img": "https://h.accesstrade.net/sp/rr?rk=0100kw0d00ox3w"
-      },
-      {
-        "href": "https://h.accesstrade.net/sp/cc?rk=01004q8800ox3w",
-        "img": "https://h.accesstrade.net/sp/rr?rk=01004q8800ox3w"
-      },
-      {
-        "title": "券面",
-        "href": "https://h.accesstrade.net/sp/cc?rk=01004q8200ox3w",
-        "img": "https://h.accesstrade.net/sp/rr?rk=01004q8200ox3w"
       }
     ],
-    "pointoinkamu": [
+    "kosumo-za-kaado-oopasu": [
       {
-        "href": "https://sp.pointi.jp/p/?a=rbf882486752",
-        "img": "https://sp.pointi.jp/share_cpn/img/bnr/intro_12_200y_1080_1080.png"
+        "href": "https://px.a8.net/svt/ejp?a8mat=4BA41D+AY4Z8Y+5XGQ+5YJRM",
+        "img": "https://www18.a8.net/0.gif?a8mat=4BA41D+AY4Z8Y+5XGQ+5YJRM"
       }
     ]
   }
