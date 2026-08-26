@@ -32,6 +32,12 @@
     "eposukaado": {
       "type": "direct",
       "url": "https://admane.jp/ad/p/r?_site=1841&_article=658&_link=2922&_image=3165&_ns=1"
+    },
+    "pointoinkamu": {
+      "type": "point",
+      "url": "https://sp.pointi.jp/p/?a=rbf882486752",
+      "code": "rbf882486752",
+      "isPointSite": true
     }
   },
   "names": {
