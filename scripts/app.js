@@ -7855,6 +7855,7 @@ document.getElementById("editModeBtn").addEventListener("click", async ()=>{
   renderStores();
   renderPicks();
   renderRoutes();
+  renderHealthCheckBanner();
 });
 
 document.getElementById("addStoreBtn").addEventListener("click", ()=> openStoreModal(null));
@@ -7976,11 +7977,90 @@ document.getElementById("githubSettingsBtn").addEventListener("click", ()=>{
   );
 });
 
+// ========== サイト運営の健全性チェック（編集モード内でのバナー表示） ==========
+// build-articles.mjs が生成する content/health-check.json（リンク切れ・未収益化の
+// アフィリエイトリンク・確認日の鮮度）を読み込み、編集モード中だけ画面上部に
+// バナーとして表示する。GitHub Actionsのログを見に行かなくても、サイト内で
+// そのまま確認・対応できるようにするための機能。
+const HEALTH_CHECK_JSON_PATH = "content/health-check.json";
+let healthCheck = null;
+
+async function refreshHealthCheck(){
+  try{
+    const res = await fetch(`${HEALTH_CHECK_JSON_PATH}?t=${Date.now()}`, { cache: "no-store" });
+    if(!res.ok) return; // まだファイルが無い場合は静かに無視
+    healthCheck = await res.json();
+    renderHealthCheckBanner();
+  } catch(e){
+    console.info("health-check.json の取得をスキップしました", e.message);
+  }
+}
+
+function healthCheckTotal(){
+  if(!healthCheck) return 0;
+  return (healthCheck.brokenLinks?.length || 0)
+    + (healthCheck.unmonetizedLinks?.length || 0)
+    + (healthCheck.staleContent?.length || 0);
+}
+
+function renderHealthCheckBanner(){
+  const el = document.getElementById("healthCheckBanner");
+  if(!el) return;
+
+  if(!editMode || !healthCheck || healthCheckTotal() === 0){
+    el.innerHTML = "";
+    el.style.display = "none";
+    return;
+  }
+
+  const esc = v => String(v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  const section = (title, items, renderItem) => {
+    if(!items || items.length === 0) return "";
+    return `<div class="health-check-group">
+      <div class="health-check-group-title">${title}（${items.length}件）</div>
+      ${items.map(renderItem).join("")}
+    </div>`;
+  };
+
+  const generatedLabel = healthCheck.generatedAt
+    ? new Date(healthCheck.generatedAt).toLocaleString("ja-JP", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })
+    : "";
+
+  el.style.display = "block";
+  el.innerHTML = `
+    <div class="health-check-head">
+      <span class="health-check-title">⚠️ サイト運営チェック（${healthCheckTotal()}件）</span>
+      <span class="health-check-time">${generatedLabel}時点</span>
+      <button type="button" class="health-check-close" id="healthCheckCloseBtn" aria-label="閉じる">×</button>
+    </div>
+    ${section("未収益化のアフィリエイトリンク", healthCheck.unmonetizedLinks, p => `
+      <div class="health-check-item">
+        <a href="articles/${esc(p.file)}" target="_blank">${esc(p.file)}</a>
+        <span class="health-check-detail">key="${esc(p.key)}" ／ ${esc(p.kind)}</span>
+      </div>`)}
+    ${section("確認日が古くなった記述", healthCheck.staleContent, s => `
+      <div class="health-check-item">
+        <a href="articles/${esc(s.file)}" target="_blank">${esc(s.file)}</a>
+        <span class="health-check-detail">確認日: ${esc(s.date)}（${s.days}日経過）</span>
+      </div>`)}
+    ${section("内部リンク切れ", healthCheck.brokenLinks, b => `
+      <div class="health-check-item">
+        <a href="articles/${esc(b.file)}" target="_blank">${esc(b.file)}</a>
+        <span class="health-check-detail">[${esc(b.kind)}] ${esc(b.detail)}</span>
+      </div>`)}
+  `;
+
+  document.getElementById("healthCheckCloseBtn")?.addEventListener("click", ()=>{
+    el.style.display = "none";
+  });
+}
+
 // 初回読み込み時に、GitHub上の最新データを取得しにいく
 refreshFromGithubPages();
 refreshAffiliatesFromGithubPages();
 refreshPicksFromGithubPages();
 refreshRoutesFromGithubPages();
+refreshHealthCheck();
 renderMufg();
 
 // ========== ハッシュルーティング（別ページ） ==========
