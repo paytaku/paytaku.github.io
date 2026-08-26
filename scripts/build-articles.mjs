@@ -642,6 +642,18 @@ function main(){
   console.log(`\n合計 ${articles.length} 件の記事を生成しました。`);
 }
 
+// 記事一覧（content/articles.json）には含まれない、固定の静的ページ。
+// index.html内のLP（DMM株・au PAYマーケット・小田急ポイントカード・about・privacy）を
+// 個別クロール可能な静的ページとして書き出したもの。
+// ここに追加しておけば、記事を追加するたびのsitemap再生成でも消えずに残る。
+const STATIC_PAGES = [
+  { path: "pages/kabu-koza.html", pri: "0.5", freq: "monthly" },
+  { path: "pages/nettsuuhan.html", pri: "0.5", freq: "monthly" },
+  { path: "pages/odakyu-point.html", pri: "0.5", freq: "monthly" },
+  { path: "pages/about.html", pri: "0.3", freq: "yearly" },
+  { path: "pages/privacy.html", pri: "0.3", freq: "yearly" },
+];
+
 function sitemapXml(articles){
   const today = new Date().toISOString().slice(0, 10);
   const rows = [];
@@ -658,6 +670,9 @@ function sitemapXml(articles){
   articles.forEach(a => {
     const lastmod = a.updatedDate || a.publishedDate || today;
     push(`${SITE_URL}/articles/${a.slug}.html`, "monthly", "0.7", lastmod);
+  });
+  STATIC_PAGES.forEach(p => {
+    push(`${SITE_URL}/${p.path}`, p.freq, p.pri, today);
   });
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
