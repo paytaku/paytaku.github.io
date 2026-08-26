@@ -357,8 +357,8 @@
     ],
     "overview": "au PAY請求書払いの「最強ルート」として今も紹介され続けている三井住友カード ゴールド(NL)は、2026年3月の改定で実質0.6%まで下がっています。2026年8月時点で最大のルートを組めるのはau PAYゴールドカードのオートチャージ特典（最大5.5%）。年会費11,000円を相殺する5つの条件まで含めて解説します。",
     "related": [
-      "charge-route-guide",
-      "aupay-seikyusho-charge-route",
+      "idare-card-katsuyo",
+      "ana-pay-rakuten-edy-cash-route",
       "smbc-nl-shindan",
       "epos-card-shindan"
     ],
@@ -382,8 +382,8 @@
     "overview": "税金・公共料金の請求書払い、実はほとんどのアプリでもう還元メリットがありません。PayPayはほぼゼロ、d払いは請求書払い自体は対象外、楽天ペイの単純ルートも改悪済み（複雑な多段ルートなら今も高還元）。2026年8月時点で一番手軽に狙えるのはau PAYです。5アプリを正直に比較しました。",
     "related": [
       "aupay-seikyusho-max-route",
-      "aupay-seikyusho-charge-route",
-      "charge-route-guide"
+      "idare-card-katsuyo",
+      "smaho-prepaid-toha"
     ],
     "customHtml": true
   },
@@ -402,7 +402,7 @@
     ],
     "overview": "IDAREは決済利用額ではなく、毎月の残高に応じてボーナスがもらえる珍しいプリペイドカードです。2026年7月からのランク制度で最大年率2.2%。月いくら入れるといくら貯まるのか、具体的な金額で計算しました。出口は6種類、2026年3月の規約改定の安全ラインまで解説します。",
     "related": [
-      "charge-route-guide",
+      "ana-pay-rakuten-edy-cash-route",
       "aupay-seikyusho-max-route",
       "seikyusho-barai-app-hikaku"
     ],
@@ -424,7 +424,7 @@
     "overview": "PayPayカードは2026年6月2日、公共料金半減・他社決済チャージ完全対象外・ポイント払い分の付与廃止など、複数の改定が一斉に入りました。当サイトのチャージルート特集で扱ってきたau PAY・ファミペイ・楽天Edy・Suicaは、すべて対象外リストに入っています。利用シーン別に、今も持つ価値があるかを整理しました。",
     "related": [
       "seikyusho-barai-app-hikaku",
-      "aupay-seikyusho-charge-route",
+      "aupay-seikyusho-max-route",
       "smbc-nl-shindan",
       "epos-card-shindan"
     ],
@@ -558,6 +558,48 @@
       "aupay-seikyusho-max-route",
       "seikyusho-barai-app-hikaku",
       "idare-card-katsuyo"
+    ],
+    "customHtml": true
+  },
+  {
+    "slug": "charge-route-guide",
+    "category": "チャージルート",
+    "title": "チャージルートは「今から真似する」と危ない｜長続きする低リスクルートの作り方",
+    "publishedDate": "2026-08-26",
+    "updatedDate": "2026-08-26",
+    "tags": [
+      "チャージルート",
+      "ポイ活",
+      "リスク管理",
+      "IDARE",
+      "au PAY"
+    ],
+    "overview": "ブログで見かけたチャージルートをそのまま真似すると、公開時点ではもう改悪済み、ということが頻繁にあります。長続きするルートの見分け方、終了にいち早く気づく方法、複数ルートを同時に回すときの注意点を整理しました。",
+    "related": [
+      "idare-card-katsuyo",
+      "aupay-seikyusho-max-route",
+      "seikyusho-barai-app-hikaku"
+    ],
+    "customHtml": true
+  },
+  {
+    "slug": "credit-card-erabikata-shindan",
+    "category": "カード解説",
+    "title": "クレジットカードの選び方｜還元率だけで決めると失敗する理由とタイプ別診断",
+    "publishedDate": "2026-08-26",
+    "updatedDate": "2026-08-26",
+    "tags": [
+      "クレジットカード",
+      "選び方",
+      "還元率",
+      "年会費",
+      "タイプ別診断"
+    ],
+    "overview": "「還元率が一番高いカード」を作れば得、とは限りません。年会費・使う店・チャージルートとの相性まで含めて考えないと、結局使わない1枚が財布に増えるだけです。生活パターン別に、当サイトのどの記事を読むべきかまで診断形式で整理しました。",
+    "related": [
+      "epos-card-shindan",
+      "rakuten-card-shindan",
+      "smbc-nl-shindan"
     ],
     "customHtml": true
   }
