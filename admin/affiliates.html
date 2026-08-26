@@ -63,6 +63,8 @@ h1{font-size:20px;font-weight:900;margin:0 0 4px;}
 
 /* タイプ切り替え */
 .type-row{display:flex;gap:6px;margin-bottom:10px;}
+.is-point-site-row{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);margin-bottom:10px;cursor:pointer;}
+.is-point-site-row input{width:15px;height:15px;flex-shrink:0;cursor:pointer;}
 .type-btn{flex:1;padding:8px;border:1px solid var(--line);border-radius:8px;background:transparent;color:var(--muted);font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer;transition:all .15s;}
 .type-btn:hover{border-color:var(--primary);color:var(--text);}
 .type-btn.active{background:var(--ptint);border-color:var(--primary);color:var(--primary);}
@@ -279,14 +281,16 @@ var CARDS = [
   {key:'dmm-kabu',        name:'DMM 株'},
   {key:'aupay-market',    name:'au PAYマーケット'},
   {key:'odakyu-op',       name:'小田急ポイントカード（OPクレジット）'},
+  {key:'hapitas-signup',  name:'ハピタス', isPointSite:true},
+  {key:'moppy-signup',    name:'モッピー', isPointSite:true},
 ];
 var ASP_LIST = ['トラフィックゲート','A8.net','afb','バリューコマース','LinkShare','ハピタス','モッピー','その他（手動入力）'];
 
 /* ===== 状態 ===== */
-var linkState   = {}; // key -> {type,url,via,banners:[]}
+var linkState   = {}; // key -> {type,url,via,banners:[],isPointSite}
 var rewardState = {}; // key -> {asp,reward,rewardNote,memo}
 CARDS.forEach(function(c){
-  linkState[c.key]   = {type:'direct',url:'',via:'',banners:[]};
+  linkState[c.key]   = {type:'direct',url:'',via:'',banners:[],isPointSite:!!c.isPointSite};
   rewardState[c.key] = {asp:'',aspOther:'',reward:'',rewardNote:'',memo:''};
 });
 
@@ -362,9 +366,10 @@ function buildLinksJson(){
   CARDS.forEach(function(card){
     var s=linkState[card.key];
     names[card.key]=card.name; // サイト側がカード名で照合できるよう、キー→名前も公開する
-    if(s.url){
-      var entry={type:s.type,url:s.url};
+    if(s.url || s.isPointSite){
+      var entry={type:s.type,url:s.url||''};
       if(s.type==='point'&&s.via) entry.via=s.via;
+      if(s.isPointSite) entry.isPointSite=true;
       links[card.key]=entry;
     }
     var vb=s.banners.filter(function(b){ return b.href||b.img; });
@@ -449,6 +454,10 @@ function buildLinkCard(card){
       +'<span class="badge '+(s.url?'set':'unset')+'" id="badge-'+key+'">'+(s.url?'設定済み':'未設定')+'</span>'
       +(card.custom?'<button class="card-del-btn" data-del-key="'+key+'" title="削除">削除</button>':'')
     +'</div>'
+    +'<label class="is-point-site-row">'
+      +'<input type="checkbox" id="ispoint-'+key+'"'+(s.isPointSite?' checked':'')+'>'
+      +'このサービス自体がポイントサイトである（他のカードの「経由」プルダウンにも表示する）'
+    +'</label>'
     +'<div class="type-row">'
       +'<button class="type-btn'+(s.type==='direct'?' active':'')+'" data-key="'+key+'" data-type="direct">直アフィリエイト</button>'
       +'<button class="type-btn'+(s.type==='point'?' active':'')+'" data-key="'+key+'" data-type="point">ポイントサイト経由</button>'
@@ -458,7 +467,7 @@ function buildLinkCard(card){
       +'<div class="field"><label>ポイントサイト名</label>'
       +'<select id="via-input-'+key+'">'
         +'<option value="">選択してください</option>'
-        +POINT_SITES.map(function(name){ return '<option value="'+esc(name)+'"'+(s.via===name?' selected':'')+'>'+esc(name)+'</option>'; }).join('')
+        +getPointSiteOptions().map(function(name){ return '<option value="'+esc(name)+'"'+(s.via===name?' selected':'')+'>'+esc(name)+'</option>'; }).join('')
         +'<option value="__add_new__">＋ 新しいポイントサイトを追加...</option>'
       +'</select></div>'
     +'</div>'
@@ -515,6 +524,11 @@ function bindLinkCard(card){
   }
   bi('url-'+key,'url');
   bindViaSelect(key);
+  document.getElementById('ispoint-'+key).addEventListener('change',function(e){
+    s.isPointSite = e.target.checked;
+    refreshAllViaSelects(); // このカードが経由先の選択肢として増減するので、全カードのプルダウンを更新
+    updatePreview();
+  });
   s.banners.forEach(function(_,i){ bindBannerItem(key,i); });
   document.getElementById('badd-'+key).addEventListener('click',function(){
     var i=s.banners.length; s.banners.push({title:'',href:'',img:''});
@@ -677,37 +691,54 @@ document.getElementById('rewardFileInput').addEventListener('change',function(e)
 
 /* ===== ポイントサイトのマスタ管理 =====
    「ワラウ経由で三菱UFJカードをアフィリエイトしたい」のように、複数のカードが
-   同じポイントサイトを経由するケースが多いため、ポイントサイト名を一度だけ
-   登録しておき、各カードの「経由」欄はここから選択する方式にする。
-   毎回手入力すると「ワラウ」「warau」のような表記ゆれが起きやすいための対策。 */
+   同じポイントサイトを経由するケースが多いため、ポイントサイト名の一覧を
+   一箇所にまとめ、各カードの「経由」欄はここから選択する方式にする。
+
+   一覧は3つを合わせて作る：
+   ① デフォルトの候補名（まだカードとして登録していないポイントサイトも選べるように）
+   ② 手動で「＋新しいポイントサイトを追加」した名前（localStorageに保存）
+   ③ CARDS一覧の中で「このサービス自体がポイントサイトである」にチェックが
+      入っているカードの名前（例：hapitas-signup＝「ハピタス（新規登録）」）
+   ③があるおかげで、カード追加でポイントサイトを登録すれば、他のカードの
+   経由先プルダウンにも自動で反映される（二重登録が不要になる）。 */
 var DEFAULT_POINT_SITES = ['ハピタス','モッピー','ちょびリッチ','ポイントインカム','ワラウ','ECナビ','げん玉'];
-function loadPointSites(){
-  var saved = LS.get('paytaku-point-sites');
-  if(Array.isArray(saved) && saved.length) return saved;
-  return DEFAULT_POINT_SITES.slice();
+function loadExtraPointSites(){
+  return LS.get('paytaku-point-sites-extra') || [];
 }
-function savePointSites(){
-  LS.set('paytaku-point-sites', POINT_SITES);
+function saveExtraPointSites(list){
+  LS.set('paytaku-point-sites-extra', list);
 }
-var POINT_SITES = loadPointSites();
+var EXTRA_POINT_SITES = loadExtraPointSites();
+
+function getPointSiteOptions(){
+  var names = DEFAULT_POINT_SITES.slice();
+  EXTRA_POINT_SITES.forEach(function(n){ if(names.indexOf(n)===-1) names.push(n); });
+  CARDS.forEach(function(c){
+    if(linkState[c.key] && linkState[c.key].isPointSite && names.indexOf(c.name)===-1){
+      names.push(c.name);
+    }
+  });
+  return names;
+}
 
 function addPointSite(name){
   name = (name||'').trim();
   if(!name) return false;
-  if(POINT_SITES.indexOf(name) !== -1) return true; // 既にある
-  POINT_SITES.push(name);
-  savePointSites();
+  if(getPointSiteOptions().indexOf(name) !== -1) return true; // 既にある
+  EXTRA_POINT_SITES.push(name);
+  saveExtraPointSites(EXTRA_POINT_SITES);
   return true;
 }
-// 新しいポイントサイトが追加されたとき、既に表示済みの全カードのプルダウンに
-// 選択肢を反映させる（保存中の選択値は維持する）。
+// 新しいポイントサイトが追加・チェック変更されたとき、既に表示済みの全カードの
+// プルダウンに選択肢を反映させる（保存中の選択値は維持する）。
 function refreshAllViaSelects(){
+  var options = getPointSiteOptions();
   CARDS.forEach(function(card){
     var el = document.getElementById('via-input-'+card.key);
     if(!el) return;
     var current = linkState[card.key].via || '';
     el.innerHTML = '<option value="">選択してください</option>'
-      + POINT_SITES.map(function(name){ return '<option value="'+esc(name)+'"'+(current===name?' selected':'')+'>'+esc(name)+'</option>'; }).join('')
+      + options.map(function(name){ return '<option value="'+esc(name)+'"'+(current===name?' selected':'')+'>'+esc(name)+'</option>'; }).join('')
       + '<option value="__add_new__">＋ 新しいポイントサイトを追加...</option>';
   });
 }
@@ -721,7 +752,7 @@ function loadCustomCards(){
   saved.forEach(function(c){
     if(!CARDS.find(function(x){ return x.key===c.key; })){
       CARDS.push({key:c.key,name:c.name,custom:true});
-      linkState[c.key]  ={type:'direct',url:'',via:'',banners:[]};
+      linkState[c.key]  ={type:'direct',url:'',via:'',banners:[],isPointSite:false};
       rewardState[c.key]={asp:'',aspOther:'',reward:'',rewardNote:'',memo:''};
     }
   });
@@ -862,7 +893,7 @@ document.getElementById('addCardConfirm').addEventListener('click',function(){
   }
   var card={key:key,name:name,custom:true};
   CARDS.push(card);
-  linkState[key]  ={type:'direct',url:'',via:'',banners:[]};
+  linkState[key]  ={type:'direct',url:'',via:'',banners:[],isPointSite:false};
   rewardState[key]={asp:'',aspOther:'',reward:'',rewardNote:'',memo:''};
   buildLinkCard(card);
   buildRewardCard(card);
@@ -881,7 +912,7 @@ function applyLinksJson(data){
     if(!CARDS.find(function(c){ return c.key===key; })){
       var card={key:key,name:key,custom:true};
       CARDS.push(card);
-      linkState[key]  ={type:'direct',url:'',via:'',banners:[]};
+      linkState[key]  ={type:'direct',url:'',via:'',banners:[],isPointSite:false};
       rewardState[key]={asp:'',aspOther:'',reward:'',rewardNote:'',memo:''};
       saveCustomCards();
     }
@@ -893,6 +924,7 @@ function applyLinksJson(data){
       linkState[card.key].type=typeof l==='string'?'direct':(l.type||'direct');
       linkState[card.key].url =typeof l==='string'?l:(l.url||'');
       linkState[card.key].via =typeof l==='string'?'':(l.via||'');
+      linkState[card.key].isPointSite = typeof l==='string'?false:!!l.isPointSite;
     }
     var b=banners[card.key];
     if(b) linkState[card.key].banners=Array.isArray(b)?b.map(function(x){ return Object.assign({title:'',href:'',img:''},x); }):[Object.assign({title:'',href:'',img:''},b)];
