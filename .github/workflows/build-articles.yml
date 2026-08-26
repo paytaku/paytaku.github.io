@@ -2,7 +2,10 @@ name: build-articles
 
 # content/articles.json や articles/*.html、affiliates.json を変更してmainにpushすると、
 # 記事一覧（articles/index.html）とsitemap.xmlを自動生成してコミットし直す。
-# あわせて、内部リンク切れ・未収益化のアフィリエイトリンク・確認日の鮮度も自動チェックする。
+# あわせて、内部リンク切れ・未収益化のアフィリエイトリンク・確認日の鮮度もチェックし、
+# 結果を content/health-check.json としてコミットする。
+# このJSONはサイトの編集モードから読み込まれ、GitHub Actionsの画面を見なくても
+# ペイ択のページ内で直接警告が確認できる（scripts/app.js の renderHealthCheckBanner 参照）。
 
 on:
   push:
@@ -36,23 +39,17 @@ jobs:
       - name: 記事HTMLのARTICLE_METAをarticles.jsonへ同期
         run: node scripts/sync-articles-meta.mjs
 
-      - name: 記事一覧・sitemapを生成（内部リンク切れがあれば失敗させる）
+      - name: 記事一覧・sitemap・健全性チェックを生成（内部リンク切れがあれば失敗させる）
         run: node scripts/build-articles.mjs --strict
-
-      - name: 未収益化のアフィリエイトリンクをチェック（警告のみ・ビルドは止めない）
-        run: node scripts/check-affiliates.mjs || echo "::warning::未収益化のアフィリエイトリンクがあります。ログを確認してください。"
-
-      - name: 確認日の鮮度をチェック（90日基準・警告のみ）
-        run: node scripts/check-freshness.mjs 90
 
       - name: 変更があればコミット・push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add articles/index.html sitemap.xml content/articles.json
+          git add articles/index.html sitemap.xml content/articles.json content/health-check.json
           if git diff --cached --quiet; then
             echo "変更なし。コミットをスキップします。"
           else
-            git commit -m "chore: 記事一覧・sitemapを自動更新"
+            git commit -m "chore: 記事一覧・sitemap・健全性チェックを自動更新"
             git push
           fi
