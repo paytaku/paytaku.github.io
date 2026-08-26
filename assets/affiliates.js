@@ -13,6 +13,18 @@
       if(!data) return;
       var links   = data.links   || {};
       var banners = data.banners || {};
+      var names   = data.names   || {};
+
+      // ポイントサイト名 → そのポイントサイト自身のカードキー、の逆引き表を作る。
+      // 例：hapitas-signup が {isPointSite:true} かつ names["hapitas-signup"]==="ハピタス" なら、
+      //     via==="ハピタス" のカードから hapitas-signup 側のURL・バナーを引けるようにする。
+      var pointSiteKeyByName = {};
+      Object.keys(links).forEach(function(k){
+        var l = links[k];
+        if(l && l.isPointSite && names[k]){
+          pointSiteKeyByName[names[k]] = k;
+        }
+      });
 
       /* ---- CTAリンクの差し替え ---- */
       document.querySelectorAll('a[data-aff]').forEach(function(a){
@@ -54,6 +66,40 @@
           };
         } else if(hasHint){
           existingHint.remove(); // コードが無くなった場合は表示も消す
+        }
+
+        /* ポイントサイト経由の案内＋そのポイントサイト自身のバナー・登録リンクを自動挿入する。
+           記事側は一切編集不要：カード側を「ポイントサイト経由」に設定するだけで、
+           全記事のCTA直後に「◯◯経由がお得です」の案内とポイントサイトのバナーが差し込まれる。
+           挿入位置は紹介コード欄（あれば）のさらに直後。 */
+        var afterEl = (a.nextElementSibling && a.nextElementSibling.classList && a.nextElementSibling.classList.contains('aff-code-hint'))
+          ? a.nextElementSibling : a;
+        var existingPromo = afterEl.nextElementSibling;
+        var hasPromo = existingPromo && existingPromo.classList && existingPromo.classList.contains('aff-point-promo');
+
+        if(type === 'point' && via){
+          var psKey = pointSiteKeyByName[via];
+          var psEntry = psKey ? links[psKey] : null;
+          var psUrl = psEntry && psEntry.url && psEntry.url !== '#' ? psEntry.url : null;
+          var psBannerArr = psKey ? banners[psKey] : null;
+          var psBanner = psBannerArr ? (Array.isArray(psBannerArr) ? psBannerArr[0] : psBannerArr) : null;
+
+          var promo = hasPromo ? existingPromo : document.createElement('div');
+          promo.className = 'aff-point-promo';
+          var html = '<p class="aff-point-promo-text">💡 直接申し込むより<b>' + via + '経由の方がお得</b>です。'
+            + 'カードの成果ポイントに加えて、' + via + 'の新規登録ポイントも別途受け取れます。</p>';
+          if(psUrl){
+            html += '<a class="aff-point-promo-link" href="' + psUrl + '" target="_blank" rel="sponsored noopener nofollow">'
+              + '→ ' + via + 'に登録する（未登録の方）</a>';
+          }
+          if(psBanner && psBanner.img && psBanner.href){
+            html += '<a class="aff-point-promo-banner" href="' + psBanner.href + '" target="_blank" rel="sponsored noopener nofollow">'
+              + '<img src="' + psBanner.img + '" alt="' + (psBanner.title || via) + '" loading="lazy"></a>';
+          }
+          promo.innerHTML = html;
+          if(!hasPromo) afterEl.insertAdjacentElement('afterend', promo);
+        } else if(hasPromo){
+          existingPromo.remove(); // 直アフィリエイトに戻した場合は表示も消す
         }
       });
 
