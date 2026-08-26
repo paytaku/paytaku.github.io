@@ -74,34 +74,59 @@ const AFFILIATE_SLUG_FALLBACK_NAMES = {
   "odakyu-op": "小田急ポイントカード（OPクレジット）",
 };
 
-// カード名から該当するアフィリリンクを引く。affiliates.json の links は
+// キー完全一致でアフィリリンクを引く（記事のdata-affと同じ考え方）。
+// ルート側に affKey を明示しておけば、あいまいな名前一致より確実に狙った
+// リンクが採用される。affKey が無い/該当が無い場合は呼び出し側で
+// 従来のaffiliateFor（名前のあいまい一致）にフォールバックする。
+function affiliateForKey(key){
+  if(!key) return null;
+  const links = (affiliates && affiliates.links) || {};
+  const entry = links[key];
+  if(!entry) return null;
+  return typeof entry === "string" ? entry : (entry.url || null);
+}
+
+// カード名（複数可）から該当するアフィリリンクを引く。affiliates.json の links は
 // { スラッグ: {type,url,via} } という形（キーはカード名そのものではない）なので、
 // names（無ければ上のフォールバック表）でスラッグ→カード名に変換してから、
 // 部分一致で照合する。より具体的な（長い）カード名を優先する。
-function affiliateFor(cardName){
-  if(!cardName) return null;
+// candidateNames には「実際にそのルートの起点になり得るカード名の一覧」を渡すこと
+// （ルートの説明文全体ではなく）。説明文全体を渡すと、途中の経由地・目的地の
+// サービス名まで拾って誤爆することがあるため。
+// ⚠️ これでも複数の登録名が候補に含まれると、意図しない方が採用されることがある。
+// 確実に紐づけたい場合は、ルート側に affKey を設定して affiliateForKey を使うこと。
+function affiliateFor(candidateNames){
+  if(!candidateNames) return null;
+  const names_ = Array.isArray(candidateNames) ? candidateNames : [candidateNames];
+  if(names_.length === 0) return null;
   const links = (affiliates && affiliates.links) || {};
   const names = (affiliates && affiliates.names) || {};
-  const shortName = cardName.split("（")[0];
 
   let best = null, bestLen = -1;
-  Object.keys(links).forEach(slug => {
-    const entry = links[slug];
-    const url = entry && (typeof entry === "string" ? entry : entry.url);
-    if(!url) return;
-    const name = names[slug] || AFFILIATE_SLUG_FALLBACK_NAMES[slug] || slug;
-    const matches = cardName.includes(name) || name.includes(cardName) || cardName.includes(name.split("（")[0]) || name.includes(shortName);
-    if(matches && name.length > bestLen){
-      best = url;
-      bestLen = name.length;
-    }
+  names_.forEach(cardName => {
+    if(!cardName) return;
+    const shortName = cardName.split("（")[0];
+    Object.keys(links).forEach(slug => {
+      const entry = links[slug];
+      const url = entry && (typeof entry === "string" ? entry : entry.url);
+      if(!url) return;
+      const name = names[slug] || AFFILIATE_SLUG_FALLBACK_NAMES[slug] || slug;
+      const matches = cardName.includes(name) || name.includes(cardName) || cardName.includes(name.split("（")[0]) || name.includes(shortName);
+      if(matches && name.length > bestLen){
+        best = url;
+        bestLen = name.length;
+      }
+    });
   });
   return best;
 }
 
-// 「公式」＋「申し込み」を並べたリンク列を返す
-function linkRowHtml(officialUrl, cardName, articleUrl){
-  const aff = affiliateFor(cardName);
+// 「公式」＋「申し込み」を並べたリンク列を返す。
+// affKey が指定されていれば完全一致（affiliateForKey）を最優先し、
+// 無ければ starters（実際の起点カード名一覧）で安全側のあいまい一致にフォールバックする。
+function linkRowHtml(officialUrl, cardName, articleUrl, affKey, starters){
+  const candidateNames = starters ? Object.keys(starters) : [cardName];
+  const aff = (affKey && affiliateForKey(affKey)) || affiliateFor(candidateNames);
   const parts = [];
   if(articleUrl){
     parts.push(`<a class="src-link" href="${articleUrl}">詳しく解説 →</a>`);
@@ -1073,6 +1098,7 @@ const DEFAULT_ROUTES = [
   },
   {
     name: "ANA Pay → 楽天Edy → 楽天キャッシュ → 楽天ペイ",
+    affKey: "daiichi-neobank-debit-premium",
     howto: {
       prep: [
         "ANA Payにチャージできるクレカ／デビットを用意する（リクルートカード1.2%、カテエネBANKデビット2.0%、第一生命NEOBANKデビット Premium 1.5%など。※エポスカードは2026年8月からANA Payチャージが対象外のため起点に使えません）",
@@ -1354,6 +1380,7 @@ const DEFAULT_ROUTES = [
   },
   {
     name: "JQセゾン(JCB) → ファミペイ → JAL Pay → IDARE → ワンバンク",
+    affKey: "idare",
     pays: ["IDARE", "ワンバンク"],
     total: "合計 1.6%＋IDARE残高保有ボーナス（年率最大2.2%）",
     steps: [
@@ -1404,6 +1431,7 @@ const DEFAULT_ROUTES = [
   },
   {
     name: "JQセゾン(JCB) → ファミペイ → JAL Pay → IDARE → モバイルSuica",
+    affKey: "idare",
     pays: ["IDARE", "モバイルSuica"],
     total: "合計 1.6%＋IDARE残高保有ボーナス（年率最大2.2%）",
     steps: [
@@ -1454,6 +1482,7 @@ const DEFAULT_ROUTES = [
   },
   {
     name: "JQセゾン(JCB) → ファミペイ → JAL Pay → IDARE → Amazonギフト券",
+    affKey: "idare",
     pays: ["IDARE", "Amazonギフト券"],
     total: "合計 1.6%＋IDARE残高保有ボーナス（年率最大2.2%）",
     steps: [
@@ -5952,7 +5981,7 @@ function renderRoutes(){
       ${r.caution ? `<div class="route-caution">${r.caution}</div>` : ""}
       ${noteHtml(r.note)}
       ${sourceMetaHtml(r.note)}
-      ${linkRowHtml(r.url, r.name, r.articleUrl)}
+      ${linkRowHtml(r.url, r.name, r.articleUrl, r.affKey, r.starters)}
       <button class="route-save-btn ${isRouteFav(r.name) ? 'saved' : ''}" data-route-save="${r.name}">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21 12 16l-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16Z"/></svg>
         ${isRouteFav(r.name) ? '保存済み ✓' : 'このルートを保存する'}
@@ -6951,7 +6980,7 @@ function diagPickHtml(pick){
     return `<div class="diag-pick">
       <div class="diag-pick-top"><span class="diag-pick-name">${r.name}</span><span class="diag-pick-rate">${r.total}</span></div>
       <div class="diag-pick-reason">${pick.reason || (r.starter || "")}</div>
-      ${linkRowHtml(r.url, r.name)}
+      ${linkRowHtml(r.url, r.name, r.articleUrl, r.affKey, r.starters)}
     </div>`;
   }
   if(pick.kind === "invest"){
