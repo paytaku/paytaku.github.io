@@ -20,11 +20,11 @@
         var entry = links[key];
         if(!entry) return;
 
-        var href, type, via;
+        var href, type, via, code;
         if(typeof entry === 'string'){
           href = entry; type = 'direct';
         } else {
-          href = entry.url; type = entry.type || 'direct'; via = entry.via;
+          href = entry.url; type = entry.type || 'direct'; via = entry.via; code = entry.code;
         }
         if(href) a.setAttribute('href', href);
 
@@ -32,6 +32,28 @@
         if(type === 'point' && via && !a.hasAttribute('data-aff-keeptext')){
           var pr = /（PR）\s*$/.test(a.textContent) ? '（PR）' : '';
           a.textContent = via + '経由で申し込む' + (pr ? ' ' + pr : '');
+        }
+
+        /* 紹介コード：ポイントサイト経由＋コード登録があれば、ボタンの直後に
+           「紹介リンク・紹介コード・バナー」の3点セットとして自動表示する。
+           記事HTML側の修正は不要（affiliates.jsonにcodeを登録するだけで反映される）。 */
+        var existingHint = a.nextElementSibling;
+        var hasHint = existingHint && existingHint.classList && existingHint.classList.contains('aff-code-hint');
+        if(type === 'point' && code){
+          var hint = hasHint ? existingHint : document.createElement('div');
+          hint.className = 'aff-code-hint';
+          hint.innerHTML = '紹介コード：<code class="aff-code-value">' + code.replace(/</g,'&lt;') + '</code>'
+            + '<button type="button" class="aff-code-copy">コピー</button>';
+          if(!hasHint) a.insertAdjacentElement('afterend', hint);
+          var btn = hint.querySelector('.aff-code-copy');
+          btn.onclick = function(){
+            navigator.clipboard && navigator.clipboard.writeText(code).then(function(){
+              btn.textContent = 'コピーしました';
+              setTimeout(function(){ btn.textContent = 'コピー'; }, 1500);
+            });
+          };
+        } else if(hasHint){
+          existingHint.remove(); // コードが無くなった場合は表示も消す
         }
       });
 
