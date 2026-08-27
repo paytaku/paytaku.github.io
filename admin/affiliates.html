@@ -187,16 +187,19 @@ h1{font-size:20px;font-weight:900;margin:0 0 4px;}
 
     <div class="gh-card">
       <h2>Personal Access Token（PAT）</h2>
-      <p>GitHubの設定 → Developer settings → Personal access tokens → Tokens (classic) から発行してください。スコープは <strong>repo</strong> だけで大丈夫です。<br>トークンはこのブラウザのlocalStorageにのみ保存されます。GitHubには送信されません。</p>
+      <p>GitHubの設定 → Developer settings → <strong>Fine-grained tokens</strong> から発行してください。<br>
+      ⚠️ 「Tokens (classic)」の <strong>repo</strong> スコープは、このサイトのリポジトリだけでなく、あなたのGitHubアカウントの<strong>他のリポジトリまで含めて</strong>読み書きできてしまいます。万一この端末やブラウザからトークンが漏れた場合の被害を、このサイト1つ分に抑えるため、必ずFine-grained tokenで「Repository access」をこのリポジトリ1つだけに限定し、「Permissions」は Contents: Read and write のみにしてください。<br>
+      有効期限（Expiration）も無期限にはせず、90日など短い期間を選び、切れたら都度発行し直すことをおすすめします。<br>
+      トークンはこのブラウザのlocalStorageにのみ保存されます。GitHubには送信されません。</p>
       <div class="field">
         <label>Personal Access Token</label>
         <div class="pat-wrap">
-          <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+          <input type="password" id="ghToken" placeholder="github_pat_xxxxxxxxxxxxxxxxxxxx">
           <button class="pat-eye" id="patEye" title="表示/非表示">👁</button>
         </div>
         <p class="token-hint">
-          発行手順：GitHub右上アイコン → Settings → Developer settings → Personal access tokens → Tokens (classic) → Generate new token (classic)<br>
-          Expiration: No expiration、スコープ: <strong>repo</strong> にチェック → Generate token
+          発行手順：GitHub右上アイコン → Settings → Developer settings → Personal access tokens → <strong>Fine-grained tokens</strong> → Generate new token<br>
+          Resource owner: 自分のアカウント／Repository access: <strong>Only select repositories</strong>（このリポジトリのみ選択）／Expiration: 90日など短めに／Permissions → Contents: <strong>Read and write</strong> のみ → Generate token
         </p>
       </div>
       <div class="gh-status" id="ghStatus"></div>

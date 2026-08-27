@@ -6,6 +6,19 @@
    JSON取得失敗時はHTMLの元href/文言をそのまま使う（フォールバック）。
    ============================================================ */
 (function(){
+  // href に入れて良いURLか（http/httpsのみ許可）。
+  // affiliates.json は管理画面から自由入力できるため、javascript: 等の危険なスキームが
+  // 紛れ込んでも「申し込む」ボタンを押した一般訪問者側でスクリプトが実行されないようにする。
+  function isSafeHttpUrl(str){
+    if(!str || typeof str !== 'string') return false;
+    try{
+      var u = new URL(str, location.href);
+      return u.protocol === 'http:' || u.protocol === 'https:';
+    }catch(_e){
+      return false;
+    }
+  }
+
   var url = new URL('../affiliates.json', document.currentScript ? document.currentScript.src : location.href);
   fetch(url.href, { cache: 'no-cache' })
     .then(function(r){ return r.ok ? r.json() : null; })
@@ -38,7 +51,7 @@
         } else {
           href = entry.url; type = entry.type || 'direct'; via = entry.via; code = entry.code;
         }
-        if(href) a.setAttribute('href', href);
+        if(href && isSafeHttpUrl(href)) a.setAttribute('href', href);
 
         /* ポイントサイト経由なら文言を差し替え（data-aff-keeptext があれば維持） */
         if(type === 'point' && via && !a.hasAttribute('data-aff-keeptext')){
@@ -119,9 +132,9 @@
         var b    = list[idx] || list[0];
         if(!b) return;
 
-        if(el.tagName === 'A' && b.href) el.setAttribute('href', b.href);
+        if(el.tagName === 'A' && b.href && isSafeHttpUrl(b.href)) el.setAttribute('href', b.href);
         var img = el.tagName === 'IMG' ? el : el.querySelector('img');
-        if(img && b.img){
+        if(img && b.img && isSafeHttpUrl(b.img)){
           img.setAttribute('src', b.img);
         } else if(!b.img){
           var box = el.closest('.lp-banner-box') || el;
@@ -137,7 +150,7 @@
         if(!arr) return;
 
         var list = Array.isArray(arr) ? arr : [arr];
-        var valid = list.filter(function(b){ return b && b.img && b.href; });
+        var valid = list.filter(function(b){ return b && b.img && b.href && isSafeHttpUrl(b.href) && isSafeHttpUrl(b.img); });
         if(!valid.length){
           container.style.display = 'none';
           return;

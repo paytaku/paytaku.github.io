@@ -128,14 +128,16 @@ function linkRowHtml(officialUrl, cardName, articleUrl, affKey, starters){
   const candidateNames = starters ? Object.keys(starters) : [cardName];
   const aff = (affKey && affiliateForKey(affKey)) || affiliateFor(candidateNames);
   const parts = [];
-  if(articleUrl){
-    parts.push(`<a class="src-link" href="${articleUrl}">詳しく解説 →</a>`);
+  // articleUrl/officialUrl はAI取り込みや手動編集で入る可能性がある外部由来の値なので、
+  // href属性に入れる前にスキームを検証（http/https以外は表示しない）し、エスケープする。
+  if(articleUrl && isSafeHttpUrl(articleUrl)){
+    parts.push(`<a class="src-link" href="${escapeAttr(articleUrl)}">詳しく解説 →</a>`);
   }
-  if(officialUrl){
-    parts.push(`<a class="src-link" href="${officialUrl}" target="_blank" rel="noopener noreferrer">公式 ↗</a>`);
+  if(officialUrl && isSafeHttpUrl(officialUrl)){
+    parts.push(`<a class="src-link" href="${escapeAttr(officialUrl)}" target="_blank" rel="noopener noreferrer">公式 ↗</a>`);
   }
-  if(aff){
-    parts.push(`<a class="src-link apply-link" href="${aff}" target="_blank" rel="sponsored noopener noreferrer">申し込み ↗</a>`);
+  if(aff && isSafeHttpUrl(aff)){
+    parts.push(`<a class="src-link apply-link" href="${escapeAttr(aff)}" target="_blank" rel="sponsored noopener noreferrer">申し込み ↗</a>`);
   }
   return parts.length ? `<div class="link-row">${parts.join("")}</div>` : "";
 }
@@ -2419,9 +2421,9 @@ function campaignStatus(card){
 function expiryBadgeHtml(card){
   const st = campaignStatus(card);
   if(st.kind === "permanent") return "";
-  if(st.kind === "expired")   return `<span class="expiry-badge expired">終了（${card.expires}）</span>`;
+  if(st.kind === "expired")   return `<span class="expiry-badge expired">終了（${escapeHtml(card.expires)}）</span>`;
   if(st.kind === "ending")    return `<span class="expiry-badge ending">あと${st.days}日</span>`;
-  return `<span class="expiry-badge active">〜${card.expires.slice(5).replace("-", "/")}</span>`;
+  return `<span class="expiry-badge active">〜${escapeHtml(card.expires.slice(5).replace("-", "/"))}</span>`;
 }
 
 // 終了済みキャンペーンを隠すかどうか（既定は隠す）
@@ -5104,7 +5106,9 @@ function linkHtml(card){
 // JCBのように条件が複雑なカードは、区切りがないと読み飛ばされるため。
 function formatNote(text){
   if(!text) return "";
-  return String(text)
+  // note はAI取り込み・手動編集どちらでも入る「信頼できない文字列」なので、
+  // HTMLとして組み立てる前に必ずエスケープしてから、見出し用の■だけを改行に変換する。
+  return escapeHtml(String(text))
     .replace(/■/g, '<br><span class="note-head">■</span>')
     .replace(/^<br>/, "");
 }
@@ -5125,13 +5129,13 @@ function noteHtml(text, opts){
     return `<div class="${cls}">${full}</div>`;
   }
 
-  const articleLink = (opts && opts.articleUrl)
-    ? `<a href="${opts.articleUrl}" class="note-article-link" target="_blank" rel="noopener noreferrer">くわしい記事を読む ↗</a>`
+  const articleLink = (opts && opts.articleUrl && isSafeHttpUrl(opts.articleUrl))
+    ? `<a href="${escapeAttr(opts.articleUrl)}" class="note-article-link" target="_blank" rel="noopener noreferrer">くわしい記事を読む ↗</a>`
     : "";
 
   return `
     <div class="${cls} note-collapsible">
-      <span class="note-short-text">${short}</span>
+      <span class="note-short-text">${escapeHtml(short)}</span>
       <span class="note-full-text" hidden>${full}</span>
       <button type="button" class="note-toggle-btn">続きを読む</button>
       <span class="note-full-extra" hidden>${articleLink}</span>
@@ -5147,8 +5151,8 @@ function sourceMetaHtml(text){
   const srcMatch  = text.match(/出典:\s*([^］\]]+)/);
   if(!dateMatch && !srcMatch) return "";
   const parts = [];
-  if(dateMatch) parts.push(`<span class="source-date">📅 確認日：${dateMatch[1]}</span>`);
-  if(srcMatch)  parts.push(`<span class="source-label">出典：${srcMatch[1].trim()}</span>`);
+  if(dateMatch) parts.push(`<span class="source-date">📅 確認日：${escapeHtml(dateMatch[1])}</span>`);
+  if(srcMatch)  parts.push(`<span class="source-label">出典：${escapeHtml(srcMatch[1].trim())}</span>`);
   return `<div class="source-meta">${parts.join("")}</div>`;
 }
 
@@ -5229,8 +5233,8 @@ function buildStoreCardEl(store, distanceMeters){
   head.innerHTML = `
     <div class="store-head-icon">${catIconSvg}</div>
     <div class="store-head-mid">
-      <div class="store-name">${store.name}${verifyBadgeHtml("store:" + store.name)}</div>
-      <div class="store-sub">${store.category}${distText ? ` <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg> ${distText}` : ` · ${sorted.length}件のカード`}</div>
+      <div class="store-name">${escapeHtml(store.name)}${verifyBadgeHtml("store:" + store.name)}</div>
+      <div class="store-sub">${escapeHtml(store.category)}${distText ? ` <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg> ${distText}` : ` · ${sorted.length}件のカード`}</div>
     </div>
     <div class="store-head-right">
       <button class="fav-btn${isFav(store.name) ? " on" : ""}" title="よく行く店にする">${isFav(store.name) ? "♥" : "♡"}</button>
@@ -5258,7 +5262,7 @@ function buildStoreCardEl(store, distanceMeters){
   routeBox.innerHTML = `
     <div>
       <div class="store-route-box-label">対応決済（一番お得なカード）</div>
-      <div class="store-route-box-val">${sorted[0] ? sorted[0].method || sorted[0].name : "—"}</div>
+      <div class="store-route-box-val">${escapeHtml(sorted[0] ? sorted[0].method || sorted[0].name : "—")}</div>
     </div>
     <svg class="store-route-box-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
   `;
@@ -5286,8 +5290,8 @@ function buildStoreCardEl(store, distanceMeters){
     const t = document.createElement("div");
     t.className = "store-today";
     t.innerHTML = [
-      ...todays.map(x => `<b>今日は${x.rate}</b>　${x.name}`),
-      ...live.map(x => `<b>クーポン開催中 ${x.rate}</b>　${x.name}`)
+      ...todays.map(x => `<b>今日は${escapeHtml(x.rate)}</b>　${escapeHtml(x.name)}`),
+      ...live.map(x => `<b>クーポン開催中 ${escapeHtml(x.rate)}</b>　${escapeHtml(x.name)}`)
     ].join("<br>");
     options.appendChild(t);
   }
@@ -5300,9 +5304,9 @@ function buildStoreCardEl(store, distanceMeters){
     const y = yenBack(up);
     const aff = affiliateFor(up.name);
     hint.innerHTML = `
-      <div class="upgrade-hint-top-main">持っていない<b>${up.name}</b>なら<b>${up.rate}</b>${y !== null ? `（${y.toLocaleString()}円分）` : ""}</div>
-      ${sorted[0] ? `<div class="upgrade-hint-top-sub">今の1位：${sorted[0].name}　${sorted[0].rate}</div>` : ""}
-      ${aff ? `<a class="src-link apply-link" href="${aff}" target="_blank" rel="sponsored noopener noreferrer">申し込み ↗</a>` : ""}
+      <div class="upgrade-hint-top-main">持っていない<b>${escapeHtml(up.name)}</b>なら<b>${escapeHtml(up.rate)}</b>${y !== null ? `（${y.toLocaleString()}円分）` : ""}</div>
+      ${sorted[0] ? `<div class="upgrade-hint-top-sub">今の1位：${escapeHtml(sorted[0].name)}　${escapeHtml(sorted[0].rate)}</div>` : ""}
+      ${(aff && isSafeHttpUrl(aff)) ? `<a class="src-link apply-link" href="${escapeAttr(aff)}" target="_blank" rel="sponsored noopener noreferrer">申し込み ↗</a>` : ""}
     `;
     options.appendChild(hint);
   }
@@ -5314,18 +5318,18 @@ function buildStoreCardEl(store, distanceMeters){
     opt.innerHTML = `
       <div class="card-option-top">
         <span class="card-option-rank ${i===0 ? "rank-1" : ""}">${i+1}位</span>
-        <span class="card-option-name">${c.name}</span>
+        <span class="card-option-name">${escapeHtml(c.name)}</span>
         ${c.isRoute ? `<span class="universal-tag route-tag">経由ルート</span>` : (c.universal ? `<span class="universal-tag">全店共通</span>` : "")}
         ${expiryBadgeHtml(c)}
-        <span class="card-option-rate">${displayRate(c)}${(()=>{const y=yenBack(c); return y!==null ? `<span class="rate-yen">${y.toLocaleString()}円</span>` : "";})()}</span>
+        <span class="card-option-rate">${escapeHtml(displayRate(c))}${(()=>{const y=yenBack(c); return y!==null ? `<span class="rate-yen">${y.toLocaleString()}円</span>` : "";})()}</span>
         <button class="icon-btn edit-card-btn" title="編集">✎</button>
         <button class="icon-btn delete-card-btn" title="削除">🗑</button>
       </div>
-      <div class="card-option-method">${c.method || ""}</div>
-      ${c.shutdownWarn ? `<div class="route-shutdown-warn" style="margin:4px 0 2px;"><b>⚠️ 終了予定</b>　${c.shutdownWarn.replace('⚠️ ', '').replace(/^終了予定。/, '')}</div>` : ""}
+      <div class="card-option-method">${escapeHtml(c.method || "")}</div>
+      ${c.shutdownWarn ? `<div class="route-shutdown-warn" style="margin:4px 0 2px;"><b>⚠️ 終了予定</b>　${escapeHtml(c.shutdownWarn.replace('⚠️ ', '').replace(/^終了予定。/, ''))}</div>` : ""}
       ${/【変動が大きい案件】/.test(c.note || "") ? `<div class="volatile-flag">📈 還元率の変動が大きい案件です。購入直前に必ず現在の値を確認してください。</div>` : ""}
       ${c.note ? noteHtml(c.note) : ""}
-      ${c.articleUrl ? `<a href="${c.articleUrl}" class="card-article-btn" target="_blank" rel="noopener noreferrer">📖 くわしい記事を読む ↗</a>` : ""}
+      ${(c.articleUrl && isSafeHttpUrl(c.articleUrl)) ? `<a href="${escapeAttr(c.articleUrl)}" class="card-article-btn" target="_blank" rel="noopener noreferrer">📖 くわしい記事を読む ↗</a>` : ""}
       ${freshnessHtml(c.note)}
       ${linkHtml(c)}
     `;
@@ -5361,7 +5365,7 @@ function buildStoreCardEl(store, distanceMeters){
     if(store.excludes.includes("transit")) labels.push("Suica・ICOCAなどの交通系IC");
     const note = document.createElement("div");
     note.className = "cannot-use";
-    note.innerHTML = `使えません：${labels.join("／")}${store.acceptNote ? `<br><span class="cannot-use-ok">${store.acceptNote}</span>` : ""}`;
+    note.innerHTML = `使えません：${labels.join("／")}${store.acceptNote ? `<br><span class="cannot-use-ok">${escapeHtml(store.acceptNote)}</span>` : ""}`;
     options.appendChild(note);
   }
 
@@ -5967,10 +5971,10 @@ function renderEntryChecks(){
     el.innerHTML = `
       <button class="entry-check" aria-pressed="${done}">${done ? "✓" : ""}</button>
       <div class="entry-body">
-        <div class="entry-label">${i.label}</div>
-        <div class="entry-sub">${i.sub}</div>
+        <div class="entry-label">${escapeHtml(i.label)}</div>
+        <div class="entry-sub">${escapeHtml(i.sub)}</div>
       </div>
-      ${i.url ? `<a class="src-link" href="${i.url}" target="_blank" rel="noopener noreferrer">開く ↗</a>` : ""}
+      ${(i.url && isSafeHttpUrl(i.url)) ? `<a class="src-link" href="${escapeAttr(i.url)}" target="_blank" rel="noopener noreferrer">開く ↗</a>` : ""}
     `;
     el.querySelector(".entry-check").addEventListener("click", ()=>{
       if(entryDone.has(i.key)) entryDone.delete(i.key); else entryDone.add(i.key);
@@ -5995,13 +5999,13 @@ function renderPicks(){
     el.className = "pick-card";
     el.innerHTML = `
       <div class="pick-top">
-        <span class="pick-name">${p.name}</span>
-        <span class="pick-rate">${p.rate}</span>
+        <span class="pick-name">${escapeHtml(p.name)}</span>
+        <span class="pick-rate">${escapeHtml(p.rate)}</span>
         <button class="icon-btn edit-pick-btn" title="編集">✎</button>
         <button class="icon-btn delete-pick-btn" title="削除">🗑</button>
       </div>
-      <div class="pick-period">${p.period}　${expiryBadgeHtml(p)}</div>
-      <ol class="pick-steps">${p.how.map(h => `<li>${h}</li>`).join("")}</ol>
+      <div class="pick-period">${escapeHtml(p.period)}　${expiryBadgeHtml(p)}</div>
+      <ol class="pick-steps">${p.how.map(h => `<li>${escapeHtml(h)}</li>`).join("")}</ol>
       ${noteHtml(p.note)}
       ${linkRowHtml(p.url, p.name)}
     `;
@@ -6067,7 +6071,7 @@ function renderCampaignHero(){
   const h = heroes[heroIdx] || heroes[0];
 
   // 期間テキスト整形
-  const periodText = h.period || "—";
+  const periodText = escapeHtml(h.period || "—");
   const now = new Date();
   const updStr = `最終更新：${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,"0")}/${String(now.getDate()).padStart(2,"0")}`;
   const el = document.getElementById("cmpLastUpdated");
@@ -6081,8 +6085,8 @@ function renderCampaignHero(){
         </div>
         <div class="cmp-hero-body">
           <span class="cmp-hero-badge">おすすめ</span>
-          <div class="cmp-hero-title">${h.name}</div>
-          <div class="cmp-hero-desc">${h.how && h.how.length ? h.how[0] : ""}</div>
+          <div class="cmp-hero-title">${escapeHtml(h.name)}</div>
+          <div class="cmp-hero-desc">${escapeHtml(h.how && h.how.length ? h.how[0] : "")}</div>
         </div>
         <svg class="cmp-hero-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
       </div>
@@ -6099,15 +6103,24 @@ function renderCampaignHero(){
         <div class="cmp-meta-divider"></div>
         <div class="cmp-meta-item">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-          <span>${h.rate || "—"}</span>
+          <span>${escapeHtml(h.rate || "—")}</span>
         </div>
       </div>
-      <button class="cmp-hero-cta" onclick="window.open('${h.url || "#"}','_blank')">
+      <button class="cmp-hero-cta" data-hero-url="${escapeAttr(isSafeHttpUrl(h.url) ? h.url : "")}">
         このキャンペーンをチェックする
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
       </button>
     </div>
   `;
+  // onclick文字列にURLを直接埋め込むと属性エスケープが崩れた際にスクリプト実行につながるため、
+  // data属性で受け渡してからJSでイベントを登録する。
+  const heroCta = wrap.querySelector(".cmp-hero-cta");
+  if(heroCta){
+    heroCta.addEventListener("click", ()=>{
+      const url = heroCta.dataset.heroUrl;
+      if(url) window.open(url, "_blank", "noopener,noreferrer");
+    });
+  }
 
   dots.innerHTML = heroes.map((_, i) =>
     `<div class="cmp-dot${i===heroIdx?" active":""}" data-i="${i}"></div>`
@@ -6145,16 +6158,16 @@ function renderCampaignRanking(){
   ];
 
   list.innerHTML = ranked.map(({p, v, isPercent}, i) => `
-    <div class="cmp-rank-card" data-slug="${p.slug || ""}" style="cursor:pointer;">
+    <div class="cmp-rank-card" data-slug="${escapeAttr(p.slug || "")}" style="cursor:pointer;">
       <div class="cmp-rank-badge" style="background:${RANK_COLORS[i]};">
         <span style="width:16px;height:16px;display:flex;align-items:center;justify-content:center;">${RANK_ICONS[i]}</span>
         <span>${i+1}</span>
       </div>
       <div class="cmp-rank-svc-icon">${SVC_ICONS[i]}</div>
       <div class="cmp-rank-mid">
-        <div class="cmp-rank-name">${p.name.slice(0, 20)}${p.name.length>20?"…":""}</div>
+        <div class="cmp-rank-name">${escapeHtml(p.name.slice(0, 20))}${p.name.length>20?"…":""}</div>
         <div class="cmp-rank-stars">★★★★${i===0?"★":"☆"} ${(4.8-i*0.2).toFixed(1)}</div>
-        <div class="cmp-rank-desc">${p.how && p.how[0] ? p.how[0].slice(0,24)+"…" : ""}</div>
+        <div class="cmp-rank-desc">${p.how && p.how[0] ? escapeHtml(p.how[0].slice(0,24))+"…" : ""}</div>
       </div>
       <div class="cmp-rank-right">
         <div class="cmp-rank-label">最大</div>
@@ -6167,10 +6180,13 @@ function renderCampaignRanking(){
 
   // カード（＞マーク含む）をタップすると、articles/ 配下の静的記事ページへ遷移する。
   // ハッシュルーティングだとクローラーから見て「別ページ」と認識されにくいため、実ファイルへ直接飛ばす。
+  // slugは管理画面から自由入力できるため、英数字・ハイフン・アンダースコアのみを許可し、
+  // パストラバーサル（../等）や別オリジンへの誘導に使われないようにする。
+  const SAFE_SLUG = /^[A-Za-z0-9_-]+$/;
   list.querySelectorAll(".cmp-rank-card").forEach(card => {
     card.addEventListener("click", () => {
       const slug = card.dataset.slug;
-      if(slug) location.href = `articles/${slug}.html`;
+      if(slug && SAFE_SLUG.test(slug)) location.href = `articles/${slug}.html`;
     });
   });
 }
@@ -6212,19 +6228,19 @@ function renderCampaigns(){
 
     el.innerHTML = `
       <div class="campaign-card-top">
-        <span class="campaign-store">${store.name}</span>
+        <span class="campaign-store">${escapeHtml(store.name)}</span>
         ${expiryBadgeHtml(card)}
-        <span class="campaign-rate">${card.rate}</span>
+        <span class="campaign-rate">${escapeHtml(card.rate)}</span>
       </div>
-      <div class="campaign-cardname">${card.name}　／　${card.method || ""}</div>
+      <div class="campaign-cardname">${escapeHtml(card.name)}　／　${escapeHtml(card.method || "")}</div>
       <div class="campaign-date-row">
-        ${card.expires ? `<span class="campaign-date-item"><span class="campaign-date-label">終了日</span>${card.expires}</span>` : `<span class="campaign-date-item"><span class="campaign-date-label">期間</span>常設</span>`}
+        ${card.expires ? `<span class="campaign-date-item"><span class="campaign-date-label">終了日</span>${escapeHtml(card.expires)}</span>` : `<span class="campaign-date-item"><span class="campaign-date-label">期間</span>常設</span>`}
         ${checkedMeta || ""}
       </div>
       ${card.note ? noteHtml(card.note, {className: "campaign-note"}) : ""}
       <div class="link-row">
-        ${card.url ? `<a class="src-link campaign-link" href="${card.url}" target="_blank" rel="noopener noreferrer">キャンペーンを見る ↗</a>` : ""}
-        ${affiliateFor(card.name) ? `<a class="src-link apply-link" href="${affiliateFor(card.name)}" target="_blank" rel="sponsored noopener noreferrer">申し込み ↗</a>` : ""}
+        ${(card.url && isSafeHttpUrl(card.url)) ? `<a class="src-link campaign-link" href="${escapeAttr(card.url)}" target="_blank" rel="noopener noreferrer">キャンペーンを見る ↗</a>` : ""}
+        ${(affiliateFor(card.name) && isSafeHttpUrl(affiliateFor(card.name))) ? `<a class="src-link apply-link" href="${escapeAttr(affiliateFor(card.name))}" target="_blank" rel="sponsored noopener noreferrer">申し込み ↗</a>` : ""}
       </div>
     `;
     list.appendChild(el);
@@ -6450,13 +6466,13 @@ function starterGainHtml(route){
   const got = amt ? Math.floor(amt * w.base / 100) : null;
   if(w.base === 0){
     return `<div class="starter-gain is-zero">
-      <span class="starter-gain-label">${w.starter.name}を起点にした場合</span>
-      このルートのチャージ分にはポイントが付きません。${w.starter.note || ""}
+      <span class="starter-gain-label">${escapeHtml(w.starter.name)}を起点にした場合</span>
+      このルートのチャージ分にはポイントが付きません。${escapeHtml(w.starter.note || "")}
     </div>`;
   }
   return `<div class="starter-gain">
-    <span class="starter-gain-label">${w.starter.name}を起点にした場合</span>
-    チャージ段階で <b>${w.starter.pt}が${w.base}%</b>${got !== null ? `（${amt.toLocaleString()}円で${got.toLocaleString()}pt）` : ""} 貯まります。
+    <span class="starter-gain-label">${escapeHtml(w.starter.name)}を起点にした場合</span>
+    チャージ段階で <b>${escapeHtml(w.starter.pt)}が${w.base}%</b>${got !== null ? `（${amt.toLocaleString()}円で${got.toLocaleString()}pt）` : ""} 貯まります。
   </div>`;
 }
 
@@ -6485,10 +6501,10 @@ function splitHtml(route){
     const rate = effectiveSplitRate(s);
     const got = amt ? Math.floor(amt * rate / 100) : null;
     return `<div class="split-row">
-      <span class="split-pt">${s.pt}</span>
+      <span class="split-pt">${escapeHtml(s.pt)}</span>
       <span class="split-rate">${rate}%</span>
       ${got !== null ? `<span class="split-got">${got.toLocaleString()}</span>` : ""}
-      <span class="split-note">${s.note}${rate !== s.rate ? "（楽天ペイ提示条件達成済み）" : ""}</span>
+      <span class="split-note">${escapeHtml(s.note)}${rate !== s.rate ? "（楽天ペイ提示条件達成済み）" : ""}</span>
     </div>`;
   }).join("");
 
@@ -6505,7 +6521,7 @@ function splitHtml(route){
       <span class="split-pt">合計</span>
       <span class="split-rate">${total.toFixed(1)}%</span>
       ${totalGot !== null ? `<span class="split-got">${totalGot.toLocaleString()}</span>` : ""}
-      <span class="split-note">${w.starter ? `${w.starter.name}を起点にした場合` : "各段階の合計"}</span>
+      <span class="split-note">${w.starter ? `${escapeHtml(w.starter.name)}を起点にした場合` : "各段階の合計"}</span>
     </div>
   </div>`;
 }
@@ -6522,13 +6538,13 @@ function howtoHtml(route, idx){
     <div class="howto-body">
       <div class="howto-sec">
         <div class="howto-sec-label">① 事前に用意するもの</div>
-        <ol class="howto-list">${h.prep.map(x => `<li>${x}</li>`).join("")}</ol>
+        <ol class="howto-list">${h.prep.map(x => `<li>${escapeHtml(x)}</li>`).join("")}</ol>
       </div>
       <div class="howto-sec">
         <div class="howto-sec-label">② 毎回の流れ</div>
-        <ol class="howto-list">${h.flow.map(x => `<li>${x}</li>`).join("")}</ol>
+        <ol class="howto-list">${h.flow.map(x => `<li>${escapeHtml(x)}</li>`).join("")}</ol>
       </div>
-      ${h.time ? `<div class="howto-time">⏱ ${h.time}</div>` : ""}
+      ${h.time ? `<div class="howto-time">⏱ ${escapeHtml(h.time)}</div>` : ""}
     </div>
   </div>`;
 }
@@ -6654,6 +6670,9 @@ function renderRoutes(){
     const el = document.createElement("div");
     el.className = "route-card" + (ri === 0 ? " is-top" : "");
     el.dataset.routeName = r.name;
+    // r.name はattribute値としても複数箇所で使うため、属性用に事前にエスケープしておく
+    const rNameAttr = escapeAttr(r.name);
+    const rNameHtml = escapeHtml(r.name);
 
     // ステップのアイコンSVGパス
     const STEP_ICONS = {
@@ -6676,9 +6695,10 @@ function renderRoutes(){
     let chainHtml = "";
     steps.forEach((s, i) => {
       const label = withStarterName(s);
+      const labelHtml = escapeHtml(label);
       const iconPath = Object.keys(STEP_ICONS).find(k => label.includes(k));
       const svg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${STEP_ICONS[iconPath] || DEFAULT_ICON}</svg>`;
-      chainHtml += `<div class="route-chain-step"><div class="route-chain-icon">${svg}</div><div class="route-chain-label">${label}</div></div>`;
+      chainHtml += `<div class="route-chain-step"><div class="route-chain-icon">${svg}</div><div class="route-chain-label">${labelHtml}</div></div>`;
       if(i < steps.length - 1){
         chainHtml += `<div class="route-chain-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>`;
       }
@@ -6691,37 +6711,37 @@ function renderRoutes(){
 
     // 金額ベースの獲得ポイント
     const gainSection = starterGainHtml(r);
-    const gainsHtml = r.gains && r.gains.length ? `<ul class="route-gains">${r.gains.map(g=>`<li>${g}</li>`).join("")}</ul>` : "";
+    const gainsHtml = r.gains && r.gains.length ? `<ul class="route-gains">${r.gains.map(g=>`<li>${escapeHtml(g)}</li>`).join("")}</ul>` : "";
 
     el.innerHTML = `
       ${ri === 0 ? `<div class="route-top-badge">🏆 今いちばんお得なルート</div>` : ""}
       <div class="route-top">
-        <span class="route-name">${r.name}${verifyBadgeHtml("route:" + r.name)}</span>
+        <span class="route-name">${rNameHtml}${verifyBadgeHtml("route:" + r.name)}</span>
         <button class="route-fav-btn${isRouteFav(r.name) ? " is-fav" : ""}" title="${isRouteFav(r.name) ? "お気に入りから外す" : "お気に入りに追加"}">
           <svg viewBox="0 0 24 24"><path d="M12 3.5l2.65 5.38 5.94.86-4.3 4.19 1.02 5.92L12 17.05l-5.31 2.8 1.02-5.92-4.3-4.19 5.94-.86L12 3.5z"/></svg>
         </button>
         <button class="icon-btn edit-route-btn" title="ルートを編集">✎</button>
         <button class="icon-btn delete-route-btn" title="ルートを削除">🗑</button>
       </div>
-      ${r.shutdownWarn ? `<div class="route-shutdown-warn"><b>⚠️ 終了予定</b>　${r.shutdownWarn.replace('⚠️ ', '')}</div>` : ""}
+      ${r.shutdownWarn ? `<div class="route-shutdown-warn"><b>⚠️ 終了予定</b>　${escapeHtml(r.shutdownWarn.replace('⚠️ ', ''))}</div>` : ""}
       <div class="route-chain">${chainHtml}</div>
       <div class="route-rate-row">
         <span class="route-rate-row-label">合計還元率
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 2-3 4"/><path d="M12 17h.01"/></svg>
         </span>
         <span class="route-rate-big">${totalNum}<span>%</span></span>
-        <span class="route-rate-sub">${gainSection ? "" : totalStr.replace(/[\d.]+%/, "").trim()}</span>
+        <span class="route-rate-sub">${gainSection ? "" : escapeHtml(totalStr.replace(/[\d.]+%/, "").trim())}</span>
       </div>
       ${gainSection}
       ${gainsHtml}
       ${splitHtml(r)}
-      ${r.starter ? `<div class="route-starter"><span class="route-starter-label">起点カード</span>${r.starter}</div>` : ""}
+      ${r.starter ? `<div class="route-starter"><span class="route-starter-label">起点カード</span>${escapeHtml(r.starter)}</div>` : ""}
       ${howtoHtml(r, ri)}
-      ${r.caution ? `<div class="route-caution">${r.caution}</div>` : ""}
+      ${r.caution ? `<div class="route-caution">${escapeHtml(r.caution)}</div>` : ""}
       ${noteHtml(r.note)}
       ${sourceMetaHtml(r.note)}
       ${linkRowHtml(r.url, r.name, r.articleUrl, r.affKey, r.starters)}
-      <button class="route-save-btn ${isRouteFav(r.name) ? 'saved' : ''}" data-route-save="${r.name}">
+      <button class="route-save-btn ${isRouteFav(r.name) ? 'saved' : ''}" data-route-save="${rNameAttr}">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21 12 16l-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16Z"/></svg>
         ${isRouteFav(r.name) ? '保存済み ✓' : 'このルートを保存する'}
       </button>
@@ -7162,7 +7182,7 @@ function toggleVerified(key){
 // 確認済みバッジ／編集モード時のチェックボックスHTML
 function verifyBadgeHtml(key){
   const on = isVerified(key);
-  return `<button type="button" class="verify-badge${on ? " verified" : ""}" data-verify-key="${key}" title="目視確認済み">${on ? "✓ 確認済" : "○ 未確認"}</button>`;
+  return `<button type="button" class="verify-badge${on ? " verified" : ""}" data-verify-key="${escapeAttr(key)}" title="目視確認済み">${on ? "✓ 確認済" : "○ 未確認"}</button>`;
 }
 // 確認状態はDOMだけをその場で更新。大きな一覧を再描画しないので軽快に切り替わる。
 document.addEventListener("click", (e)=>{
@@ -7241,6 +7261,16 @@ async function runAiImport(input, statusEl, previewEl, saveBtn){
     return;
   }
 
+  // Worker側で編集モードのパスワードを検証してもらうため、毎回パスワードを取得して送る。
+  // （画面上のボタンを隠しているだけでは、開発者ツールから直接この関数を呼べてしまい
+  //   認証にならないため。）
+  const editorPassword = await ensureAiImportSecret();
+  if(editorPassword === null){
+    statusEl.className = "ai-status err";
+    statusEl.textContent = "認証できなかったため中止しました。";
+    return;
+  }
+
   try{
     const res = await fetch(window.AI_IMPORT_ENDPOINT, {
       method: "POST",
@@ -7248,7 +7278,8 @@ async function runAiImport(input, statusEl, previewEl, saveBtn){
       body: JSON.stringify({
         input,
         categories: CATEGORY_LIST,
-        storeNames: STORES.map(s=>s.name)
+        storeNames: STORES.map(s=>s.name),
+        password: editorPassword
       })
     });
     const data = await res.json().catch(()=>null);
@@ -7264,18 +7295,30 @@ async function runAiImport(input, statusEl, previewEl, saveBtn){
     const conf = { high: "確度: 高", medium: "確度: 中", low: "確度: 低" }[r.confidence] || "";
     statusEl.textContent = `読み取りました（${conf}）。内容を確認して保存してください。`;
 
+    // r.* は「AIが第三者ページの本文を読んで生成した値」であり、信頼できない外部由来の文字列として扱う。
+    // 本文にプロンプトインジェクションが仕込まれていた場合、AIがHTML/scriptを含む文字列を返す可能性が
+    // あるため、innerHTMLに入れる前に必ずエスケープする（URLはスキームも検証する）。
     const row = (k, v) => v
-      ? `<div class="ai-preview-row"><div class="ai-preview-key">${k}</div><div class="ai-preview-val">${v}</div></div>`
+      ? `<div class="ai-preview-row"><div class="ai-preview-key">${escapeHtml(k)}</div><div class="ai-preview-val">${escapeHtml(v)}</div></div>`
+      : "";
+    const safeUrl = isSafeHttpUrl(r.url) ? r.url : "";
+    // 抽出元ページとurlのドメインが一致しない場合、Worker側でr.domainMismatch=trueが
+    // 返ってくる。一般の「⚠ 注意」欄に埋もれさせず、目立つ専用バナーとして出す。
+    const domainMismatchBanner = r.domainMismatch
+      ? `<div class="ai-preview-domain-alert" style="background:#fee2e2;border:2px solid #dc2626;color:#991b1b;padding:10px 12px;border-radius:8px;margin-bottom:8px;font-weight:700;">
+          🚨 抽出元ページと出典URLのドメインが違います。フィッシングサイト等が混入している可能性があるため、リンク先を必ず開いて公式サイトか確認してから保存してください。
+        </div>`
       : "";
     previewEl.innerHTML = `
-      <h4>${r.store || "（店舗名なし）"}</h4>
+      ${domainMismatchBanner}
+      <h4>${escapeHtml(r.store || "（店舗名なし）")}</h4>
       ${row("カテゴリ", r.category)}
       ${row("決済手段", r.card)}
       ${row("還元率", r.rate)}
       ${row("支払い方法", r.method)}
       ${row("終了日", r.expires || "常設（終了日なし）")}
       ${row("補足", r.note)}
-      ${row("出典", r.url ? `<a class="src-link" href="${r.url}" target="_blank" rel="noopener noreferrer">公式 ↗</a>` : "")}
+      ${row("出典", safeUrl ? `<a class="src-link" href="${escapeAttr(safeUrl)}" target="_blank" rel="noopener noreferrer">公式 ↗</a>` : (r.url ? "（出典URLの形式が不正なため非表示にしました）" : ""))}
       ${r.warning ? row("⚠ 注意", r.warning) : ""}
     `;
 
@@ -7289,7 +7332,9 @@ async function runAiImport(input, statusEl, previewEl, saveBtn){
       }
       const card = {
         name: r.card, rate: r.rate, method: r.method, note: r.note,
-        url: r.url || undefined,
+        // 保存時点でもURLのスキームを検証しておく（http/https以外・不正な値は保存しない）。
+        // 表示側のエスケープと合わせた二重の防御。
+        url: isSafeHttpUrl(r.url) ? r.url : undefined,
         expires: (r.expires && r.expires !== "null") ? r.expires : undefined
       };
       const idx = store.cards.findIndex(c => c.name === r.card);
@@ -8385,6 +8430,17 @@ function escapeHtml(str){
 function escapeAttr(str){
   return String(str).replace(/&/g,"&amp;").replace(/"/g,"&quot;");
 }
+// href属性に入れて問題ないURLか（http/httpsのみ許可）。
+// javascript: 等の危険なスキームや、AIの誤生成による不正な文字列を弾くためのチェック。
+function isSafeHttpUrl(str){
+  if(!str || typeof str !== "string") return false;
+  try{
+    const u = new URL(str, location.href);
+    return u.protocol === "http:" || u.protocol === "https:";
+  }catch(_e){
+    return false;
+  }
+}
 
 // ---- チャージルートの追加・編集・削除 ----
 // 構造が複雑（howto/split/starters等のネスト）なため、店舗編集のような項目別フォームではなく
@@ -8584,6 +8640,9 @@ function deleteCard(store, card){
 //     .then(b => [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join(""))
 const EDITOR_PASSWORD_HASH = "d58217ab8d1a67569277d17e6f84373a10e43fb3414a88bdbecb575480c5f79f"; // ← 64文字のハッシュ値を入れる。未設定のままだと誰でも編集モードに入れてしまいます
 const EDITOR_AUTH_KEY = "kangenchou_editor_ok";
+// AI取り込み（Cloudflare Worker）の認証に使う。sessionStorage等には保存せず、
+// このタブを開いている間だけメモリ上に保持する（平文パスワードを永続化しないため）。
+let editorPlaintextPassword = null;
 
 async function sha256Hex(str){
   const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
@@ -8606,8 +8665,33 @@ async function ensureEditorAuth(){
     alert("パスワードが違います");
     return false;
   }
+  editorPlaintextPassword = pw; // メモリ上にのみ保持（sessionStorageや変数の永続化はしない）
   try{ sessionStorage.setItem(EDITOR_AUTH_KEY, "1"); } catch {}
   return true;
+}
+
+// AI取り込み（Cloudflare Worker呼び出し）専用の認証。
+// 「編集モードに入れているか」だけではWorker側の本人確認にはならない（画面上のボタン表示を
+// 隠しているだけで、誰でもJSから直接関数を呼べてしまうため）。そこでWorker呼び出し時は、
+// 編集モードのパスワードそのもの（平文）を毎回リクエストに含めて送り、Worker側で
+// そのSHA-256ハッシュがEDITOR_PASSWORD_HASHと一致するかを検証してもらう。
+// パスワードはメモリ上にのみ保持し、ページを再読み込みすれば消える。
+async function ensureAiImportSecret(){
+  if(editorPlaintextPassword) return editorPlaintextPassword;
+  if(!EDITOR_PASSWORD_HASH){
+    console.warn("EDITOR_PASSWORD_HASHが未設定のため、AI取り込みの認証をスキップします。");
+    return "";
+  }
+  const pw = prompt("AI取り込み機能を使うには、編集モードのパスワードを入力してください");
+  if(pw === null) return null;
+  const hash = await sha256Hex(pw);
+  if(hash !== EDITOR_PASSWORD_HASH){
+    alert("パスワードが違います");
+    return null;
+  }
+  editorPlaintextPassword = pw;
+  try{ sessionStorage.setItem(EDITOR_AUTH_KEY, "1"); } catch {}
+  return pw;
 }
 
 document.getElementById("editModeBtn").addEventListener("click", async ()=>{
@@ -8736,7 +8820,7 @@ document.getElementById("githubSettingsBtn").addEventListener("click", ()=>{
       { key: "username", label: "GitHubユーザー名", value: cfg.username || "" },
       { key: "repo", label: "リポジトリ名（例：kangenchou）", value: cfg.repo || "" },
       { key: "branch", label: "ブランチ名（通常は main）", value: cfg.branch || "main" },
-      { key: "token", label: "Personal Access Token（Contents: Read and write 権限）", type: "password", value: cfg.token || "" },
+      { key: "token", label: "Personal Access Token（Fine-grained・対象リポジトリ限定・Contents: Read and write のみ・有効期限は短めに）", type: "password", value: cfg.token || "" },
     ],
     (vals)=>{
       saveGithubConfig(vals);

@@ -5,3 +5,17 @@ compatibility_date = "2026-08-01"
 # GEMINI_API_KEY はここには書かない。
 # デプロイ後に `wrangler secret put GEMINI_API_KEY` で設定する（README参照）。
 # Google AI Studio（https://aistudio.google.com/apikey）でクレジットカード登録なしに発行できる。
+
+# EDITOR_PASSWORD_HASH も同様にここには書かない。
+# デプロイ後に `wrangler secret put EDITOR_PASSWORD_HASH` で設定する（README参照）。
+# scripts/app.js の EDITOR_PASSWORD_HASH と必ず同じ値（SHA-256の64文字ハッシュ）にすること。
+# これが無いとWorkerが誰からのリクエストも受け付けなくなる（安全側の初期状態）。
+
+# 【必須】パスワードの総当たり攻撃対策・レート制限にKV Namespaceを使う。
+# これが無いとWorkerが起動時エラーを返し、AI取り込み機能が一切使えない（安全側の初期状態）。
+# 手順（README「6.5」も参照）：
+#   1. npx wrangler kv namespace create RATE_LIMIT_KV
+#   2. 出力された id を、下の "ここに..." の部分に書き換える
+[[kv_namespaces]]
+binding = "RATE_LIMIT_KV"
+id = "ここにwrangler kv namespace createの出力idを貼る"

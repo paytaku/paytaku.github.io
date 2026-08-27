@@ -7,6 +7,14 @@
 //   その本文をGeminiに読ませて構造化データを抽出させる方式にしている。
 //   これなら検索課金は一切発生しない。
 //
+// ⚠️ 認証について：
+//   Originヘッダーのチェックだけでは「本人確認」にはならない（ブラウザ以外からは
+//   Originを自由に偽装できるため）。そのためこのWorkerは、フロント側の編集モードと
+//   同じパスワードのハッシュ（EDITOR_PASSWORD_HASH）を必須のシークレットとして要求し、
+//   リクエストごとに送られてくる平文パスワードのSHA-256ハッシュと突き合わせている。
+//   デプロイ前に必ず `wrangler secret put EDITOR_PASSWORD_HASH` を実行し、
+//   scripts/app.js の EDITOR_PASSWORD_HASH と同じ値を設定してください（README参照）。
+//
 // デプロイ手順は README.md を参照してください。
 
 const ALLOWED_ORIGINS = [
@@ -20,6 +28,15 @@ const ALLOW_LOCALHOST = true;
 
 const GEMINI_MODEL = "gemini-2.5-flash"; // 無料枠対象モデル
 const MAX_PAGE_CHARS = 12000; // Geminiに渡す本文の上限（長すぎるとトークンを消費しすぎる）
+
+// 簡易レート制限・ブルートフォース対策（env.RATE_LIMIT_KVを使用。必須）。
+// 1つのIPからの大量アクセスによるGemini APIクォータの浪費や、パスワードの
+// 総当たり攻撃を防ぐための仕組み。
+const RATE_LIMIT_WINDOW_SECONDS = 3600; // 1時間
+const RATE_LIMIT_MAX_REQUESTS = 20; // 1時間あたりの上限リクエスト数（IPごと）
+const AUTH_FAIL_THRESHOLD = 5; // この回数連続でパスワードを間違えたらロックアウトする
+const AUTH_FAIL_WINDOW_SECONDS = 900; // 失敗カウントの有効期間（15分。この間に成功しなければ蓄積する）
+const AUTH_LOCKOUT_SECONDS = 900; // ロックアウトの継続時間（15分）
 
 const RESPONSE_SCHEMA = {
   type: "OBJECT",
@@ -37,6 +54,83 @@ const RESPONSE_SCHEMA = {
   },
   required: ["store", "card", "confidence"],
 };
+
+async function sha256Hex(str) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+  return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+// タイミング攻撃を避けるため、長さが揃っている前提で定数時間比較する。
+function timingSafeEqual(a, b) {
+  if (typeof a !== "string" || typeof b !== "string" || a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return diff === 0;
+}
+
+// env.RATE_LIMIT_KV を使った、IPごとの簡易レート制限（総リクエスト数）。
+async function checkRateLimit(env, ip) {
+  if (!ip) return true;
+  const key = `rl:${ip}`;
+  let count = 0;
+  try {
+    count = parseInt((await env.RATE_LIMIT_KV.get(key)) || "0", 10) || 0;
+  } catch (_e) {
+    return true; // KV障害時は機能を止めない
+  }
+  if (count >= RATE_LIMIT_MAX_REQUESTS) return false;
+  try {
+    await env.RATE_LIMIT_KV.put(key, String(count + 1), { expirationTtl: RATE_LIMIT_WINDOW_SECONDS });
+  } catch (_e) {
+    /* ignore */
+  }
+  return true;
+}
+
+// このIPが、直近のパスワード連続失敗によってロックアウト中かどうか。
+async function isLockedOut(env, ip) {
+  if (!ip) return false;
+  try {
+    return !!(await env.RATE_LIMIT_KV.get(`lock:${ip}`));
+  } catch (_e) {
+    return false; // KV障害時は機能を止めない
+  }
+}
+
+// パスワード認証の失敗を記録し、閾値を超えたら一定時間ロックアウトする。
+async function recordAuthFailure(env, ip) {
+  if (!ip) return;
+  const key = `fail:${ip}`;
+  try {
+    const count = (parseInt((await env.RATE_LIMIT_KV.get(key)) || "0", 10) || 0) + 1;
+    if (count >= AUTH_FAIL_THRESHOLD) {
+      await env.RATE_LIMIT_KV.put(`lock:${ip}`, "1", { expirationTtl: AUTH_LOCKOUT_SECONDS });
+      await env.RATE_LIMIT_KV.delete(key).catch(() => {});
+    } else {
+      await env.RATE_LIMIT_KV.put(key, String(count), { expirationTtl: AUTH_FAIL_WINDOW_SECONDS });
+    }
+  } catch (_e) {
+    /* ignore */
+  }
+}
+
+// パスワード認証に成功したら、それまでの失敗カウントをリセットする。
+async function clearAuthFailures(env, ip) {
+  if (!ip) return;
+  try {
+    await env.RATE_LIMIT_KV.delete(`fail:${ip}`);
+  } catch (_e) {
+    /* ignore */
+  }
+}
+
+// 抽出元ページ（fetchedUrl）と、AIが返したurlのドメインが一致するかどうか。
+// www. の有無だけの違いは同一とみなすが、それ以外のドメイン違いは
+// フィッシングサイト等が混入した可能性として扱う。
+function hostsMatch(a, b) {
+  const norm = (h) => String(h || "").replace(/^www\./i, "").toLowerCase();
+  return norm(a) === norm(b);
+}
 
 export default {
   async fetch(request, env) {
@@ -57,6 +151,9 @@ export default {
       return new Response(null, { status: 204, headers: cors });
     }
 
+    // ⚠️ Originヘッダーはブラウザ以外（curl・スクリプト等）からは自由に偽装できるため、
+    // これは「本人確認」ではなく簡易的なブラウザ向けフィルタに過ぎない。
+    // 実際の認証は下のパスワード検証で行う。
     if (!originOk) {
       return json({ error: { message: "許可されていないOriginです" } }, 403, cors);
     }
@@ -65,9 +162,53 @@ export default {
       return json({ error: { message: "POSTのみ対応しています" } }, 405, cors);
     }
 
+    if (!env.RATE_LIMIT_KV) {
+      return json(
+        {
+          error: {
+            message:
+              "サーバー側に RATE_LIMIT_KV が設定されていません（README参照）。パスワードの総当たり攻撃を防ぐために必須です。KV Namespaceを作成し、wrangler.tomlにバインドしてください。",
+          },
+        },
+        500,
+        cors
+      );
+    }
+
+    const ip = request.headers.get("CF-Connecting-IP") || "";
+
+    if (await isLockedOut(env, ip)) {
+      return json(
+        {
+          error: {
+            message: "認証に連続して失敗したため、このIPからのアクセスを一時的にブロックしています。しばらく時間をおいてから再度お試しください。",
+          },
+        },
+        429,
+        cors
+      );
+    }
+
+    if (!(await checkRateLimit(env, ip))) {
+      return json({ error: { message: "リクエストが多すぎます。しばらく待ってから再度お試しください。" } }, 429, cors);
+    }
+
     if (!env.GEMINI_API_KEY) {
       return json(
         { error: { message: "サーバー側に GEMINI_API_KEY が設定されていません（wrangler secret put GEMINI_API_KEY）" } },
+        500,
+        cors
+      );
+    }
+
+    if (!env.EDITOR_PASSWORD_HASH) {
+      return json(
+        {
+          error: {
+            message:
+              "サーバー側に EDITOR_PASSWORD_HASH が設定されていません（wrangler secret put EDITOR_PASSWORD_HASH／scripts/app.jsのEDITOR_PASSWORD_HASHと同じ値を設定してください）",
+          },
+        },
         500,
         cors
       );
@@ -79,6 +220,16 @@ export default {
     } catch (_e) {
       return json({ error: { message: "リクエストのJSONが不正です" } }, 400, cors);
     }
+
+    // パスワード検証：フロント側の編集モードと同じパスワードの平文を受け取り、
+    // ここでハッシュ化してEDITOR_PASSWORD_HASHと突き合わせる（本人確認）。
+    const password = (body.password || "").toString();
+    const passwordHash = password ? await sha256Hex(password) : "";
+    if (!password || !timingSafeEqual(passwordHash, env.EDITOR_PASSWORD_HASH)) {
+      await recordAuthFailure(env, ip);
+      return json({ error: { message: "認証に失敗しました（編集モードのパスワードが違います）" } }, 401, cors);
+    }
+    await clearAuthFailures(env, ip);
 
     const input = (body.input || "").toString().trim();
     if (!input) {
@@ -181,6 +332,24 @@ export default {
     // urlが空ならフェッチしたURLを補っておく
     if (!parsed.url && fetchedUrl) parsed.url = fetchedUrl;
     if (parsed.expires === "null" || parsed.expires === "常設") parsed.expires = "";
+
+    // 抽出元ページと、AIが返したurlのドメインが一致するか確認する。
+    // 一致しない場合、フィッシングサイト等の混入の可能性があるため、
+    // confidenceを強制的にlowにし、warningで強く注意を促す（保存前に必ず目視確認させるため）。
+    if (fetchedUrl && parsed.url) {
+      try {
+        const sourceHost = new URL(fetchedUrl).hostname;
+        const targetHost = new URL(parsed.url).hostname;
+        if (!hostsMatch(sourceHost, targetHost)) {
+          parsed.domainMismatch = true;
+          parsed.confidence = "low";
+          const mismatchMsg = `⚠️ 抽出元ページ（${sourceHost}）と出典URL（${targetHost}）のドメインが異なります。フィッシングサイト等が混入している可能性があるため、保存前に必ずリンク先を開いて公式サイトか確認してください。`;
+          parsed.warning = parsed.warning ? `${mismatchMsg} ${parsed.warning}` : mismatchMsg;
+        }
+      } catch (_e) {
+        /* URLとして解釈できない場合は比較をスキップ */
+      }
+    }
 
     return json(parsed, 200, cors);
   },
