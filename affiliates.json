@@ -28,6 +28,23 @@
       "type": "direct",
       "url": "#",
       "isPointSite": true
+    },
+    "pointoinkamu": {
+      "type": "direct",
+      "url": "#",
+      "isPointSite": true
+    },
+    "jcb-card-w": {
+      "type": "direct",
+      "url": "https://ad2.trafficgate.net/t/r/519/1396/jcb-card-w"
+    },
+    "smbc-nl": {
+      "type": "direct",
+      "url": "https://ad2.trafficgate.net/t/r/519/1396/smbc-nl"
+    },
+    "cosmo-the-card-opus": {
+      "type": "direct",
+      "url": "#"
     }
   },
   "names": {
@@ -46,7 +63,7 @@
     "moppy-signup": "モッピー",
     "custom-1787211123687": "小田急ポイントカード",
     "pointoinkamu": "ポイントインカム",
-    "kosumo-za-kaado-oopasu": "コスモ・ザ・カード・オーパス"
+    "cosmo-the-card-opus": "コスモ・ザ・カード・オーパス"
   },
   "banners": {
     "rakuten-card": [
