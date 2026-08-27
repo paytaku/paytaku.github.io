@@ -808,8 +808,8 @@ const INVEST_PLANS = [
   },
 ];
 
-const DEFAULT_ROUTES = [
-  {
+const DEFAULT_ROUTES_MANUAL = [
+{
     name: "V NEOBANKデビット → au PAY → VポイントPay",
     pays: [
       "VポイントPay",
@@ -871,7 +871,7 @@ const DEFAULT_ROUTES = [
       "カテエネBANKデビット": 2.0
     }
   },
-  {
+{
     name: "V NEOBANKデビット → モバイルWAON（イオンでの買い物）",
     pays: [
       "WAON",
@@ -931,7 +931,7 @@ const DEFAULT_ROUTES = [
       "カテエネBANKデビット": 2.0
     }
   },
-  {
+{
     name: "クレカ → ANA Pay → モバイルSuica",
     howto: {
       prep: [
@@ -992,7 +992,7 @@ const DEFAULT_ROUTES = [
       "三井住友カード（NL）": 0
     }
   },
-  {
+{
     name: "J-WESTカード → モバイルICOCA",
     howto: {
       prep: [
@@ -1040,7 +1040,7 @@ const DEFAULT_ROUTES = [
       "J-WESTカード ゴールド": 3
     }
   },
-  {
+{
     name: "クレカ → VポイントPay",
     howto: {
       prep: [
@@ -1096,7 +1096,7 @@ const DEFAULT_ROUTES = [
       "三井住友カード（NL）": 0
     }
   },
-  {
+{
     name: "ANA Pay → 楽天Edy → 楽天キャッシュ → 楽天ペイ",
     affKey: "daiichi-neobank-debit-premium",
     howto: {
@@ -1167,7 +1167,7 @@ const DEFAULT_ROUTES = [
       "三井住友カード（NL）": 0
     }
   },
-  {
+{
     name: "V NEOBANKデビット → au PAY → 請求書払い（税金・公共料金）",
     pays: [
       "au PAY",
@@ -1213,7 +1213,7 @@ const DEFAULT_ROUTES = [
       "カテエネBANKデビット": 2.0
     }
   },
-  {
+{
     name: "三井住友カード → Revolut → ANA Pay / Suica",
     pays: [
       "Revolut",
@@ -1259,7 +1259,7 @@ const DEFAULT_ROUTES = [
       "三井住友カード（NL）": 0.5
     }
   },
-  {
+{
     name: "JALカードSuica → ANA Pay（二刀流）",
     howto: {
       prep: [
@@ -1317,7 +1317,7 @@ const DEFAULT_ROUTES = [
     caution: "マイル重視の構成。現金換算での効率は他ルートに劣る場合がある。また楽天Edy→楽天キャッシュの交換上限が月1万円のため、回せる金額は小さい。",
     starters: {}
   },
-  {
+{
     name: "カテエネBANKデビット → au PAY → VポイントPay",
     pays: [
       "VポイントPay",
@@ -1377,162 +1377,900 @@ const DEFAULT_ROUTES = [
     starters: {
       "カテエネBANKデビット": 2.0
     }
-  },
-  {
-    name: "JQセゾン(JCB) → ファミペイ → JAL Pay → IDARE → ワンバンク",
-    affKey: "idare",
-    pays: ["IDARE", "ワンバンク"],
-    total: "合計 1.6%＋IDARE残高保有ボーナス（年率最大2.2%）",
+  }
+];
+
+const ROUTE_SEGMENTS = {
+  edy_cash_pay: {
+    id: "edy_cash_pay",
+    entryNode: "ANA Pay",
+    entryLabel: "ANA Pay",
+    pays: ["楽天Pay", "楽天Edy", "楽天キャッシュ"],
     steps: [
-      "JQセゾン(JCB)",
-      "ファミペイ",
-      "JAL Pay",
-      "IDARE",
-      "ワンバンク"
+      "楽天Edy",
+      "楽天キャッシュ",
+      "楽天Pay（チャージ払い）",
+      "お店で楽天ポイントカードを提示のうえ楽天Payで支払い"
     ],
     gains: [
-      "JQセゾン(JCB)→ファミペイチャージ：1.5%（月2万円まで）",
-      "ファミペイ→JAL Payチャージ：0%（月30万円まで）",
-      "JAL Pay→IDAREチャージ：0.1%",
-      "IDARE残高保有ボーナス：年率最大2.2%（2026年7月〜ランク制、チャージ時ではなく月平均残高に対して付与）",
-      "IDARE→ワンバンク出金：0%"
+      "ANA Pay→楽天Edyチャージ：ANAマイル0.5%",
+      "楽天Edy→楽天キャッシュチャージ：0%（2026/8/1〜月1万円まで の上限あり）",
+      "楽天キャッシュ→楽天Pay（チャージ払い）：0%",
+      "楽天Payでのお店決済：楽天ポイント1.0%＋楽天ポイントカード提示で楽天キャッシュ分0.5%＝1.5%（カウント期間＝前々月16日〜前月15日に2回以上提示が条件。2回未満だと1.0%止まり）"
     ],
     split: [
-      { pt: "永久不滅ポイント等", rate: 1.5, note: "起点カード→ファミペイチャージ分（起点カードにより変動）" },
-      { pt: "ポイント", rate: 0.1, note: "JAL Pay→IDAREチャージ分" }
+      { pt: "ANAマイル", rate: 0.5, note: "ANA Pay→楽天Edyチャージ分" },
+      { pt: "楽天ポイント", rate: 1.5, note: "楽天Payでのお店決済分（カウント期間中に楽天ポイントカード等を2回以上提示した場合）" }
     ],
-    starter: "JQセゾン(JCB)（ファミペイチャージで1.5%・月2万円まで）。楽天カードやPayPayカードなど、ファミペイにチャージできる他のカードでも起点にできます。",
-    howto: {
-      prep: [
-        "JQセゾン(JCB)（または楽天カード／PayPayカードなど、ファミペイにチャージできるカード）を用意する",
-        "ファミペイ・JAL Pay・IDARE・ワンバンクの各アプリを用意する"
-      ],
-      flow: [
-        "ファミペイにJQセゾン(JCB)からチャージする（月2万円まで）",
-        "ファミペイ残高でJAL Payにチャージする（月30万円まで）",
-        "JAL Pay残高でIDAREにチャージする",
-        "IDAREは残高として置いておくと年率最大2.2%のボーナスが付く。使うときはワンバンクへ出金する"
-      ],
-      time: "カード発行に1〜2週間。以降のチャージ操作は月15分ほど"
-    },
-    note: "IDAREは決済のたびに還元がつくカードではなく、毎月の平均残高に応じて年率でボーナスがつく珍しい仕組みです。チャージ後すぐに使い切らず、ある程度の残高を置いておくほど有利になります。出口はワンバンクのほか、モバイルSuica・Amazonギフト券・PayPay/楽天ペイ/d払いへの直接登録も選べます。［確認日: 2026-08-26／出典: IDARE公式ヘルプ・各種情報サイト複数・要最新確認］",
-    url: "https://idare.jp/",
-    articleUrl: "articles/idare-card-katsuyo.html",
-    caution: "IDAREの残高保有ボーナスはチャージした瞬間ではなく、月平均残高に対して付与される。2026年3月25日の規約改定で「通常利用の範囲を超える頻度・金額」でのチャージが禁止行為に明記されたため、短期間の大量入出金は避けること。ファミペイへのチャージは月2万円、JAL Payへのチャージは月30万円が上限。",
-    atStore: {
-      rate: "1.6%＋IDARE残高ボーナス",
-      method: "ワンバンクとして支払う、またはPayPay/楽天ペイ/d払いに登録して支払う"
-    },
-    starters: {
-      "JQセゾン(JCB)": 1.5,
-      "楽天カード": 1.0,
-      "PayPayカード": 0.5
-    }
+    rate: 2.0,
+    howtoPrep: ["ANA Pay・楽天ペイ（楽天Edy／楽天キャッシュ含む）の各アプリをインストールする"],
+    howtoFlow: [
+      "ANA Payで楽天Edyにチャージする",
+      "楽天Edyで楽天キャッシュにチャージする（2026/8/1〜月1万円まで）",
+      "楽天キャッシュで楽天Pay（チャージ払い）にチャージする",
+      "お店で楽天ポイントカードも提示しつつ楽天Payで支払う（カウント期間中に2回以上の提示が必要）"
+    ],
+    atStore: { rate: "2.0%（この区間のみ。2回未満提示だと1.5%が1.0%に下がる）", method: "楽天Payで支払い、楽天ポイントカードも合わせて提示" },
+    caution: "楽天Edy→楽天キャッシュのチャージには2026年8月1日から月1万円の上限が新設されている。楽天Payでの1.5%還元は、カウント期間（前々月16日〜前月15日）中に楽天ポイントカード等を2回以上提示することが条件（2025年7月〜。2回未満だと1.0%止まり）。"
   },
-  {
-    name: "JQセゾン(JCB) → ファミペイ → JAL Pay → IDARE → モバイルSuica",
-    affKey: "idare",
-    pays: ["IDARE", "モバイルSuica"],
-    total: "合計 1.6%＋IDARE残高保有ボーナス（年率最大2.2%）",
+  nanaco_smaho_prepaid: {
+    id: "nanaco_smaho_prepaid",
+    entryNode: "モバイルnanaco",
+    entryLabel: "モバイルnanaco",
+    pays: ["バニラVISA"],
     steps: [
-      "JQセゾン(JCB)",
-      "ファミペイ",
-      "JAL Pay",
-      "IDARE",
+      "スマホプリペイド",
+      "バニラVISA（Visa eギフト）"
+    ],
+    gains: [
+      "モバイルnanaco→スマホプリペイドチャージ：0.5%",
+      "スマホプリペイド→バニラVISAチャージ：1.5%"
+    ],
+    split: [
+      { pt: "ポイント", rate: 0.5, note: "モバイルnanaco→スマホプリペイドチャージ分" },
+      { pt: "ポイント", rate: 1.5, note: "スマホプリペイド→バニラVISAチャージ分" }
+    ],
+    rate: 2.0,
+    howtoPrep: [
+      "nanacoアプリ（モバイルnanaco）をインストールする",
+      "スマホプリペイドアプリをインストールする",
+      "バニラVISA（Visa eギフト）はミニストップなど取扱店で購入、またはアプリ上でチャージする"
+    ],
+    howtoFlow: [
+      "モバイルnanaco残高でスマホプリペイドにチャージする",
+      "スマホプリペイド残高でバニラVISA（Visa eギフト）にチャージする"
+    ],
+    atStore: { rate: "2.0%（この区間のみ）", method: "バニラVISA（Visa eギフト）として使う" },
+    caution: "モバイルnanaco・スマホプリペイド・バニラVISAそれぞれに月間チャージ上限がある場合がある。"
+  },
+  idare_exit_wanbank: {
+    id: "idare_exit_wanbank",
+    entryNode: "IDARE",
+    entryLabel: "IDARE",
+    pays: ["PayPay", "ワンバンク"],
+    steps: [
+      "ワンバンク（入会・コード入力で300円ボーナスあり）",
+      "ソフトバンクカード（LINEMO以外は店頭申込のみ・新規不可）",
+      "PayPay",
+      "お店でPayPay決済（PayPay Step達成）"
+    ],
+    gains: [
+      "IDARE→ワンバンクチャージ：0%（IDAREの価値はチャージ時の還元ではなく残高保有ボーナス。下記balanceBonus参照）",
+      "ワンバンク→ソフトバンクカードチャージ：0%",
+      "ソフトバンクカード→PayPayチャージ：0%",
+      "PayPayでのお店決済：1.0%（PayPay Step達成時）"
+    ],
+    split: [
+      { pt: "PayPayポイント", rate: 1.0, note: "PayPayでのお店決済分（PayPay Step達成時）" }
+    ],
+    rate: 1.0,
+    balanceBonus: "IDARE残高保有ボーナス：2026年7月からのランク制で年率最大2.2%（毎月の平均保有残高に対して付与。チャージ時・出金時のポイントではない）。平均残高70万円以上は微改善、70万円未満は改悪という報告あり。また2026年3月25日の規約改定で「通常利用の範囲を超える頻度・金額」でのチャージが禁止行為として明記されたため、短期間での大量入金・出金の繰り返しは避けること",
+    howtoPrep: ["ワンバンク・ソフトバンクカード・PayPayの各アプリを用意する"],
+    howtoFlow: [
+      "IDARE残高でワンバンクにチャージする（入会・コード入力で300円ボーナス）",
+      "ワンバンク残高でソフトバンクカードにチャージする",
+      "ソフトバンクカードでPayPayにチャージする",
+      "お店でPayPayとして支払う（PayPay Step達成月は還元率アップ）"
+    ],
+    atStore: { rate: "1.0%（この区間のみ。IDARE残高ボーナスは別途年率最大2.2%）", method: "PayPayで支払い（PayPay Step達成月）" },
+    caution: "ソフトバンクカードは新規申込不可（LINEMO以外は店頭でのみ申込可）。PayPay Step未達成の月は1.0%が下がる可能性がある。IDAREは毎月の保有残高を一定に保つほどボーナス効率が良いため、出金するとその分ボーナス計算の基礎額が減る点に注意。"
+  },
+  idare_exit_suica: {
+    id: "idare_exit_suica",
+    entryNode: "IDARE",
+    entryLabel: "IDARE",
+    pays: ["モバイルSuica"],
+    steps: ["モバイルSuica"],
+    gains: [
+      "IDARE→モバイルSuicaチャージ：0%（IDAREの価値はチャージ時の還元ではなく残高保有ボーナス。下記balanceBonus参照）"
+    ],
+    split: [],
+    rate: 0,
+    balanceBonus: "IDARE残高保有ボーナス：2026年7月からのランク制で年率最大2.2%（毎月の平均保有残高に対して付与。チャージ時・出金時のポイントではない）。平均残高70万円以上は微改善、70万円未満は改悪という報告あり。また2026年3月25日の規約改定で「通常利用の範囲を超える頻度・金額」でのチャージが禁止行為として明記されたため、短期間での大量入金・出金の繰り返しは避けること",
+    howtoPrep: ["モバイルSuicaアプリにIDAREを登録する（IDARE公式サイトの案内に従う）"],
+    howtoFlow: ["IDARE残高でモバイルSuicaにチャージする（最低500円から）"],
+    atStore: { rate: "0%（この区間のみ。IDARE残高ボーナスは別途年率最大2.2%）", method: "Suicaとして交通機関・お店で使う" },
+    caution: "モバイルSuicaへのチャージはApple Pay非対応のため、Suicaアプリにカードを直接登録する必要がある。最低チャージ額は500円。"
+  },
+  idare_exit_amazongift: {
+    id: "idare_exit_amazongift",
+    entryNode: "IDARE",
+    entryLabel: "IDARE",
+    pays: ["Amazonギフト券"],
+    steps: ["Amazonギフト券（Eメールタイプ）"],
+    gains: [
+      "IDARE→Amazonギフト券購入：0%（IDAREの価値はチャージ時の還元ではなく残高保有ボーナス。下記balanceBonus参照）"
+    ],
+    split: [],
+    rate: 0,
+    balanceBonus: "IDARE残高保有ボーナス：2026年7月からのランク制で年率最大2.2%（毎月の平均保有残高に対して付与。チャージ時・出金時のポイントではない）。平均残高70万円以上は微改善、70万円未満は改悪という報告あり。また2026年3月25日の規約改定で「通常利用の範囲を超える頻度・金額」でのチャージが禁止行為として明記されたため、短期間での大量入金・出金の繰り返しは避けること",
+    howtoPrep: ["Amazonの支払い方法設定でIDAREカード番号を登録する"],
+    howtoFlow: ["IDARE残高でAmazonギフト券（Eメールタイプ）を必要な分だけ購入し、残高をきれいに使い切る"],
+    atStore: { rate: "0%（この区間のみ。IDARE残高ボーナスは別途年率最大2.2%）", method: "Amazon・Amazon Pay対応サイトでの支払いに使う" },
+    caution: "IDAREは出金（現金化）ができないカードなので、使い切りたい場合はAmazonギフト券（有効期限10年）での調整が便利。購入額を微調整すれば残高を0円にできる。"
+  },
+  // ===== IDAREの追加出口（公式ヘルプで確認：リアルカード／PayPay／楽天ペイ／d払い／Revolut） =====
+  idare_exit_realcard: {
+    id: "idare_exit_realcard",
+    entryNode: "IDARE",
+    entryLabel: "IDARE",
+    pays: ["IDARE"],
+    steps: ["お店・ネットでIDAREリアルカードとしてそのまま支払い"],
+    gains: ["IDAREでの直接決済：0%（IDAREの価値は残高保有ボーナス。下記balanceBonus参照）"],
+    split: [],
+    rate: 0,
+    balanceBonus: "IDARE残高保有ボーナス：2026年7月からのランク制で年率最大2.2%（毎月の平均保有残高に対して付与）",
+    howtoPrep: ["IDAREのリアルカードを発行する（発行手数料がかかる場合あり）"],
+    howtoFlow: ["Visa加盟店でIDAREリアルカードをそのまま使う（Apple Pay/Google Pay非対応）"],
+    atStore: { rate: "0%（この区間のみ。IDARE残高ボーナスは別途年率最大2.2%）", method: "IDAREリアルカードで直接支払う" },
+    caution: "IDAREはApple Pay・Google Pay非対応。ガソリンスタンド・宿泊施設・公共料金など一部利用できない店舗がある。"
+  },
+  idare_exit_paypay_direct: {
+    id: "idare_exit_paypay_direct",
+    entryNode: "IDARE",
+    entryLabel: "IDARE",
+    pays: ["PayPay"],
+    steps: ["PayPayに登録して支払い"],
+    gains: ["IDARE→PayPay登録払い：0%（IDAREの価値は残高保有ボーナス。下記balanceBonus参照）"],
+    split: [],
+    rate: 0,
+    balanceBonus: "IDARE残高保有ボーナス：2026年7月からのランク制で年率最大2.2%（毎月の平均保有残高に対して付与）",
+    howtoPrep: ["PayPayアプリの「支払い方法を追加する」→「PayPayカード以外のカードを追加」からIDAREを登録する"],
+    howtoFlow: ["PayPayの「支払う」からIDARE経由で決済する（チャージ不要、都度IDARE残高から引き落とし）"],
+    atStore: { rate: "0%（この区間のみ。IDARE残高ボーナスは別途年率最大2.2%）", method: "PayPayアプリでIDAREを選んで支払う" },
+    caution: "ソフトバンクカード経由のワンバンクルートと違い、PayPay Step等の追加還元は付かない、単純な代理決済。"
+  },
+  idare_exit_rakutenpay_direct: {
+    id: "idare_exit_rakutenpay_direct",
+    entryNode: "IDARE",
+    entryLabel: "IDARE",
+    pays: ["楽天ペイ"],
+    steps: ["楽天ペイに登録して支払い"],
+    gains: ["IDARE→楽天ペイ登録払い：0%（IDAREの価値は残高保有ボーナス。下記balanceBonus参照）"],
+    split: [],
+    rate: 0,
+    balanceBonus: "IDARE残高保有ボーナス：2026年7月からのランク制で年率最大2.2%（毎月の平均保有残高に対して付与）",
+    howtoPrep: ["楽天会員情報の「お支払い方法」からIDAREを新しいクレジットカードとして登録する"],
+    howtoFlow: ["楽天ペイの「お支払い先」でIDAREを選択して決済する"],
+    atStore: { rate: "0%（この区間のみ。IDARE残高ボーナスは別途年率最大2.2%）", method: "楽天ペイアプリでIDAREを選んで支払う" },
+    caution: "楽天ペイ側の還元（楽天ポイント等）が別途付くかは要確認。"
+  },
+  idare_exit_dbarai: {
+    id: "idare_exit_dbarai",
+    entryNode: "IDARE",
+    entryLabel: "IDARE",
+    pays: ["d払い"],
+    steps: ["d払いに登録して支払い"],
+    gains: ["IDARE→d払い登録払い：0%（IDAREの価値は残高保有ボーナス。下記balanceBonus参照）"],
+    split: [],
+    rate: 0,
+    balanceBonus: "IDARE残高保有ボーナス：2026年7月からのランク制で年率最大2.2%（毎月の平均保有残高に対して付与）",
+    howtoPrep: ["d払いアプリの支払い方法設定からIDAREを登録する"],
+    howtoFlow: ["d払いでIDAREを選択して決済する"],
+    atStore: { rate: "0%（この区間のみ。IDARE残高ボーナスは別途年率最大2.2%）", method: "d払いアプリでIDAREを選んで支払う" },
+    caution: "d払い側の還元（dポイント等）が別途付くかは要確認。"
+  },
+  idare_exit_revolut: {
+    id: "idare_exit_revolut",
+    entryNode: "IDARE",
+    entryLabel: "IDARE",
+    pays: ["Revolut"],
+    steps: ["Revolut"],
+    gains: ["IDARE→Revolutチャージ：手数料1.7%が差し引かれる（IDAREの価値は残高保有ボーナス。下記balanceBonus参照）"],
+    split: [],
+    rate: -1.7,
+    balanceBonus: "IDARE残高保有ボーナス：2026年7月からのランク制で年率最大2.2%（毎月の平均保有残高に対して付与）",
+    howtoPrep: ["Revolutアプリをインストールする"],
+    howtoFlow: ["IDARE残高でRevolutにチャージする（手数料1.7%が引かれる）", "Revolut残高をANA Pay等さらに別の用途に回す"],
+    atStore: { rate: "-1.7%（手数料。IDARE残高ボーナスは別途年率最大2.2%）", method: "Revolut残高として使う" },
+    caution: "IDARE→Revolutは手数料1.7%が差し引かれるため、他の出口（ワンバンク・Suica・Amazonギフト券・PayPay・楽天ペイ・d払いはいずれも手数料なし）より不利。海外通貨での利用など、Revolut自体を使いたい理由がある場合のみ検討。"
+  },
+  // ===== ワンバンクの追加出口（ソフトバンクカード以外） =====
+  wanbank_exit_direct_registration: {
+    id: "wanbank_exit_direct_registration",
+    entryNode: "ワンバンク",
+    entryLabel: "ワンバンク",
+    pays: ["PayPay", "楽天ペイ", "d払い"],
+    steps: ["PayPay／楽天ペイ／d払いのいずれかに登録して支払い"],
+    gains: ["ワンバンク→PayPay／楽天ペイ／d払い登録払い：0%（ソフトバンクカードを挟まず直接登録できる）"],
+    split: [],
+    rate: 0,
+    howtoPrep: ["PayPay／楽天ペイ／d払いのいずれかのアプリでワンバンクのカード番号を支払い方法として登録する"],
+    howtoFlow: ["対応店舗でPayPay／楽天ペイ／d払いの支払い方法としてワンバンクを選んで決済する"],
+    atStore: { rate: "0%（この区間のみ）", method: "PayPay／楽天ペイ／d払いのいずれかでワンバンクを選んで支払う" },
+    caution: "ソフトバンクカード経由（PayPay Step等の追加還元あり）と違い、こちらは単純な代理決済で追加還元は基本つかない。ソフトバンクカードを持っていない・作れない場合の代替手段として使う。"
+  },
+  // ===== nanaco→スマホプリペイド→バニラVISAの先にSuicaへ繋ぐ拡張版 =====
+  nanaco_smaho_prepaid_suica: {
+    id: "nanaco_smaho_prepaid_suica",
+    entryNode: "モバイルnanaco",
+    entryLabel: "モバイルnanaco",
+    pays: ["モバイルSuica"],
+    steps: [
+      "スマホプリペイド",
+      "バニラVISA（Visa eギフト）",
       "モバイルSuica"
     ],
     gains: [
-      "JQセゾン(JCB)→ファミペイチャージ：1.5%（月2万円まで）",
-      "ファミペイ→JAL Payチャージ：0%（月30万円まで）",
-      "JAL Pay→IDAREチャージ：0.1%",
-      "IDARE残高保有ボーナス：年率最大2.2%（2026年7月〜ランク制）",
-      "IDARE→モバイルSuicaチャージ：0%"
+      "モバイルnanaco→スマホプリペイドチャージ：0.5%",
+      "スマホプリペイド→バニラVISAチャージ：1.5%",
+      "バニラVISA→モバイルSuicaチャージ：0%（500円以上・1回の上限20,000円）"
     ],
     split: [
-      { pt: "永久不滅ポイント等", rate: 1.5, note: "起点カード→ファミペイチャージ分（起点カードにより変動）" },
-      { pt: "ポイント", rate: 0.1, note: "JAL Pay→IDAREチャージ分" }
+      { pt: "ポイント", rate: 0.5, note: "モバイルnanaco→スマホプリペイドチャージ分" },
+      { pt: "ポイント", rate: 1.5, note: "スマホプリペイド→バニラVISAチャージ分" }
     ],
-    starter: "JQセゾン(JCB)（ファミペイチャージで1.5%・月2万円まで）。楽天カードやPayPayカードなど、ファミペイにチャージできる他のカードでも起点にできます。",
-    howto: {
-      prep: [
-        "JQセゾン(JCB)（または楽天カード／PayPayカードなど、ファミペイにチャージできるカード）を用意する",
-        "ファミペイ・JAL Pay・IDARE・モバイルSuicaを用意する"
-      ],
-      flow: [
-        "ファミペイにJQセゾン(JCB)からチャージする（月2万円まで）",
-        "ファミペイ残高でJAL Payにチャージする（月30万円まで）",
-        "JAL Pay残高でIDAREにチャージする",
-        "普段電車やお店で使うなら、IDARE残高をモバイルSuicaへ出金する"
-      ],
-      time: "カード発行に1〜2週間。以降のチャージ操作は月15分ほど"
-    },
-    note: "普段からSuicaを使う人向けの出口です。IDAREの本体価値は残高保有ボーナス（年率最大2.2%）で、この区間自体のチャージ還元は0%です。［確認日: 2026-08-26／出典: IDARE公式ヘルプ・各種情報サイト複数・要最新確認］",
-    url: "https://idare.jp/",
-    articleUrl: "articles/idare-card-katsuyo.html",
-    caution: "IDARE→モバイルSuicaのチャージは500円以上・1回20,000円までの制限がある。ファミペイへのチャージは月2万円、JAL Payへのチャージは月30万円が上限。",
-    atStore: {
-      rate: "1.6%＋IDARE残高ボーナス",
-      method: "モバイルSuicaとして交通機関・お店で支払う"
-    },
-    starters: {
-      "JQセゾン(JCB)": 1.5,
-      "楽天カード": 1.0,
-      "PayPayカード": 0.5
-    }
+    rate: 2.0,
+    howtoPrep: [
+      "nanacoアプリ（モバイルnanaco）をインストールする",
+      "スマホプリペイドアプリをインストールする",
+      "バニラVISA（Visa eギフト）を購入・チャージする",
+      "モバイルSuicaアプリを用意する"
+    ],
+    howtoFlow: [
+      "モバイルnanaco残高でスマホプリペイドにチャージする",
+      "スマホプリペイド残高でバニラVISA（Visa eギフト）にチャージする",
+      "Suicaアプリの「登録クレジットカード情報変更」でバニラVISAの番号・有効期限・セキュリティコードを入力してチャージする（500円以上、1回20,000円まで）"
+    ],
+    atStore: { rate: "2.0%（この区間のみ）", method: "Suicaとして交通機関・お店で使う" },
+    caution: "モバイルnanaco・スマホプリペイド・バニラVISAそれぞれに月間チャージ上限がある場合がある。バニラVISA→Suicaは500円未満・端数はチャージできないため、使い切りにはAmazonギフト券併用がおすすめ。"
+  },
+  // ===== ANA Pay以降の楽天キャッシュを使わない簡易版（月1万円上限を使い切った後の代替） =====
+  edy_direct: {
+    id: "edy_direct",
+    entryNode: "ANA Pay",
+    entryLabel: "ANA Pay",
+    pays: ["楽天Edy"],
+    steps: ["お店で楽天Edyとして支払い"],
+    gains: ["ANA Pay→楽天Edyチャージ：ANAマイル0.5%", "楽天Edyでのお店決済：0%"],
+    split: [
+      { pt: "ANAマイル", rate: 0.5, note: "ANA Pay→楽天Edyチャージ分" }
+    ],
+    rate: 0.5,
+    howtoPrep: ["ANA Pay・楽天ペイ（楽天Edy）の各アプリをインストールする"],
+    howtoFlow: ["ANA Payで楽天Edyにチャージする", "お店で楽天Edyとしてそのまま支払う（楽天キャッシュへは移さない）"],
+    atStore: { rate: "0.5%（この区間のみ）", method: "楽天Edyとして直接支払う" },
+    caution: "楽天キャッシュの月1万円上限を使い切った後や、手順を減らしたい場合の簡易版。楽天キャッシュ経由（edy_cash_payセグメント）より合計還元率は低い。"
+  },
+  // カードから楽天Edyへ直接チャージする版（ANA Payを経由しない）
+  edy_direct_from_card: {
+    id: "edy_direct_from_card",
+    entryNode: "楽天Edy",
+    entryLabel: "楽天Edy",
+    pays: ["楽天Edy"],
+    steps: ["お店で楽天Edyとして支払い"],
+    gains: ["楽天Edyでのお店決済：0%"],
+    split: [],
+    rate: 0,
+    howtoPrep: ["楽天ペイ（楽天Edy）アプリをインストールする"],
+    howtoFlow: ["お店で楽天Edyとしてそのまま支払う"],
+    atStore: { rate: "0%（この区間のみ）", method: "楽天Edyとして直接支払う" },
+    caution: "カードから楽天Edyへ直接チャージする方式。ANA Payを経由するedy_directとは別ルート。"
+  }
+};
+
+// chain: starter からセグメントの entryNode に到達するまでの全ホップを「entryNodeを含めて」順番に並べたもの。
+// 各要素の rate はそのホップ単体の還元率（starterから見て初回のホップ含む）。
+// chain の rate 合計が connector.rate（starter→entryNode の合計還元率）と一致する。
+// 最後の要素の label は必ずそのセグメントの entryNode と同じにする（自動でノードの重複を避けるため）。
+const ROUTE_CONNECTORS = [
+  {
+    starter: "V NEOBANKデビット",
+    rate: 1.5,
+    segment: "edy_cash_pay",
+    chain: [
+      { label: "au PAY", rate: 1.5, note: "上限5万円/月" },
+      { label: "ANA Pay", rate: 0, note: "au PAYは経由してもしなくても還元率は同じ" }
+    ],
+    starterNote: "V NEOBANKデビット（住信SBI・年会費無料・審査なし・1.5%）。⚠️ 2026年11月1日からチャージポイントが0%になる予定のため、11月以降は同じ表の「カテエネBANKデビット」に切り替えてください。",
+    shutdownWarn: "⚠️ 2026年10月31日で終了予定。2026年11月1日からV NEOBANKのチャージポイントが0%になります。",
+    caution: "V NEOBANKデビットは2026年11月1日からチャージ還元が対象外になる予定。",
+    routeLabel: "クレカなしルート",
+    prep: ["住信SBIネット銀行でV NEOBANK口座を開設し、デビットを発行する"]
   },
   {
-    name: "JQセゾン(JCB) → ファミペイ → JAL Pay → IDARE → Amazonギフト券",
-    affKey: "idare",
-    pays: ["IDARE", "Amazonギフト券"],
-    total: "合計 1.6%＋IDARE残高保有ボーナス（年率最大2.2%）",
-    steps: [
-      "JQセゾン(JCB)",
-      "ファミペイ",
-      "JAL Pay",
-      "IDARE",
-      "Amazonギフト券"
+    starter: "カテエネBANKデビット",
+    rate: 2.0,
+    segment: "edy_cash_pay",
+    chain: [
+      { label: "au PAY", rate: 2.0, note: "月末残高200万円条件" },
+      { label: "ANA Pay", rate: 0, note: "au PAYは経由してもしなくても還元率は同じ" }
     ],
-    gains: [
-      "JQセゾン(JCB)→ファミペイチャージ：1.5%（月2万円まで）",
-      "ファミペイ→JAL Payチャージ：0%（月30万円まで）",
-      "JAL Pay→IDAREチャージ：0.1%",
-      "IDARE残高保有ボーナス：年率最大2.2%（2026年7月〜ランク制）",
-      "IDARE→Amazonギフト券購入：0%"
+    starterNote: "カテエネBANKデビット（住信SBIネット銀行・中部電力契約不要・月末残高200万円で2.0%）。V NEOBANKデビットの11月以降の代替としても使え、合計還元率もこちらの方が高くなります。",
+    caution: "月末残高200万円を維持できないとカテエネポイントの還元率が下がる可能性がある。",
+    routeLabel: "クレカなしルート",
+    prep: ["カテエネBANKの口座を開設し、デビットカードを発行する"]
+  },
+  {
+    starter: "三井住友NL G／Olive G",
+    rate: 1.5,
+    segment: "edy_cash_pay",
+    chain: [
+      { label: "Revolut", rate: 1.5, note: "年間100万円利用条件" },
+      { label: "ANA Pay", rate: 0, note: "経由地としての利用" }
     ],
-    split: [
-      { pt: "永久不滅ポイント等", rate: 1.5, note: "起点カード→ファミペイチャージ分（起点カードにより変動）" },
-      { pt: "ポイント", rate: 0.1, note: "JAL Pay→IDAREチャージ分" }
+    starterNote: "三井住友カード（NL）ゴールド／Oliveゴールド（年会費条件付き無料。年間100万円以上の利用でRevolutチャージ還元1.5%になる想定）。",
+    caution: "年間100万円利用の条件を満たさないと1.5%が適用されない可能性がある。",
+    routeLabel: "三井住友NL Gルート",
+    prep: ["三井住友カード（NL）ゴールドまたはOliveゴールドを発行する"]
+  },
+  {
+    // 2026年8月1日より、エポスカード／エポスゴールド／JQ CARDエポスゴールドは
+    // ANA Pay・au PAY・楽天Edy・Kyash・IDARE等へのチャージ通常還元（0.5%）が終了。
+    // ただしチャージ額は引き続き年間利用額としてカウントされ、年間ボーナス
+    // （100万円達成で10,000pt＝1.0%相当、50万円達成で2,500pt＝0.5%相当）の対象にはなる。
+    starter: "エポスGカード（年間100万円達成）",
+    rate: 1.0,
+    segment: "edy_cash_pay",
+    chain: [
+      { label: "ANA Pay", rate: 1.0, note: "年間100万円利用達成時のボーナス換算（10,000pt）。2026/8/1〜通常のチャージ還元0.5%は終了、年間利用額カウントのみ継続" }
     ],
-    starter: "JQセゾン(JCB)（ファミペイチャージで1.5%・月2万円まで）。楽天カードやPayPayカードなど、ファミペイにチャージできる他のカードでも起点にできます。",
-    howto: {
-      prep: [
-        "JQセゾン(JCB)（または楽天カード／PayPayカードなど、ファミペイにチャージできるカード）を用意する",
-        "ファミペイ・JAL Pay・IDAREを用意する",
-        "Amazonの支払い方法設定でIDAREカード番号を登録する"
-      ],
-      flow: [
-        "ファミペイにJQセゾン(JCB)からチャージする（月2万円まで）",
-        "ファミペイ残高でJAL Payにチャージする（月30万円まで）",
-        "JAL Pay残高でIDAREにチャージする",
-        "解約前や残高を使い切りたいときは、IDARE残高でAmazonギフト券（Eメールタイプ）を購入して使い切る"
-      ],
-      time: "カード発行に1〜2週間。以降のチャージ操作は月15分ほど"
-    },
-    note: "IDAREは現金化できないカードなので、残高を細かく調整して使い切りたいときはAmazonギフト券（有効期限10年）での出口が便利です。［確認日: 2026-08-26／出典: IDARE公式ヘルプ・各種情報サイト複数・要最新確認］",
-    url: "https://idare.jp/",
-    articleUrl: "articles/idare-card-katsuyo.html",
-    caution: "ファミペイへのチャージは月2万円、JAL Payへのチャージは月30万円が上限。",
-    atStore: {
-      rate: "1.6%＋IDARE残高ボーナス",
-      method: "Amazon・Amazon Pay対応サイトでの支払いに使う"
-    },
-    starters: {
-      "JQセゾン(JCB)": 1.5,
-      "楽天カード": 1.0,
-      "PayPayカード": 0.5
-    }
+    starterNote: "エポスゴールドカード／JQ CARDエポスゴールド（年会費条件付き無料）。年間100万円以上の利用で10,000ポイント（＝1.0%相当）のボーナスが付く。2026年8月1日からチャージ自体の通常還元（0.5%）は終了したが、チャージ額は引き続き年間利用額としてカウントされる。",
+    caution: "2026年8月1日からANA Pay・au PAY・楽天Edy・Kyash・IDARE等へのチャージの通常還元（0.5%）は終了済み。この1.0%はあくまで年間100万円達成時の年間ボーナス換算であり、チャージの都度もらえるポイントではない点に注意。",
+    citation: "［情報源：カードレビューズ「チャージのポイント還元が対象外のカード一覧」、おうちでお金を育てる暮らし「ANA Payチャージでポイント・マイル二重取り」／確認日: 2026-08-26・要最新確認］",
+    routeLabel: "エポスGルート（年間100万円達成）",
+    prep: ["エポスゴールドカード／JQ CARDエポスゴールドを発行する", "年間利用額100万円を達成する"]
+  },
+  {
+    starter: "エポスGカード（年間50万円達成）",
+    rate: 0.5,
+    segment: "edy_cash_pay",
+    chain: [
+      { label: "ANA Pay", rate: 0.5, note: "年間50万円利用達成時のボーナス換算（2,500pt）。2026/8/1〜通常のチャージ還元0.5%は終了、年間利用額カウントのみ継続" }
+    ],
+    starterNote: "エポスゴールドカード／JQ CARDエポスゴールド（年会費条件付き無料）。年間50万円以上100万円未満の利用で2,500ポイント（＝0.5%相当）のボーナスが付く。",
+    caution: "2026年8月1日からANA Pay・au PAY・楽天Edy・Kyash・IDARE等へのチャージの通常還元（0.5%）は終了済み。この0.5%はあくまで年間50万円達成時の年間ボーナス換算であり、チャージの都度もらえるポイントではない点に注意。",
+    citation: "［情報源：カードレビューズ「チャージのポイント還元が対象外のカード一覧」、おうちでお金を育てる暮らし「ANA Payチャージでポイント・マイル二重取り」／確認日: 2026-08-26・要最新確認］",
+    routeLabel: "エポスGルート（年間50万円達成）",
+    prep: ["エポスゴールドカード／JQ CARDエポスゴールドを発行する", "年間利用額50万円を達成する"]
+  },
+  {
+    starter: "エポスGカード（年間100万円達成）",
+    rate: 1.0,
+    segment: "edy_direct_from_card",
+    chain: [
+      { label: "楽天Edy", rate: 1.0, note: "年間100万円利用達成時のボーナス換算（10,000pt）。ANA Payを経由せず直接楽天Edyへチャージする版" }
+    ],
+    starterNote: "エポスゴールドカード／JQ CARDエポスゴールド。楽天キャッシュの月間上限を気にせず使いたい場合の簡易ルート。",
+    caution: "2026年8月1日からのチャージ通常還元終了・年間ボーナス換算である点は同上。楽天Edyでの店舗決済自体には別途還元はつかない。",
+    routeLabel: "エポスGルート（Edy直接・年間100万円達成）",
+    prep: ["エポスゴールドカード／JQ CARDエポスゴールドを発行する", "年間利用額100万円を達成する"]
   }
 ];
+
+// ===== Kyash・バンドルカードで「使えなくなった」チャージ経路（2024年に封鎖済み） =====
+// エポス→Kyashのように、Kyash自体は使える（残高として店舗で利用可）が、
+// そこから先のANA Pay・IDAREへの転送は塞がれているため、単独の終端ルートとして扱う。
+const KYASH_BANDLE_DEADEND_NOTE =
+  "Kyash・バンドルカードはどちらも2024年にANA Pay・IDAREへのチャージルートが封鎖されています" +
+  "（Kyash→ANA Pay/IDARE：2024年3月21日終了、バンドルカード→ANA Pay/IDARE：2024年4月24日終了）。" +
+  "そのため現在はKyash・バンドルカード自体の残高として店舗で使うか、対応している他の入金先（バンドルカードの場合はVポイントPayなど）に限定されます。";
+
+const STANDALONE_ROUTES_EXTRA = [
+  {
+    name: "エポスGカード → Kyash",
+    pays: ["Kyash"],
+    total: "合計 1.0%（年間100万円達成時のボーナス換算のみ）",
+    steps: ["エポスGカード（年間100万円達成）", "Kyash", "お店でKyashとして支払い"],
+    gains: [
+      "エポスGカード→Kyashチャージ：年間100万円達成時のボーナス換算1.0%（2026/8/1〜通常のチャージ還元0.5%は終了）",
+      "Kyashでのお店決済：Kyash側の基本還元（変動あり、要確認）"
+    ],
+    split: [
+      { pt: "ポイント", rate: 1.0, note: "エポスGカード年間ボーナス換算分" }
+    ],
+    starter: "エポスゴールドカード／JQ CARDエポスゴールド（年間100万円達成）。",
+    howto: {
+      prep: ["エポスゴールドカード／JQ CARDエポスゴールドを発行する", "Kyashアプリをインストールする"],
+      flow: ["エポスGカードでKyashにチャージする", "お店でKyash Visaカードとして支払う"],
+      time: "カード発行に1〜2週間"
+    },
+    note: `${KYASH_BANDLE_DEADEND_NOTE}［情報源：各種Kyash改悪関連記事／確認日: 2026-08-26・要最新確認］`,
+    url: null,
+    caution: "KyashからANA Pay・IDAREへは2024年からチャージ不可。Kyash自体の店舗決済還元率は別途確認が必要。",
+    atStore: { rate: "1.0%（エポスG側の年間ボーナス換算のみ）", method: "Kyash Visaカードとして支払う" },
+    starters: { "エポスGカード（年間100万円達成）": 1.0 }
+  }
+  // 【ファミペイ→バンドルカード→VポイントPay ルート 削除】
+  // 「Z家のお得メモ」チャージルート記録で確認：2025年6月1日からFamiPay→バンドルカードの
+  // チャージ自体が不可になっている（4/16からのボーナス対象外に続き、完全に封鎖）。
+  // ROUTE_EXCLUSIONSに記録し、ここでは掲載しない。
+];
+
+const ROUTE_CONNECTORS_EXTRA_1 = [
+  {
+    starter: "JQCARDセゾンG",
+    rate: 1.5,
+    segment: "edy_cash_pay",
+    chain: [
+      { label: "au PAY", rate: 1.5, note: "年間100万円利用条件" },
+      { label: "ANA Pay", rate: 0, note: "au PAYは経由してもしなくても還元率は同じ" }
+    ],
+    starterNote: "JQCARDセゾンG（年間100万円以上の利用でau PAYチャージ還元1.5%になる想定。未達成の年はエポスGカード版と同程度に下がる可能性）。",
+    caution: "年間100万円利用の条件を満たさないと1.5%が適用されない可能性がある。",
+    routeLabel: "JQセゾンGルート",
+    prep: ["JQCARDセゾンGを発行する"]
+  },
+  // 【PayPayカード→Revolut connector 削除】
+  // 2026/6/2からPayPayカードは「他社決済へのチャージ」がポイント付与対象外になったため、
+  // Revolutは「他社決済サービス」に該当し、このルートは機能しなくなった可能性が高い。
+  // ROUTE_EXCLUSIONSに記録し、ここでは生成しない。
+  {
+    starter: "JQセゾン(JCB)",
+    rate: 1.6,
+    segment: "edy_cash_pay",
+    chain: [
+      { label: "ファミペイ", rate: 1.5, note: "月2万円まで" },
+      { label: "JAL Pay", rate: 0, note: "1日10万円・月30万円まで（2024/6/6〜の上限）" },
+      { label: "ANA Pay", rate: 0.1, note: "au PAYを経由しても可（0%・経由してもしなくても同じ）。1回2万円以下のチャージは一時停止中（20,001円以上のみ可・2025/4/30〜）。1日10万円・月30万円まで" }
+    ],
+    starterNote: "JQセゾン(JCB)（ファミペイチャージで1.5%・月2万円まで）。楽天カードやPayPayカードなど、ファミペイにチャージできる他のカードでも起点にでき、その場合は還元率が変わります（starters参照）。",
+    starterAlts: { "楽天カード": 1.1, "PayPayカード": 0.6 },
+    routeLabel: "nanaco・JQセゾン(JCB)ルート",
+    prep: ["JQセゾン(JCB)（または楽天カード／PayPayカードなど、ファミペイにチャージできるカード）を用意する", "ファミペイ・JAL Payの各アプリをインストールする"],
+    note: "「nanaco」の名がついたルートですが、この経路自体はANA Pay側を通るバージョンです。同じ起点からnanaco・スマホプリペイド経由で行く別バージョンも合計3.6%になります（同じ表の別ルート参照）。"
+  },
+  {
+    starter: "JQセゾン(JCB)",
+    rate: 1.6,
+    segment: "nanaco_smaho_prepaid",
+    chain: [
+      { label: "ファミペイ", rate: 1.5, note: "月2万円まで" },
+      { label: "JAL Pay", rate: 0, note: "1日10万円・月30万円まで（2024/6/6〜の上限）" },
+      { label: "モバイルnanaco", rate: 0.1, note: "au PAYを経由しても可（0%・経由してもしなくても同じ）" }
+    ],
+    starterNote: "JQセゾン(JCB)（ファミペイチャージで1.5%・月2万円まで）。楽天カードやPayPayカードなど、ファミペイにチャージできる他のカードでも起点にでき、その場合は還元率が変わります（starters参照）。",
+    starterAlts: { "楽天カード": 1.1, "PayPayカード": 0.6 },
+    routeLabel: "nanaco・JQセゾン(JCB)ルート",
+    prep: ["JQセゾン(JCB)（または楽天カード／PayPayカードなど、ファミペイにチャージできるカード）を用意する", "ファミペイ・JAL Payの各アプリをインストールする"],
+    note: "上のANA Pay経由バージョンと起点（JQセゾン(JCB)→ファミペイ→JAL Pay）までは共通で、JAL Payから先でnanaco・スマホプリペイド経由に分かれるルートです。合計はどちらも3.6%になります。"
+  },
+  {
+    starter: "カテエネBANKデビット",
+    rate: 2.0,
+    segment: "nanaco_smaho_prepaid",
+    chain: [
+      { label: "モバイルnanaco", rate: 2.0, note: "月末残高200万円条件" }
+    ],
+    starterNote: "カテエネBANKデビット（住信SBIネット銀行・中部電力契約不要・月末残高200万円で2.0%）。",
+    caution: "月末残高200万円を維持できないとカテエネポイントの還元率が下がる可能性がある。",
+    routeLabel: null,
+    prep: ["カテエネBANKの口座を開設し、デビットカードを発行する"]
+  },
+  {
+    starter: "住信SBIデビットカード Point+",
+    rate: 1.25,
+    segment: "nanaco_smaho_prepaid",
+    chain: [
+      { label: "モバイルnanaco", rate: 1.25, note: "iPhone限定" }
+    ],
+    starterNote: "住信SBIデビットカード Point+（住信SBIネット銀行・Mastercard・モバイルnanacoへのチャージで1.25%）。",
+    caution: "モバイルnanacoへのチャージ還元はiPhone限定です。Androidでは還元率が変わる可能性があります。",
+    routeLabel: null,
+    prep: ["住信SBIネット銀行で住信SBIデビットカード Point+を発行する"]
+  },
+  {
+    starter: "JQセゾン(JCB)",
+    rate: 1.6,
+    segment: "idare_exit_wanbank",
+    chain: [
+      { label: "ファミペイ", rate: 1.5, note: "月2万円まで" },
+      { label: "JAL Pay", rate: 0, note: "1日10万円・月30万円まで（2024/6/6〜の上限）" },
+      { label: "IDARE", rate: 0.1, note: "" }
+    ],
+    starterNote: "JQセゾン(JCB)（ファミペイチャージで1.5%・月2万円まで）。楽天カードやPayPayカードなど、ファミペイにチャージできる他のカードでも起点にでき、その場合は還元率が変わります（starters参照）。",
+    starterAlts: { "楽天カード": 1.1, "PayPayカード": 0.6 },
+    routeLabel: "ワンバンクルート",
+    prep: ["JQセゾン(JCB)（または楽天カード／PayPayカードなど、ファミペイにチャージできるカード）を用意する", "ファミペイ・JAL Payの各アプリをインストールする"],
+    note: "IDAREはチャージ時の還元ではなく残高保有ボーナス（年率最大2.2%）が本体です。ワンバンク以外にモバイルSuica・Amazonギフト券への出口もあります（同じ表の別ルート参照）。"
+  },
+  {
+    starter: "JQセゾン(JCB)",
+    rate: 1.6,
+    segment: "idare_exit_suica",
+    chain: [
+      { label: "ファミペイ", rate: 1.5, note: "月2万円まで" },
+      { label: "JAL Pay", rate: 0, note: "1日10万円・月30万円まで（2024/6/6〜の上限）" },
+      { label: "IDARE", rate: 0.1, note: "" }
+    ],
+    starterNote: "JQセゾン(JCB)（ファミペイチャージで1.5%・月2万円まで）。楽天カードやPayPayカードなど、ファミペイにチャージできる他のカードでも起点にでき、その場合は還元率が変わります（starters参照）。",
+    starterAlts: { "楽天カード": 1.1, "PayPayカード": 0.6 },
+    routeLabel: "IDARE→Suica出口",
+    prep: ["JQセゾン(JCB)（または楽天カード／PayPayカードなど、ファミペイにチャージできるカード）を用意する", "ファミペイ・JAL Payの各アプリをインストールする"],
+    note: "普段電車でSuicaを使う人向けの出口です。IDAREの本体価値は残高保有ボーナス（年率最大2.2%）で、この区間自体のチャージ還元は0%です。"
+  },
+  {
+    starter: "JQセゾン(JCB)",
+    rate: 1.6,
+    segment: "idare_exit_amazongift",
+    chain: [
+      { label: "ファミペイ", rate: 1.5, note: "月2万円まで" },
+      { label: "JAL Pay", rate: 0, note: "1日10万円・月30万円まで（2024/6/6〜の上限）" },
+      { label: "IDARE", rate: 0.1, note: "" }
+    ],
+    starterNote: "JQセゾン(JCB)（ファミペイチャージで1.5%・月2万円まで）。楽天カードやPayPayカードなど、ファミペイにチャージできる他のカードでも起点にでき、その場合は還元率が変わります（starters参照）。",
+    starterAlts: { "楽天カード": 1.1, "PayPayカード": 0.6 },
+    routeLabel: "IDARE→Amazonギフト券出口",
+    prep: ["JQセゾン(JCB)（または楽天カード／PayPayカードなど、ファミペイにチャージできるカード）を用意する", "ファミペイ・JAL Payの各アプリをインストールする"],
+    note: "しばらく使わない・残高をきれいに使い切りたいときの出口です。IDAREの本体価値は残高保有ボーナス（年率最大2.2%）で、この区間自体のチャージ還元は0%です。"
+  },
+  // ===== ここから Revolut を経由するルート（△含む） =====
+  {
+    starter: "住信SBIデビットカード Point+",
+    rate: 1.25,
+    segment: "edy_cash_pay",
+    chain: [
+      { label: "Revolut", rate: 1.25, note: "Mastercard・手数料無料。スマートプログラムのランクに応じ最大2.0%" },
+      { label: "ANA Pay", rate: 0, note: "経由地としての利用" }
+    ],
+    starterNote: "住信SBIデビットカード Point+（Mastercard・年会費無料）。Revolutへのチャージでポイント付与を確認済み（基本1.25%、スマートプログラムのランク次第で最大2.0%）。",
+    routeLabel: "住信SBIデビット Point+ルート（Revolut経由）",
+    prep: ["住信SBIネット銀行で住信SBIデビットカード Point+を発行する", "Revolut・ANA Payの各アプリをインストールする"],
+    citation: "［情報源：Revolutチャージルート解説記事（デビットカード Point+のチャージ還元を確認）／確認日: 2026-08-26・要最新確認］"
+  },
+  {
+    starter: "住信SBIプラチナデビット",
+    rate: 1.25,
+    segment: "edy_cash_pay",
+    chain: [
+      { label: "Revolut", rate: 1.25, note: "Mastercard・手数料無料。年会費11,000円。ランク次第で最大2.5%" },
+      { label: "ANA Pay", rate: 0, note: "経由地としての利用" }
+    ],
+    starterNote: "住信SBIプラチナデビット（Mastercard・年会費11,000円）。Revolutへのチャージでポイント付与を確認済み（基本1.25%、ランク次第で最大2.5%）。年会費がかかる分、還元額とのバランスを確認してから発行してください。",
+    caution: "年会費11,000円がかかる。年間の利用額・還元額が年会費を上回るか事前に試算することをおすすめします。",
+    routeLabel: "住信SBIプラチナデビットルート（Revolut経由）",
+    prep: ["住信SBIネット銀行で住信SBIプラチナデビットを発行する（年会費11,000円）", "Revolut・ANA Payの各アプリをインストールする"]
+  },
+  {
+    starter: "三菱UFJカード",
+    rate: 0.5,
+    segment: "edy_cash_pay",
+    chain: [
+      { label: "ANA Pay", rate: 0.5, note: "Visa／Mastercardブランド限定" }
+    ],
+    starterNote: "三菱UFJカード（Visa／Mastercardブランド限定）。ANA Payへの直接チャージで還元を確認済み（基本還元率0.5%相当）。",
+    caution: "三菱UFJカードはJAL Payとau PAYへのチャージがポイントプログラムの対象外と明記されているため、この2つは使わないこと。ANA Payへは直接チャージし、Revolutを経由する必要はない（Revolutチャージでの還元は確認できていない）。",
+    routeLabel: "三菱UFJカードルート（ANA Pay直接）",
+    prep: ["三菱UFJカード（Visa／Mastercardブランド）を発行する", "ANA Payアプリをインストールする"],
+    citation: "［情報源：三菱UFJカード活用ブログ（ANA Payチャージの還元・JAL Pay/au PAY対象外を確認）／確認日: 2026-08-26・要最新確認］"
+  },
+  {
+    starter: "V NEOBANKデビット",
+    rate: 1.5,
+    segment: "edy_cash_pay",
+    chain: [
+      { label: "Revolut", rate: 1.5, note: "Visaデビット・手数料無料" },
+      { label: "ANA Pay", rate: 0, note: "経由地としての利用" }
+    ],
+    starterNote: "V NEOBANKデビット（Visaデビット・手数料無料でRevolutにチャージ可）。au PAY経由ルートと同じ起点だが、au PAYの月5万円上限を使い切った後の追加ルートとして使える。",
+    caution: "△ Revolutチャージでのポイント付与を明確に確認できた情報源が見つかっていません。au PAY経由ルート（既存）の方が実績があるため、まずはそちらを優先してください。⚠️ 2026年11月1日からチャージポイントが0%になる予定。",
+    shutdownWarn: "⚠️ 2026年10月31日で終了予定。2026年11月1日からV NEOBANKのチャージポイントが0%になります。",
+    routeLabel: "クレカなしルート（Revolut経由・要確認）",
+    prep: ["住信SBIネット銀行でV NEOBANK口座を開設し、デビットを発行する", "Revolut・ANA Payの各アプリをインストールする"]
+  },
+  {
+    starter: "カテエネBANKデビット",
+    rate: 2.0,
+    segment: "edy_cash_pay",
+    chain: [
+      { label: "Revolut", rate: 2.0, note: "Visaデビット・手数料無料・月末残高200万円条件" },
+      { label: "ANA Pay", rate: 0, note: "経由地としての利用" }
+    ],
+    starterNote: "カテエネBANKデビット（Visaデビット・手数料無料でRevolutにチャージ可）。au PAY経由ルートと同じ起点だが、au PAYの月5万円上限を使い切った後の追加ルートとして使える。",
+    caution: "△ Revolutチャージでのポイント付与を明確に確認できた情報源が見つかっていません。au PAY経由ルート（既存）の方が実績があるため、まずはそちらを優先してください。",
+    routeLabel: "クレカなしルート（Revolut経由・要確認）",
+    prep: ["カテエネBANKの口座を開設し、デビットカードを発行する", "Revolut・ANA Payの各アプリをインストールする"]
+  },
+  {
+    starter: "楽天カード",
+    rate: 1.0,
+    segment: "edy_cash_pay",
+    chain: [
+      { label: "Revolut", rate: 1.0, note: "Mastercardブランドを選択すると手数料無料" },
+      { label: "ANA Pay", rate: 0, note: "経由地としての利用" }
+    ],
+    starterNote: "楽天カード（Mastercardブランドを選ぶとRevolut手数料無料）。通常還元1%が基本線で、日曜日など楽天ポイント倍率アップの日に合わせるとさらに上乗せできる可能性がある。",
+    caution: "△ Revolutチャージでの還元率について確度の高い一次情報が見つかっていません。1%は通常のカード利用還元からの推測値です。実際にチャージしてポイント付与明細を確認してから本格運用してください。",
+    routeLabel: "楽天カードルート（Revolut経由・要確認）",
+    prep: ["楽天カード（Mastercardブランド）を発行する", "Revolut・ANA Payの各アプリをインストールする"]
+  }
+];
+
+// ===== 新しい出口セグメント用のコネクタ =====
+const ROUTE_CONNECTORS_EXTRA_2 = [
+  // IDAREの各出口（リアルカード／PayPay／楽天ペイ／d払い／Revolut）
+  ...["idare_exit_realcard", "idare_exit_paypay_direct", "idare_exit_rakutenpay_direct", "idare_exit_dbarai", "idare_exit_revolut"].map(seg => ({
+    starter: "JQセゾン(JCB)",
+    rate: 1.6,
+    segment: seg,
+    chain: [
+      { label: "ファミペイ", rate: 1.5, note: "月2万円まで" },
+      { label: "JAL Pay", rate: 0, note: "1日10万円・月30万円まで（2024/6/6〜の上限）" },
+      { label: "IDARE", rate: 0.1, note: "" }
+    ],
+    starterNote: "JQセゾン(JCB)（ファミペイチャージで1.5%・月2万円まで）。楽天カードやPayPayカードなど、ファミペイにチャージできる他のカードでも起点にでき、その場合は還元率が変わります（starters参照）。",
+    starterAlts: { "楽天カード": 1.1, "PayPayカード": 0.6 },
+    routeLabel: {
+      idare_exit_realcard: "IDARE→リアルカード出口",
+      idare_exit_paypay_direct: "IDARE→PayPay登録出口",
+      idare_exit_rakutenpay_direct: "IDARE→楽天ペイ登録出口",
+      idare_exit_dbarai: "IDARE→d払い登録出口",
+      idare_exit_revolut: "IDARE→Revolut出口（手数料1.7%）"
+    }[seg],
+    prep: ["JQセゾン(JCB)（または楽天カード／PayPayカードなど、ファミペイにチャージできるカード）を用意する", "ファミペイ・JAL Payの各アプリをインストールする"],
+    note: "IDAREの本体価値は残高保有ボーナス（年率最大2.2%）です。この区間自体のチャージ・決済還元は基本0%（Revolut出口のみ手数料1.7%のマイナス）。"
+  })),
+  // ワンバンクへの直接登録出口（ソフトバンクカードを挟まない版）
+  {
+    starter: "JQセゾン(JCB)",
+    rate: 1.6,
+    segment: "wanbank_exit_direct_registration",
+    chain: [
+      { label: "ファミペイ", rate: 1.5, note: "月2万円まで" },
+      { label: "JAL Pay", rate: 0, note: "1日10万円・月30万円まで（2024/6/6〜の上限）" },
+      { label: "IDARE", rate: 0.1, note: "" },
+      { label: "ワンバンク", rate: 0, note: "IDARE残高ボーナスとは別枠。単純な出金先" }
+    ],
+    starterNote: "JQセゾン(JCB)（ファミペイチャージで1.5%・月2万円まで）。楽天カードやPayPayカードなど、ファミペイにチャージできる他のカードでも起点にでき、その場合は還元率が変わります（starters参照）。",
+    starterAlts: { "楽天カード": 1.1, "PayPayカード": 0.6 },
+    routeLabel: "ワンバンクルート（PayPay/楽天ペイ/d払いに直接登録・ソフトバンクカード不要版）",
+    prep: ["JQセゾン(JCB)（または楽天カード／PayPayカードなど、ファミペイにチャージできるカード）を用意する", "ファミペイ・JAL Payの各アプリをインストールする"],
+    note: "ソフトバンクカードを持っていない・作れない場合は、ワンバンクのカード番号をPayPay／楽天ペイ／d払いに直接登録して支払う方法もあります（PayPay Step等の追加還元は付きません）。"
+  },
+  // nanaco→スマホプリペイド→バニラVISA→Suicaの拡張版
+  {
+    starter: "JQセゾン(JCB)",
+    rate: 1.6,
+    segment: "nanaco_smaho_prepaid_suica",
+    chain: [
+      { label: "ファミペイ", rate: 1.5, note: "月2万円まで" },
+      { label: "JAL Pay", rate: 0, note: "1日10万円・月30万円まで（2024/6/6〜の上限）" },
+      { label: "モバイルnanaco", rate: 0.1, note: "au PAYを経由しても可（0%・経由してもしなくても同じ）" }
+    ],
+    starterNote: "JQセゾン(JCB)（ファミペイチャージで1.5%・月2万円まで）。楽天カードやPayPayカードなど、ファミペイにチャージできる他のカードでも起点にでき、その場合は還元率が変わります（starters参照）。",
+    starterAlts: { "楽天カード": 1.1, "PayPayカード": 0.6 },
+    routeLabel: "nanaco・JQセゾン(JCB)ルート（Suicaへ延長）",
+    prep: ["JQセゾン(JCB)（または楽天カード／PayPayカードなど、ファミペイにチャージできるカード）を用意する", "ファミペイ・JAL Pay・nanaco（モバイルnanaco）・スマホプリペイドの各アプリをインストールする"],
+    note: "普段Suicaで交通機関やお店を使う人向けに、バニラVISAからさらにSuicaへ繋いだ版です。合計還元率は元のバニラVISA止まり版と同じ3.6%です（Suicaへの最終チャージ自体は0%）。"
+  },
+  // JAL Pay→(au PAY)→ANA Pay→楽天Edy直接払い（楽天キャッシュの月1万円上限を使い切った後の簡易版）
+  {
+    starter: "JQセゾン(JCB)",
+    rate: 1.6,
+    segment: "edy_direct",
+    chain: [
+      { label: "ファミペイ", rate: 1.5, note: "月2万円まで" },
+      { label: "JAL Pay", rate: 0, note: "1日10万円・月30万円まで（2024/6/6〜の上限）" },
+      { label: "ANA Pay", rate: 0.1, note: "au PAYを経由しても可（0%・経由してもしなくても同じ）。1回2万円以下のチャージは一時停止中（20,001円以上のみ可・2025/4/30〜）。1日10万円・月30万円まで" }
+    ],
+    starterNote: "JQセゾン(JCB)（ファミペイチャージで1.5%・月2万円まで）。楽天カードやPayPayカードなど、ファミペイにチャージできる他のカードでも起点にでき、その場合は還元率が変わります（starters参照）。",
+    starterAlts: { "楽天カード": 1.1, "PayPayカード": 0.6 },
+    routeLabel: "nanaco・JQセゾン(JCB)ルート（Edy直接払い・簡易版）",
+    prep: ["JQセゾン(JCB)（または楽天カード／PayPayカードなど、ファミペイにチャージできるカード）を用意する", "ファミペイ・JAL Pay・ANA Pay・楽天ペイ（楽天Edy）の各アプリをインストールする"],
+    note: "楽天キャッシュの月1万円上限を使い切った後や、手順を減らしたい場合の簡易版です。合計還元率はANA Pay→楽天Edy→楽天キャッシュ→楽天Pay版（3.6%）より低くなります。"
+  },
+  {
+    starter: "V NEOBANKデビット",
+    rate: 1.5,
+    segment: "edy_direct",
+    chain: [
+      { label: "au PAY", rate: 1.5, note: "上限5万円/月" },
+      { label: "ANA Pay", rate: 0, note: "au PAYは経由してもしなくても還元率は同じ" }
+    ],
+    starterNote: "V NEOBANKデビット（住信SBI・年会費無料・審査なし・1.5%）。⚠️ 2026年11月1日からチャージポイントが0%になる予定。",
+    shutdownWarn: "⚠️ 2026年10月31日で終了予定。2026年11月1日からV NEOBANKのチャージポイントが0%になります。",
+    routeLabel: "クレカなしルート（Edy直接払い・簡易版）",
+    prep: ["住信SBIネット銀行でV NEOBANK口座を開設し、デビットを発行する", "au PAY・ANA Pay・楽天ペイ（楽天Edy）の各アプリをインストールする"],
+    note: "楽天キャッシュの月1万円上限を使い切った後や、手順を減らしたい場合の簡易版です。"
+  }
+];
+
+// ===== 試したが使えなかった／対象外だった組み合わせの記録 =====
+// ここは buildRoutesFromConnectors() には一切渡さない。ルート生成用のROUTE_CONNECTORSとは
+// 別枠にすることで、「使えない」情報が誤って有効なルートとして生成されるのを防ぐ。
+// UIに出す場合も「使えるルート一覧」とは別セクション（例：注意書き）として表示すること。
+const ROUTE_EXCLUSIONS = [
+  {
+    from: "三菱UFJカード",
+    to: "JAL Pay",
+    reason: "三菱UFJカードはJAL Payへのチャージがポイントプログラムの対象外と明記されている",
+    checkedDate: "2026-08-26",
+    source: "small-hack.com「三菱UFJカードのポイントアップ活用」",
+    caution: "カード会社の規約は変更されることがあるため、時期により対象外リストが変わる可能性がある。要最新確認。"
+  },
+  {
+    from: "三菱UFJカード",
+    to: "au PAY",
+    reason: "三菱UFJカードはau PAYへのチャージもポイントプログラムの対象外と明記されている",
+    checkedDate: "2026-08-26",
+    source: "small-hack.com「三菱UFJカードのポイントアップ活用」",
+    caution: "カード会社の規約は変更されることがあるため、時期により対象外リストが変わる可能性がある。要最新確認。"
+  },
+  {
+    from: "リクルートカード",
+    to: "Revolut",
+    reason: "Revolutへのチャージ自体にポイントが付与されないと情報源で確認",
+    checkedDate: "2026-08-26",
+    source: "IPOで稼ぐメカニックの株ログ「Revolutチャージにおすすめのクレジットカード」",
+    caution: "要最新確認。"
+  },
+  {
+    from: "Kyash",
+    to: "ANA Pay",
+    reason: "2024年3月21日にKyashからANA Payへのチャージ機能が終了（公式アナウンス済み）",
+    checkedDate: "2026-08-26",
+    source: "Kyash公式アナウンス／アプリオ・節約速報など複数メディア",
+    caution: "サービス仕様のため復活の可能性は低いが、念のため要最新確認。"
+  },
+  {
+    from: "Kyash",
+    to: "IDARE",
+    reason: "2024年3月21日にKyashからIDAREへのチャージ機能が終了（公式アナウンス済み）",
+    checkedDate: "2026-08-26",
+    source: "Kyash公式アナウンス／アプリオ・節約速報など複数メディア",
+    caution: "サービス仕様のため復活の可能性は低いが、念のため要最新確認。"
+  },
+  {
+    from: "バンドルカード",
+    to: "ANA Pay",
+    reason: "2024年4月24日にバンドルカードからANA Payへのチャージ機能が終了",
+    checkedDate: "2026-08-26",
+    source: "朝から昼寝「バンドルカード→ANA Payのチャージも4/24で不可に」など",
+    caution: "要最新確認。"
+  },
+  {
+    from: "バンドルカード",
+    to: "IDARE",
+    reason: "2024年4月24日にバンドルカードからIDAREへのチャージ機能が終了",
+    checkedDate: "2026-08-26",
+    source: "朝から昼寝「バンドルカード→ANA Payのチャージも4/24で不可に」など",
+    caution: "要最新確認。"
+  },
+  {
+    from: "ファミペイ",
+    to: "バンドルカード",
+    reason: "2024年4月16日にボーナス付与対象外、2025年6月1日に「チャージ不可」との情報あり。ただし2026年3月3日付の別の記事では、ファミリーマート店頭でバンドルカードのチャージ用申込券を発行しファミペイ残高で支払う方法により、実際にチャージ成功＆10円のキャッシュバックを確認したとの報告があり、情報が矛盾している",
+    checkedDate: "2026-08-26",
+    source: "Z家のお得メモ「チャージルート関係の記録」https://toyama-go-z-house.com/log/ ／ uni928「ファミペイでバンドルカードに1000円チャージすると、なぜか10円還元された話」https://note.com/uni928928/n/n677c90ae094c（2026年3月3日）",
+    caution: "情報源同士が矛盾しているため「使えない」と断定はできない。ただし還元があったとしても定額10円/件程度（公共料金等の収納代行系支払いに適用される「10ファミマポイント/件」の仕組みと同一とみられ、%ベースではない）で、以前言われていた「最大3%」という情報の根拠にはならない。実施前に必ず自分でファミリーマート店頭で少額チャージを試し、レシートの還元有無の注釈を確認すること。"
+  },
+  {
+    from: "PayPayカード",
+    to: "Revolut（他社決済サービス全般）",
+    reason: "2026年6月2日からPayPayカードは「他社決済サービスへのチャージ」がポイント付与対象外になった（あわせて公共料金の還元率も0.5%に低下）。Revolutも他社決済サービスに該当するため、対象になっている可能性が高い",
+    checkedDate: "2026-08-26",
+    source: "Z家のお得メモ「チャージルート関係の記録（ルール変更など）」https://toyama-go-z-house.com/log/",
+    caution: "既存の「PayPayカード → Revolut → ANA Pay → 楽天Edy → 楽天Pay」ルートの起点（1.0%）はこの改悪で成立しなくなった可能性が高い。ルート自体はサイトに残しているが、実施前に必ずPayPayカードの最新の対象外サービス一覧を確認すること。"
+  }
+];
+
+// コネクタ×セグメントを、これまでの手書きルートと同じ形（steps/gains/split/atStore等）に組み立てる。
+// 出力の形が変わらないので、ここより後ろのコード（描画・お気に入り・編集機能など）は無改修で動く。
+function fmtRate(n){
+  // toFixed(1)だと1.25%が1.3%に丸まってしまうので、末尾の0だけ落とす方式にする
+  const s = n.toFixed(2);
+  return s.replace(/0$/, "").replace(/\.$/, "");
+}
+function buildRoutesFromConnectors(connectors, segments){
+  return connectors.map(c => {
+    const seg = segments[c.segment];
+    const chain = c.chain; // 最後の要素の label === seg.entryNode になっている前提
+    const chainLabels = chain.map(h => h.label);
+    // ルート名（タイトル）には「お店で〜支払い」のような最終行動ステップは含めない
+    const titleSteps = seg.steps.filter(s => !s.startsWith("お店で")).map(s => s.split("（")[0]);
+    const nameChain = [c.starter, ...chainLabels, ...titleSteps].join(" → ");
+    const name = c.routeLabel ? `${nameChain}（${c.routeLabel}）` : nameChain;
+
+    const segRateNum = typeof seg.rate === "number" ? seg.rate : 0;
+    const totalNum = c.rate + segRateNum;
+    const totalStr = seg.rateSuffix
+      ? `合計 ${fmtRate(totalNum)}%${seg.rateSuffix}`
+      : `合計 ${fmtRate(totalNum)}%`;
+
+    const chainGains = chain.map((h, idx) => {
+      const from = idx === 0 ? c.starter : chain[idx - 1].label;
+      const noteStr = h.note ? `（${h.note}）` : "";
+      return `${from}→${h.label}チャージ：${fmtRate(h.rate)}%${noteStr}`;
+    });
+    const gains = [...chainGains, ...seg.gains];
+
+    const chainSplit = chain
+      .filter(h => h.rate > 0)
+      .map(h => {
+        const idx = chain.indexOf(h);
+        const from = idx === 0 ? c.starter : chain[idx - 1].label;
+        return { pt: "ポイント", rate: h.rate, note: `${from}→${h.label}チャージ分${h.note ? "（" + h.note + "）" : ""}` };
+      });
+    const split = [...chainSplit, ...seg.split];
+
+    const prepList = [...(c.prep || []), ...(seg.howtoPrep || [])];
+    const chainFlow = chain.map((h, idx) => {
+      const from = idx === 0 ? c.starter : chain[idx - 1].label;
+      return `${h.label}に${from}からチャージする${h.note ? "（" + h.note + "）" : ""}`;
+    });
+    const flowList = [...chainFlow, ...seg.howtoFlow];
+
+    const defaultCitation = "［情報源：ユーザー提供の路線図画像「キャッシュレスお得路線図 2026/8月版」／確認日: 2026-08-25・要最新確認］";
+    const noteParts = [
+      c.note,
+      seg.balanceBonus ? `［${seg.balanceBonus}］` : null,
+      c.citation || defaultCitation
+    ].filter(Boolean);
+
+    const cautionParts = [c.caution, seg.caution].filter(Boolean);
+
+    const startersObj = { [c.starter]: c.rate };
+    if (c.starterAlts) Object.assign(startersObj, c.starterAlts);
+
+    const route = {
+      name,
+      pays: seg.pays,
+      total: totalStr,
+      steps: [c.starter, ...chainLabels, ...seg.steps],
+      gains,
+      split,
+      starter: c.starterNote,
+      howto: {
+        prep: prepList,
+        flow: flowList,
+        time: "カード発行に数日〜2週間ほど。以降のチャージ操作は月10〜15分ほど"
+      },
+      note: noteParts.join(" "),
+      url: null,
+      caution: cautionParts.join(" "),
+      atStore: {
+        rate: totalStr.replace("合計 ", ""),
+        method: seg.atStore.method
+      },
+      starters: startersObj
+    };
+    if (c.shutdownWarn) route.shutdownWarn = c.shutdownWarn;
+    return route;
+  });
+}
+
+const DEFAULT_ROUTES_GENERATED = buildRoutesFromConnectors(
+  ROUTE_CONNECTORS.concat(ROUTE_CONNECTORS_EXTRA_1).concat(ROUTE_CONNECTORS_EXTRA_2),
+  ROUTE_SEGMENTS
+);
+
+// 生成されたルートのうち、IDAREが主役のものには affKey を明示しておく。
+// これがあると、affiliateFor（起点カード名のあいまい一致）より先に
+// affiliateForKey（affiliates.jsonのキー完全一致）が優先され、
+// 途中に出てくる他のカード名と誤って紐づく事故を防げる。
+DEFAULT_ROUTES_GENERATED.forEach(r => {
+  if(r.name.includes("IDARE")){
+    r.affKey = "idare";
+    if(!r.articleUrl) r.articleUrl = "articles/idare-card-katsuyo.html";
+  }
+  if(r.name.includes("スマホプリペイド")){
+    if(!r.articleUrl) r.articleUrl = "articles/smaho-prepaid-toha.html";
+  }
+});
+
+const DEFAULT_ROUTES = DEFAULT_ROUTES_MANUAL.concat(DEFAULT_ROUTES_GENERATED).concat(STANDALONE_ROUTES_EXTRA);
+
+
 
 const UNIVERSAL_PAYMENTS = [
   {
@@ -5914,7 +6652,7 @@ function renderRoutes(){
   }
   shown.forEach((r, ri) => {
     const el = document.createElement("div");
-    el.className = "route-card";
+    el.className = "route-card" + (ri === 0 ? " is-top" : "");
     el.dataset.routeName = r.name;
 
     // ステップのアイコンSVGパス
@@ -5956,6 +6694,7 @@ function renderRoutes(){
     const gainsHtml = r.gains && r.gains.length ? `<ul class="route-gains">${r.gains.map(g=>`<li>${g}</li>`).join("")}</ul>` : "";
 
     el.innerHTML = `
+      ${ri === 0 ? `<div class="route-top-badge">🏆 今いちばんお得なルート</div>` : ""}
       <div class="route-top">
         <span class="route-name">${r.name}${verifyBadgeHtml("route:" + r.name)}</span>
         <button class="route-fav-btn${isRouteFav(r.name) ? " is-fav" : ""}" title="${isRouteFav(r.name) ? "お気に入りから外す" : "お気に入りに追加"}">
