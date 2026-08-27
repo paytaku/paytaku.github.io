@@ -51,15 +51,17 @@ const THUMB_GRADIENT = {
   "カード解説": "linear-gradient(135deg,#4F46E5 0%,#7C3AED 100%)",
   "キャンペーン": "linear-gradient(135deg,#7C3AED 0%,#EC4899 100%)",
   "証券・投資": "linear-gradient(135deg,#10B981 0%,#059669 100%)",
-  "チャージルート": "linear-gradient(135deg,#F59E0B 0%,#D97706 100%)"
+  "チャージルート": "linear-gradient(135deg,#F59E0B 0%,#D97706 100%)",
+  "ポイントサイト": "linear-gradient(135deg,#06B6D4 0%,#0891B2 100%)"
 };
 const THUMB_ICON = {
   "カード解説": "💳",
   "キャンペーン": "🎁",
   "証券・投資": "📈",
-  "チャージルート": "🔌"
+  "チャージルート": "🔌",
+  "ポイントサイト": "🎯"
 };
-const CATEGORY_ORDER = ["すべて", "キャンペーン", "カード解説", "証券・投資", "チャージルート"];
+const CATEGORY_ORDER = ["すべて", "キャンペーン", "カード解説", "証券・投資", "チャージルート", "ポイントサイト"];
 
 /* PR枠（実データではなく広告枠。運用時はここだけ書き換える） */
 const PR_CARD = {
@@ -424,6 +426,7 @@ function indexTemplate(articles){
     <button data-menu-cat="カード解説" class="text-left px-3 py-3 rounded-lg text-[#64748B] dark:text-slate-300 hover:bg-[#F8FAFC] dark:hover:bg-slate-800">カード解説</button>
     <button data-menu-cat="証券・投資" class="text-left px-3 py-3 rounded-lg text-[#64748B] dark:text-slate-300 hover:bg-[#F8FAFC] dark:hover:bg-slate-800">証券・投資</button>
     <button data-menu-cat="チャージルート" class="text-left px-3 py-3 rounded-lg text-[#64748B] dark:text-slate-300 hover:bg-[#F8FAFC] dark:hover:bg-slate-800">チャージルート</button>
+    <button data-menu-cat="ポイントサイト" class="text-left px-3 py-3 rounded-lg text-[#64748B] dark:text-slate-300 hover:bg-[#F8FAFC] dark:hover:bg-slate-800">ポイントサイト</button>
   </nav>
 </div>
 

@@ -1,0 +1,125 @@
+[
+  {
+    "key": "au-pay-gold-card",
+    "name": "au PAY請求書払い 2026年8月版",
+    "articles": [
+      "aupay-seikyusho-max-route.html"
+    ]
+  },
+  {
+    "key": "cosmo-the-card-opus",
+    "name": "コスモ・ザ・カード・オーパス",
+    "articles": [
+      "cosmo-the-card-opus-shindan.html"
+    ]
+  },
+  {
+    "key": "custom-1787211123687",
+    "name": "小田急ポイントカード（OPカード）",
+    "articles": [
+      "odakyu-point-card-shindan.html"
+    ]
+  },
+  {
+    "key": "daiichi-neobank-debit-premium",
+    "name": "ANA Pay→楽天Edy→楽天キャッシュ→楽天ペイ 2026年8月版",
+    "articles": [
+      "ana-pay-rakuten-edy-cash-route.html",
+      "kateene-bank-debit-shindan.html"
+    ]
+  },
+  {
+    "key": "dcard-gold",
+    "name": "dcard-gold",
+    "articles": [
+      "dcard-series-shindan.html"
+    ]
+  },
+  {
+    "key": "dcard-platinum",
+    "name": "dcard-platinum",
+    "articles": [
+      "dcard-series-shindan.html"
+    ]
+  },
+  {
+    "key": "dmm-kabu",
+    "name": "DMM株 2026年8月版",
+    "articles": [
+      "dmm-kabu-shindan.html"
+    ]
+  },
+  {
+    "key": "epos-card",
+    "name": "au PAY請求書払い 2026年8月版",
+    "articles": [
+      "aupay-seikyusho-max-route.html",
+      "epos-card-shindan.html"
+    ]
+  },
+  {
+    "key": "hapitas-signup",
+    "name": "ANA Pay→楽天Edy→楽天キャッシュ→楽天ペイ 2026年8月版",
+    "articles": [
+      "ana-pay-rakuten-edy-cash-route.html",
+      "aupay-seikyusho-max-route.html",
+      "cosmo-the-card-opus-shindan.html",
+      "lawson-ponta-plus-shindan.html",
+      "odakyu-point-card-shindan.html",
+      "point-site-card-hikaku.html",
+      "smbc-nl-shindan.html"
+    ]
+  },
+  {
+    "key": "idare",
+    "name": "IDARE（イデア）",
+    "articles": [
+      "idare-card-katsuyo.html"
+    ]
+  },
+  {
+    "key": "jcb-card-w",
+    "name": "jcb-card-w",
+    "articles": [
+      "jcb-card-w-shindan.html",
+      "touch-norisha-10-5.html"
+    ]
+  },
+  {
+    "key": "kateene-bank-debit",
+    "name": "カテエネBANKデビット 2026年8月版",
+    "articles": [
+      "kateene-bank-debit-shindan.html"
+    ]
+  },
+  {
+    "key": "lawson-ponta-plus",
+    "name": "ローソンPontaプラス",
+    "articles": [
+      "lawson-ponta-plus-shindan.html"
+    ]
+  },
+  {
+    "key": "rakuten-card",
+    "name": "rakuten-card",
+    "articles": [
+      "rakuten-card-review.html",
+      "rakuten-card-shindan.html"
+    ]
+  },
+  {
+    "key": "rakuten-premium",
+    "name": "楽天プレミアムカード",
+    "articles": [
+      "rakuten-premium-card-shindan.html"
+    ]
+  },
+  {
+    "key": "smbc-nl",
+    "name": "三井住友カード（NL）",
+    "articles": [
+      "smbc-nl-shindan.html",
+      "touch-norisha-10-5.html"
+    ]
+  }
+]

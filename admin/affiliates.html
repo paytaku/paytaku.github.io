@@ -287,8 +287,9 @@ var CARDS = [
   {key:'odakyu-op',       name:'小田急ポイントカード（OPクレジット）'},
   {key:'hapitas-signup',  name:'ハピタス', isPointSite:true},
   {key:'moppy-signup',    name:'モッピー', isPointSite:true},
+  {key:'pointoinkamu',    name:'ポイントインカム', isPointSite:true},
 ];
-var ASP_LIST = ['トラフィックゲート','A8.net','afb','バリューコマース','LinkShare','ハピタス','モッピー','その他（手動入力）'];
+var ASP_LIST = ['トラフィックゲート','A8.net','afb','バリューコマース','LinkShare','ハピタス','モッピー','ポイントインカム','その他（手動入力）'];
 
 /* ===== 状態 ===== */
 var linkState   = {}; // key -> {type,url,via,banners:[],isPointSite}
@@ -877,6 +878,10 @@ document.getElementById('addCardBtn').addEventListener('click',function(){
   document.getElementById('newCardKey').value='';
   document.getElementById('addCardModal').classList.add('show');
   setTimeout(function(){ document.getElementById('newCardName').focus(); },50);
+  // モーダルを開くたびに記事側の最新data-affキーを読み直す。
+  // ビルド直後にしか反映されない情報なので、ここで再取得しないと「実は既に
+  // 別キーで検出済みだった」ことに気づけないまま重複登録してしまう事故につながる。
+  loadArticleAffKeys();
 });
 document.getElementById('addCardCancel').addEventListener('click',function(){
   document.getElementById('addCardModal').classList.remove('show');
@@ -902,6 +907,23 @@ document.getElementById('addCardConfirm').addEventListener('click',function(){
   var name=document.getElementById('newCardName').value.trim();
   var key =document.getElementById('newCardKey').value.trim().replace(/[^a-z0-9-]/g,'');
   if(!name){ alert('カード名を入力してください。'); return; }
+  // 名前の重複チェック：既に別のキーで同じ（またはほぼ同じ）名前のカードが
+  // 登録されていないか確認する。これに気づかず追加すると、記事側は既存キーを
+  // 使っているのに、ここで別キーの重複カードができてしまい、管理画面でリンクを
+  // 保存しても記事に反映されない、という事故（コスモ・ザ・カード・オーパスで実際に発生）につながる。
+  var normalize = function(s){ return (s||'').replace(/[\\s・\\-ー（）()]/g,'').toLowerCase(); };
+  var normName = normalize(name);
+  var dup = CARDS.find(function(c){ return c.key !== key && normalize(c.name) === normName; });
+  if(dup){
+    var proceed = confirm(
+      '「' + dup.name + '」は既に別のキー「' + dup.key + '」で登録されています。\\n\\n' +
+      'このまま新しいキー「' + key + '」で追加すると、同じカードが2件に分かれて、' +
+      'どちらか一方にしかリンクが反映されなくなります。\\n\\n' +
+      '（推奨）キャンセルして、既存の「' + dup.key + '」の方にリンクを設定してください。\\n\\n' +
+      'それでも別カードとして追加しますか？'
+    );
+    if(!proceed) return;
+  }
   if(!key){ alert('キーを入力してください（半角英数字・ハイフン）。'); return; }
   if(CARDS.find(function(c){ return c.key===key; })){
     alert('そのキーは既に使われています。別のキーを入力してください。'); return;

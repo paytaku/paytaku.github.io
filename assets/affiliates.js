@@ -3,6 +3,9 @@
    affiliates.json を読み込み：
    - data-aff="キー" → href / ボタン文言を差し替え
    - data-aff-banner="キー" → バナー表示（配列の先頭、またはdata-aff-banner-idx指定）
+   - data-aff-pending="キー" → まだリンク未設定のカード（例：モッピー・ポイントインカムなど）を
+     「準備中」表示にしておき、affiliates.jsonに実URLが登録された瞬間、記事側を一切編集せずに
+     自動で申し込みボタンを表示する（詳しくはファイル末尾のブロックを参照）
    JSON取得失敗時はHTMLの元href/文言をそのまま使う（フォールバック）。
    ============================================================ */
 (function(){
@@ -178,6 +181,102 @@
           img.loading = 'lazy';
           a.appendChild(img);
           box.appendChild(a);
+          container.appendChild(box);
+        });
+      });
+      /* ---- 提携状況の文言切り替え（表・注釈などのテキスト用） ----
+         使い方：
+           <span data-aff-status="キー">
+             <span class="aff-status-pending">提携準備中（登録リンク未設定）</span>
+             <span class="aff-status-ready" style="display:none;">提携済み・今すぐ登録可能</span>
+           </span>
+         data-aff-pending のボタン版と同じ判定で、実URLが登録された瞬間に文言だけ自動で切り替わる。 */
+      document.querySelectorAll('[data-aff-status]').forEach(function(el){
+        var key   = el.getAttribute('data-aff-status');
+        var entry = links[key];
+        var href  = entry ? (typeof entry === 'string' ? entry : entry.url) : null;
+        var ready = isSafeHttpUrl(href) && href !== '#';
+
+        var pending = el.querySelector('.aff-status-pending');
+        var readyEl = el.querySelector('.aff-status-ready');
+        if(pending) pending.style.display = ready ? 'none' : '';
+        if(readyEl) readyEl.style.display  = ready ? '' : 'none';
+      });
+
+      /* ---- 準備中カードの自動切り替え ----
+         使い方（記事HTML側）：
+           <div data-aff-pending="モッピーなどのキー">
+             <p class="aff-pending-note">現在準備中です…</p>
+             <a data-aff="同じキー" href="#" class="aff-pending-btn" style="display:none;">◯◯に登録する（PR）</a>
+           </div>
+         affiliates.json 側でそのキーに http/https の実URLが入るまでは
+         「準備中」の案内文だけを見せ、ボタンは隠したままにする。
+         実URLが登録された瞬間、記事HTMLを直さなくても自動的にボタンが表示され、
+         上のdata-aff処理でhrefも正しいリンクに差し替わる。 */
+      document.querySelectorAll('[data-aff-pending]').forEach(function(wrap){
+        var key   = wrap.getAttribute('data-aff-pending');
+        var entry = links[key];
+        var href  = entry ? (typeof entry === 'string' ? entry : entry.url) : null;
+        var ready = isSafeHttpUrl(href) && href !== '#';
+
+        var note = wrap.querySelector('.aff-pending-note');
+        var btn  = wrap.querySelector('.aff-pending-btn, [data-aff="' + key + '"]');
+
+        if(btn)  btn.style.display  = ready ? '' : 'none';
+        if(note) note.style.display = ready ? 'none' : '';
+      });
+      /* ---- ポイントサイト一覧の自動生成 ----
+         使い方（記事HTML側）：
+           <div data-aff-pointsites-list data-aff-pointsites-exclude="hapitas-signup"></div>
+         affiliates.json の links 内で isPointSite:true になっている項目を全て列挙し、
+         実URL登録済みなら登録ボタン、未設定なら「準備中」の案内を自動生成する。
+         ちょびリッチなど新しいポイントサイトを増やしたいときは、管理画面（admin/affiliates.html）で
+         カードを追加して「ポイントサイト」にチェックを入れるだけでよい。記事側のHTMLは一切編集不要で、
+         次にページを開いたときにはこの一覧に自動で行が増える。
+         data-aff-pointsites-exclude には、記事内で別途手動のCTAを用意済みのキーをカンマ区切りで
+         指定すると、その分だけ自動一覧から除外できる（二重表示防止）。 */
+      document.querySelectorAll('[data-aff-pointsites-list]').forEach(function(container){
+        var excludeAttr = container.getAttribute('data-aff-pointsites-exclude') || '';
+        var exclude = excludeAttr.split(',').map(function(s){ return s.trim(); }).filter(Boolean);
+
+        var keys = Object.keys(links).filter(function(k){
+          return links[k] && links[k].isPointSite && exclude.indexOf(k) === -1;
+        });
+        if(!keys.length) return;
+
+        keys.forEach(function(key){
+          var entry = links[key];
+          var href  = entry.url;
+          var ready = isSafeHttpUrl(href) && href !== '#';
+          var name  = names[key] || key;
+
+          var box = document.createElement('section');
+          box.className = 'lp-section lp-cta-section aff-pointsite-card';
+          box.style.marginTop = '16px';
+
+          var title = document.createElement('p');
+          title.className = 'nl-cta-name';
+          title.textContent = name + 'に登録する';
+          box.appendChild(title);
+
+          var note = document.createElement('p');
+          note.className = 'nl-text';
+          note.style.marginBottom = ready ? '10px' : '0';
+          note.textContent = ready
+            ? '登録無料。当サイト経由での登録に対応しています。'
+            : '当サイト経由の登録リンクは現在準備中です。リンクが公開され次第、ここに登録ボタンが自動で表示されます。';
+          box.appendChild(note);
+
+          if(ready){
+            var a = document.createElement('a');
+            a.href = href;
+            a.target = '_blank';
+            a.rel = 'noopener noreferrer nofollow sponsored';
+            a.className = 'lp-apply-btn';
+            a.textContent = name + 'に無料登録する（PR）';
+            box.appendChild(a);
+          }
+
           container.appendChild(box);
         });
       });

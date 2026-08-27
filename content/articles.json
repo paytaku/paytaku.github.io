@@ -1,5 +1,51 @@
 [
   {
+    "slug": "rakuten-premium-card-shindan",
+    "category": "カード解説",
+    "title": "楽天プレミアムカードは年会費11,000円の元を取れるか｜空港ラウンジ利用回数で試算した",
+    "publishedDate": "2026-08-27",
+    "updatedDate": "2026-08-27",
+    "tags": [
+      "楽天プレミアムカード",
+      "楽天カード",
+      "プライオリティ・パス",
+      "空港ラウンジ",
+      "年会費",
+      "上位カード"
+    ],
+    "overview": "楽天プレミアムカードは年会費11,000円。無料の楽天カードと還元率は同じ1.0%なので、違いはすべて「特典」にあります。最大の目玉であるプライオリティ・パス（空港ラウンジ）を軸に、年会費の元を取るには年何回ラウンジを使えばいいかを具体的に試算しました。",
+    "related": [
+      "rakuten-card-shindan",
+      "rakuten-card-review",
+      "credit-card-erabikata-shindan"
+    ],
+    "customHtml": true
+  },
+  {
+    "slug": "point-site-card-hikaku",
+    "category": "ポイントサイト",
+    "title": "クレカ申し込みはポイントサイト経由が得？ハピタス・モッピーの比較の仕方｜金額を鵜呑みにしてはいけない理由",
+    "publishedDate": "2026-08-27",
+    "updatedDate": "2026-08-27",
+    "tags": [
+      "ポイントサイト",
+      "ハピタス",
+      "モッピー",
+      "ポイントインカム",
+      "ポイ活",
+      "カード発行",
+      "二重取り"
+    ],
+    "overview": "楽天カード・dカード・エポスカードなど、当サイトで紹介しているカードは公式サイトから直接申し込むより、ポイントサイト経由の方が上乗せがあることがあります。ただし1件あたりの獲得ポイントは案件ごとに毎日のように変わるため、本記事では具体的な金額を掲載していません。仕組みの理解と、申し込み直前に自分で比較する手順をまとめました。",
+    "related": [
+      "credit-card-erabikata-shindan",
+      "rakuten-card-shindan",
+      "epos-card-shindan",
+      "jcb-card-w-shindan"
+    ],
+    "customHtml": true
+  },
+  {
     "slug": "dmm-kabu-shindan",
     "category": "証券・投資",
     "title": "DMM株が向く人・向かない人｜投信で積立したい人は開かなくていい理由とSBI・楽天との使い分け",
@@ -67,7 +113,7 @@
     "category": "カード解説",
     "title": "JCB CARD Wは「39歳まで」のラストチャンス｜還元率悪い説の真相と損しない使い方",
     "publishedDate": "2026-08-20",
-    "updatedDate": "2026-08-20",
+    "updatedDate": "2026-08-27",
     "tags": [
       "JCB CARD W",
       "JCB CARD W plus L",
@@ -88,7 +134,7 @@
     "category": "カード解説",
     "title": "楽天カードは「楽天市場を使わない人」でも得か？街の買い物で1.5%にする設定まで解説",
     "publishedDate": "2026-08-19",
-    "updatedDate": "2026-08-19",
+    "updatedDate": "2026-08-27",
     "tags": [
       "楽天カード",
       "楽天ペイ",
@@ -166,7 +212,7 @@
     "category": "キャンペーン",
     "title": "クレカのタッチ決済で乗車 最大10.5%（常設）の使い方",
     "publishedDate": "2026-08-09",
-    "updatedDate": "2026-08-09",
+    "updatedDate": "2026-08-27",
     "tags": [
       "JCB",
       "三井住友カード",
@@ -190,7 +236,8 @@
     "related": [
       "vpoint-pay-yusen-10",
       "vcoupon-multi-shop-500pt"
-    ]
+    ],
+    "customHtml": true
   },
   {
     "slug": "vpoint-pay-yusen-10",
