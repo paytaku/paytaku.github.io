@@ -467,6 +467,56 @@ body{
 .lp-banner-label{ font-size: 10px; color: var(--dim); margin-bottom: 6px; text-align: left; font-weight: 700; }
 .lp-banner-img{ width: 100%; border-radius: var(--radius); border: 1px solid var(--line); }
 
+/* クレカ以外の案件をランダム表示する枠：バナー自体はlp-banner-boxを流用しつつ、
+   「PR」ラベルの色味だけ少し変えて広告の種類が混在していることを視覚的にも示す */
+.lp-random-slot .lp-banner-label{ color: var(--rate-accent); }
+
+/* ヒーローカード：記事冒頭でカード券面を大きく見せる専用コンポーネント。
+   単なるバナー画像の貼り付けではなく、名前・訴求コピー・CTAを一体化した「1枚看板」として
+   置くことで、券面画像だけを小さく出すより視認性・訴求力を上げる狙い。 */
+.lp-hero-card{
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 18px 18px 20px;
+  margin: 0 0 24px;
+  text-align: center;
+  box-shadow: var(--shadow-card);
+}
+.lp-hero-card-img{
+  width: 78%;
+  max-width: 320px;
+  border-radius: var(--radius);
+  box-shadow: 0 10px 28px rgba(15,23,42,0.28);
+  margin: 0 auto 14px;
+  display: block;
+}
+.lp-hero-card-name{
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.lp-hero-card-copy{
+  font-size: 12.5px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+.lp-hero-card-cta{
+  display: block;
+  padding: 14px;
+  border-radius: 10px;
+  background: var(--foil);
+  color: #FFFFFF;
+  font-size: 14.5px;
+  font-weight: 800;
+  text-align: center;
+  text-decoration: none;
+  box-shadow: var(--shadow-md);
+}
+.lp-hero-card-cta:hover{ opacity: .9; }
+
 /* ===== 記事一覧（/articles/index.html） ===== */
 .article-list{ display: flex; flex-direction: column; gap: 10px; }
 .article-list-item{
