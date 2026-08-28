@@ -7112,16 +7112,34 @@ const WALLET_OPTIONS_BASE = [
 ];
 
 // steps・starters に混ざる「まだ起点カードを選んでいない」ときのプレースホルダー的な
-// 表記は、決済名として一覧に出すと紛らわしいので除外する。
+// 表記や、カード名ではない出口（ギフト券など）、既存表記と重複するバリエーションは、
+// 選択肢に出すと紛らわしい・ノイズになるため除外する。
 const WALLET_OPTIONS_EXCLUDE = new Set([
   "高還元クレカ", "クレカ", "対象クレカ", "起点カード", "指定なし（基準）",
+  "対象クレカ/デビット", "Visa/Mastercardのクレカ", "ANA Pay / Suica 等",
+  "Amazonギフト券（Eメールタイプ）",
+  "楽天Pay（チャージ払い）", // 「楽天ペイ」の別表記（重複）
+  "VポイントPay（Visaタッチ）", // 「VポイントPay」の別表記（重複）
+  "ソフトバンクカード（LINEMO以外は店頭申込のみ・新規不可）", // 注意書きがラベル化してしまっている
 ]);
-// 「お店で〜支払い」のような、決済名ではなく行動の説明になっているstepsも除外する。
+// 「お店で〜支払い」「〜で利用」のような、決済名ではなく行動の説明になっているstepsも除外する。
 function isDescriptiveStep(s){
-  return /^お店で|支払い$|決済$|で支払う$/.test(s);
+  return /^お店で|支払い$|決済$|で支払う$|で利用$/.test(s);
 }
 
 let WALLET_OPTIONS = [...WALLET_OPTIONS_BASE];
+
+// 初回オンボーディングで最初に見せる「よく使われるカード」の厳選リスト。
+// ここに無いものが消えるわけではなく、オンボーディング画面の「もっと見る」や、
+// 後から使う「持っているカード・決済」設定（walletBtn）では引き続き全カードから選べる。
+// 初回にいきなり60件近く並ぶと選ぶ気が失せるため、まず代表的なものだけに絞って
+// 心理的ハードルを下げる狙い。
+const WALLET_OPTIONS_FEATURED = [
+  "三井住友カード / Olive", "三井住友カード ゴールド（NL）", "三菱UFJカード",
+  "JCB CARD W", "dカード", "楽天カード",
+  "PayPay", "PayPayカード ゴールド", "楽天ペイ", "d払い", "auPAY",
+  "イオンカード", "セブンカード・プラス", "ビックカメラSuicaカード",
+];
 
 // CHARGE_ROUTESの内容（starters・steps）から決済名を自動収集し、
 // WALLET_OPTIONS_BASEに無いものだけ末尾に追加する。
@@ -7473,9 +7491,10 @@ function showOnboarding(){
   const grid = document.getElementById("onboardGrid");
   const picked = new Set();
 
-  grid.innerHTML = WALLET_OPTIONS
-    .map(o => `<button class="wallet-opt" data-opt="${o}">${o}</button>`).join("");
-  grid.querySelectorAll(".wallet-opt").forEach(b => {
+  function optBtn(o){
+    return `<button class="wallet-opt" data-opt="${o}">${o}</button>`;
+  }
+  function bindOpt(b){
     b.addEventListener("click", ()=>{
       const o = b.dataset.opt;
       if(picked.has(o)){ picked.delete(o); b.classList.remove("on"); }
@@ -7483,7 +7502,32 @@ function showOnboarding(){
       document.getElementById("onboardDoneBtn").textContent =
         picked.size ? `${picked.size}枚で はじめる` : "はじめる";
     });
-  });
+  }
+
+  // 最初は「よく使われるカード」だけを表示し、選ぶ気が失せない枚数に絞る。
+  // 全カードから選びたい人のために「もっと見る」で残りを追加表示する。
+  const featured = WALLET_OPTIONS_FEATURED.filter(o => WALLET_OPTIONS.includes(o));
+  const rest = WALLET_OPTIONS.filter(o => !featured.includes(o));
+
+  grid.innerHTML = featured.map(optBtn).join("");
+  grid.querySelectorAll(".wallet-opt").forEach(bindOpt);
+
+  const moreWrap = document.getElementById("onboardMoreWrap");
+  if(moreWrap){
+    moreWrap.innerHTML = rest.length
+      ? `<button type="button" class="onboard-more-btn" id="onboardMoreBtn">＋ 他のカードも見る（あと${rest.length}件）</button>`
+      : "";
+    const moreBtn = document.getElementById("onboardMoreBtn");
+    if(moreBtn){
+      moreBtn.addEventListener("click", ()=>{
+        rest.forEach(o => grid.insertAdjacentHTML("beforeend", optBtn(o)));
+        grid.querySelectorAll(".wallet-opt").forEach(b => {
+          if(!b.dataset.bound){ b.dataset.bound = "1"; bindOpt(b); }
+        });
+        moreWrap.innerHTML = "";
+      }, { once: true });
+    }
+  }
 
   const finish = (save)=>{
     if(save && picked.size){
