@@ -57,6 +57,21 @@ h1{font-size:20px;font-weight:900;margin:0 0 4px;}
 
 .thumb-preview{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:8px;margin-top:10px;border:1px solid var(--line);}
 
+.upload-btn{ position:relative; overflow:hidden; }
+.upload-btn input[type="file"]{
+  position:absolute; inset:0; opacity:0; cursor:pointer; font-size:100px;
+}
+.upload-btn.uploading{ background:var(--warn-tint); border-color:var(--warn); color:var(--warn); pointer-events:none; }
+.upload-btn.success{ background:var(--good-tint); border-color:var(--good); color:var(--good); }
+.upload-btn.error{ background:var(--danger-tint); border-color:var(--danger); color:var(--danger); }
+
+.gh-banner{
+  padding:10px 14px;border-radius:var(--radius);font-size:12px;line-height:1.6;margin-bottom:16px;
+  background:var(--surface2);border:1px solid var(--line);color:var(--muted);
+}
+.gh-banner a{ color:var(--primary); }
+.gh-banner.ok{ background:var(--good-tint); border-color:var(--good); color:var(--good); }
+
 .empty-msg{color:var(--dim);font-size:13px;padding:16px;text-align:center;background:var(--surface);border:1px dashed var(--line);border-radius:var(--radius);}
 .hint{font-size:11.5px;color:var(--dim);margin-top:6px;line-height:1.6;}
 </style>
@@ -71,6 +86,7 @@ h1{font-size:20px;font-weight:900;margin:0 0 4px;}
   </p>
 
   <div class="status-bar" id="statusBar"></div>
+  <div class="gh-banner" id="ghBanner"></div>
 
   <div class="section-head">
     <h2>サムネイル未設定の記事</h2>
@@ -88,8 +104,29 @@ h1{font-size:20px;font-weight:900;margin:0 0 4px;}
 <script>
 (function(){
   var EXTS = ['png','jpg','jpeg','webp'];
+  var GH_SETTINGS_KEY = 'paytaku-gh-settings'; // admin/affiliates.html と共通のキー（同一オリジンなので設定を使い回せる）
+  var THUMB_DIR = 'assets/thumbnails';
 
   function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  function getGhSettings(){
+    try{
+      var raw = localStorage.getItem(GH_SETTINGS_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch(e){ return null; }
+  }
+
+  function renderGhBanner(){
+    var el = document.getElementById('ghBanner');
+    var gh = getGhSettings();
+    if(gh && gh.owner && gh.repo && gh.token){
+      el.className = 'gh-banner ok';
+      el.innerHTML = '✓ GitHub接続済み（' + esc(gh.owner) + '/' + esc(gh.repo) + '）。各記事の「画像をアップロード」からサムネイルを直接コミットできます。';
+    } else {
+      el.className = 'gh-banner';
+      el.innerHTML = 'GitHubへの直接アップロードには接続設定が必要です。<a href="./affiliates.html">紹介リンク管理の「GitHub設定」タブ</a>で一度設定すると、このページでも同じ設定を使い回せます。';
+    }
+  }
 
   // assets/thumbnails/{slug}.{ext} が実在するかどうかを、画像読み込みの成否で判定する。
   // （記事側の初期表示ロジックと同じ手法。サーバー側の一覧APIが無いので、これが一番確実。）
@@ -127,6 +164,94 @@ h1{font-size:20px;font-weight:900;margin:0 0 4px;}
     document.body.removeChild(ta);
   }
 
+  // MIME種別からファイル拡張子を決める（アップロードしたファイル名がバラバラでも、
+  // 記事側のfindLocalThumb()が試す拡張子（png/jpg/jpeg/webp）に確実に揃えるため）。
+  function extForMime(mime){
+    if(mime === 'image/png') return 'png';
+    if(mime === 'image/jpeg') return 'jpg';
+    if(mime === 'image/webp') return 'webp';
+    return null;
+  }
+
+  function fileToBase64(file){
+    return new Promise(function(resolve, reject){
+      var reader = new FileReader();
+      reader.onload = function(){
+        // "data:image/png;base64,xxxx" の xxxx 部分だけを取り出す
+        var result = reader.result || '';
+        var idx = result.indexOf(',');
+        resolve(idx >= 0 ? result.slice(idx + 1) : result);
+      };
+      reader.onerror = function(){ reject(new Error('ファイルの読み込みに失敗しました')); };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // GitHub Contents APIで assets/thumbnails/{slug}.{ext} をコミットする。
+  // 既存ファイル（同じslugで拡張子違いも含む）があれば削除してから、新しい拡張子で追加する
+  // （findLocalThumb()はpngを最優先で試すため、古いjpgが残っていると新しいpngより先に見つかってしまうのを防ぐ）。
+  async function uploadThumbnail(slug, file){
+    var gh = getGhSettings();
+    if(!gh || !gh.owner || !gh.repo || !gh.token){
+      throw new Error('GitHub未接続です。紹介リンク管理の「GitHub設定」タブで先に接続してください。');
+    }
+    var ext = extForMime(file.type);
+    if(!ext){
+      throw new Error('対応していない画像形式です（PNG・JPEG・WEBPのみ対応）。');
+    }
+    var branch = gh.branch || 'main';
+    var headers = {
+      'Authorization': 'token ' + gh.token,
+      'Accept': 'application/vnd.github.v3+json',
+    };
+    var apiBase = 'https://api.github.com/repos/' + gh.owner + '/' + gh.repo + '/contents/';
+
+    // 同じslugの別拡張子が既にあれば先に削除しておく（拡張子が変わるケースの対策）
+    for(var i = 0; i < EXTS.length; i++){
+      var otherExt = EXTS[i];
+      if(otherExt === ext) continue;
+      var otherPath = THUMB_DIR + '/' + slug + '.' + otherExt;
+      var getOther = await fetch(apiBase + otherPath + '?ref=' + branch, { headers: headers });
+      if(getOther.ok){
+        var otherJson = await getOther.json();
+        await fetch(apiBase + otherPath, {
+          method: 'DELETE',
+          headers: Object.assign({ 'Content-Type': 'application/json' }, headers),
+          body: JSON.stringify({
+            message: '[サムネイル管理] ' + slug + ' の旧サムネイル（.' + otherExt + '）を削除',
+            sha: otherJson.sha,
+            branch: branch,
+          }),
+        });
+      }
+    }
+
+    var path = THUMB_DIR + '/' + slug + '.' + ext;
+    var apiUrl = apiBase + path;
+    var getRes = await fetch(apiUrl + '?ref=' + branch, { headers: headers });
+    var sha = null;
+    if(getRes.ok){ var j = await getRes.json(); sha = j.sha; }
+
+    var b64 = await fileToBase64(file);
+    var body = {
+      message: '[サムネイル管理] ' + slug + ' のサムネイルを' + (sha ? '更新' : '追加'),
+      content: b64,
+      branch: branch,
+    };
+    if(sha) body.sha = sha;
+
+    var putRes = await fetch(apiUrl, {
+      method: 'PUT',
+      headers: Object.assign({ 'Content-Type': 'application/json' }, headers),
+      body: JSON.stringify(body),
+    });
+    if(!putRes.ok){
+      var err = await putRes.json().catch(function(){ return {}; });
+      throw new Error('保存エラー（' + putRes.status + '）: ' + (err.message || '不明なエラー'));
+    }
+    return path;
+  }
+
   function buildRow(article, thumbUrl){
     var row = document.createElement('div');
     row.className = 'article-row';
@@ -145,6 +270,9 @@ h1{font-size:20px;font-weight:900;margin:0 0 4px;}
           +'<button class="btn primary" data-copy="title" data-label="📋 タイトルをコピー">📋 タイトルをコピー</button>'
           +'<button class="btn" data-copy="url" data-label="🔗 記事URLをコピー">🔗 記事URLをコピー</button>'
           +'<a class="btn" href="'+url+'" target="_blank" rel="noopener">記事を開く ↗</a>'
+          +'<button class="btn upload-btn" data-label="⬆️ 画像をアップロード">⬆️ 画像をアップロード'
+            +'<input type="file" accept="image/png,image/jpeg,image/webp" data-slug="'+esc(article.slug)+'">'
+          +'</button>'
         +'</div>'
       +'</div>';
     if(thumbUrl){
@@ -162,6 +290,45 @@ h1{font-size:20px;font-weight:900;margin:0 0 4px;}
         copyToClipboard(text, btn);
       });
     });
+
+    var uploadBtn = row.querySelector('.upload-btn');
+    var fileInput = row.querySelector('input[type="file"]');
+    fileInput.addEventListener('change', function(){
+      var file = fileInput.files && fileInput.files[0];
+      if(!file) return;
+      uploadBtn.classList.remove('success', 'error');
+      uploadBtn.classList.add('uploading');
+      uploadBtn.textContent = '⏳ アップロード中...';
+      uploadThumbnail(article.slug, file)
+        .then(function(){
+          uploadBtn.classList.remove('uploading');
+          uploadBtn.classList.add('success');
+          uploadBtn.textContent = '✓ 保存しました';
+          setStatus('✓ 「' + article.title + '」のサムネイルをGitHubに保存しました。1〜2分でサイトに反映されます。', 'ok');
+          // プレビューを差し替える（コミット直後はCDNキャッシュが残ることがあるため、
+          // 数秒待ってからキャッシュ回避のクエリ付きで読み込む）
+          setTimeout(function(){
+            var freshUrl = '../assets/thumbnails/' + article.slug + '.' + extForMime(file.type) + '?t=' + Date.now();
+            var existing = row.querySelector('.thumb-preview');
+            if(existing){ existing.src = freshUrl; }
+            else {
+              var img = document.createElement('img');
+              img.className = 'thumb-preview';
+              img.src = freshUrl;
+              img.alt = article.title;
+              row.appendChild(img);
+            }
+          }, 1500);
+        })
+        .catch(function(err){
+          uploadBtn.classList.remove('uploading');
+          uploadBtn.classList.add('error');
+          uploadBtn.textContent = '✗ 失敗（再タップで再試行）';
+          setStatus('アップロードエラー: ' + (err && err.message ? err.message : '不明なエラー'), 'error');
+        });
+      fileInput.value = ''; // 同じファイルを選び直しても change が発火するように
+    });
+
     return row;
   }
 
@@ -198,6 +365,8 @@ h1{font-size:20px;font-weight:900;margin:0 0 4px;}
     var el = document.getElementById('statusBar');
     el.textContent = msg; el.className = 'status-bar show ' + type;
   }
+
+  renderGhBanner();
 
   fetch('../content/articles.json', { cache: 'no-cache' })
     .then(function(r){ return r.ok ? r.json() : Promise.reject(new Error('articles.json の取得に失敗（' + r.status + '）')); })
