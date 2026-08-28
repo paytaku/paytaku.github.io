@@ -22,7 +22,8 @@
     }
   }
 
-  var url = new URL('../affiliates.json', document.currentScript ? document.currentScript.src : location.href);
+  var affiliatesJsUrl = document.currentScript ? document.currentScript.src : location.href;
+  var url = new URL('../affiliates.json', affiliatesJsUrl);
   fetch(url.href, { cache: 'no-cache' })
     .then(function(r){ return r.ok ? r.json() : null; })
     .then(function(data){
@@ -30,6 +31,18 @@
       var links   = data.links   || {};
       var banners = data.banners || {};
       var names   = data.names   || {};
+
+      // エイリアス解決：admin側で「他のカードとリンクを共有する」に設定したカードは
+      // {type:'alias', aliasOf:'otherKey'} という形で保存されている。参照先のURL・バナーを
+      // そのまま使うことで、参照先を更新するとこのカードにも自動で反映される。
+      // （2段階以上のエイリアス連鎖は想定しておらず、参照先自体がさらにエイリアスの場合は解決しない）
+      Object.keys(links).forEach(function(k){
+        var l = links[k];
+        if(l && l.type === 'alias' && l.aliasOf && links[l.aliasOf]){
+          links[k] = links[l.aliasOf];
+          if(!banners[k] && banners[l.aliasOf]) banners[k] = banners[l.aliasOf];
+        }
+      });
 
       // ポイントサイト名 → そのポイントサイト自身のカードキー、の逆引き表を作る。
       // 例：hapitas-signup が {isPointSite:true} かつ names["hapitas-signup"]==="ハピタス" なら、
@@ -346,6 +359,9 @@
           var b = valid[bIdx];
           var box = document.createElement('div');
           box.className = 'lp-banner-box';
+          // 記事の編集モード（article-editor.js）が後からこの枠を見つけて差し替えられるよう、
+          // 置き換え後の要素にも元の data-aff-banner-slot 属性を残しておく。
+          box.setAttribute('data-aff-banner-slot', key);
           box.innerHTML = '<div class="lp-banner-label">📣 PR</div>'
             + '<a href="' + b.href + '" target="_blank" rel="sponsored noopener nofollow"'
             + (b.title ? ' title="' + b.title.replace(/"/g,'&quot;') + '"' : '') + '>'
@@ -382,6 +398,9 @@
         var banner = Array.isArray(b) ? b[0] : b;
         var box = document.createElement('div');
         box.className = 'lp-banner-box lp-random-slot';
+        box.setAttribute('data-aff-random-slot', '');
+        if(cat !== 'app') box.setAttribute('data-aff-random-category', cat);
+        box.setAttribute('data-aff-resolved-key', key); // 編集モードでの表示・削除用（再割当ては不可）
         box.innerHTML = '<div class="lp-banner-label">📱 PR</div>'
           + '<a href="' + banner.href + '" target="_blank" rel="sponsored noopener nofollow">'
           + '<img src="' + banner.img + '" alt="' + (names[key] || key).replace(/"/g,'&quot;') + '" class="lp-banner-img" loading="lazy"></a>';
@@ -389,4 +408,44 @@
       });
     })
     .catch(function(){ /* 失敗時はHTMLの元href・文言をそのまま使う */ });
+
+  /* ---- 記事の編集モード（バナー・アフィリエイトキーの差し替え） ----
+     ヘッダーに✏️ボタンを注入する。押すと assets/article-editor.js を初回のみ動的に読み込み、
+     記事内の data-aff / data-aff-hero / data-aff-banner-slot をその場で差し替え→GitHubにコミット
+     できるようにする。通常の読者には重いエディタ本体を読み込ませないための遅延ロード。 */
+  function injectEditModeToggle(){
+    var header = document.querySelector('.site-header-inner');
+    if(!header || document.getElementById('articleEditToggle')) return;
+    var btn = document.createElement('button');
+    btn.id = 'articleEditToggle';
+    btn.className = 'theme-toggle';
+    btn.title = '記事の編集モード';
+    btn.setAttribute('aria-label', '記事の編集モード');
+    btn.textContent = '✏️';
+    btn.addEventListener('click', function(){
+      if(window.__articleEditorReady){
+        window.toggleArticleEditMode && window.toggleArticleEditMode();
+        return;
+      }
+      btn.disabled = true;
+      btn.textContent = '⏳';
+      var s = document.createElement('script');
+      s.src = new URL('article-editor.js', affiliatesJsUrl).href;
+      s.onload = function(){
+        window.__articleEditorReady = true;
+        btn.disabled = false;
+        btn.textContent = '✏️';
+        window.toggleArticleEditMode && window.toggleArticleEditMode();
+      };
+      s.onerror = function(){
+        btn.disabled = false;
+        btn.textContent = '✏️';
+        alert('編集モードの読み込みに失敗しました。ネットワーク状態を確認してもう一度お試しください。');
+      };
+      document.body.appendChild(s);
+    });
+    header.appendChild(btn);
+  }
+  if(document.readyState === 'loading'){ document.addEventListener('DOMContentLoaded', injectEditModeToggle); }
+  else{ injectEditModeToggle(); }
 })();
