@@ -1,0 +1,144 @@
+{
+  "_comment": "アフィリエイトリンクの一元管理ファイル。このファイルを更新するだけで全記事・本体サイトに反映されます。",
+  "links": {
+    "rakuten-card": {
+      "type": "direct",
+      "url": "https://ad2.trafficgate.net/t/r/401/1396/318860_398517"
+    },
+    "rakuten-premium": {
+      "type": "direct",
+      "url": "https://ad2.trafficgate.net/t/r/385/1396/318860_398517"
+    },
+    "epos-card": {
+      "type": "direct",
+      "url": "https://admane.jp/ad/p/r?_site=1841&_article=658&_link=2922&_image=3165&_ns=1"
+    },
+    "dmm-kabu": {
+      "type": "direct",
+      "url": "https://h.accesstrade.net/sp/cc?rk=0100mjw400ox3w"
+    },
+    "hapitas-signup": {
+      "type": "point",
+      "url": "https://hapitas.jp/appinvite?i=25513097&route=text",
+      "via": "ハピタス",
+      "code": "MNECIZ",
+      "isPointSite": true
+    },
+    "moppy-signup": {
+      "type": "direct",
+      "url": "#",
+      "isPointSite": true
+    },
+    "pointoinkamu": {
+      "type": "direct",
+      "url": "#",
+      "isPointSite": true
+    },
+    "jcb-card-w": {
+      "type": "direct",
+      "url": "https://ad2.trafficgate.net/t/r/519/1396/jcb-card-w"
+    },
+    "smbc-nl": {
+      "type": "direct",
+      "url": "https://ad2.trafficgate.net/t/r/519/1396/smbc-nl"
+    },
+    "cosmo-the-card-opus": {
+      "type": "direct",
+      "url": "#"
+    },
+    "aupay-market": {
+      "type": "direct",
+      "url": "https://px.a8.net/svt/ejp?a8mat=4BA41D+FG2VSI+54O2+62U35"
+    }
+  },
+  "names": {
+    "rakuten-card": "楽天カード",
+    "rakuten-premium": "楽天プレミアムカード",
+    "dcard-gold": "dカード GOLD",
+    "dcard-goldu": "dカード GOLD U",
+    "dcard-platinum": "dカード PLATINUM",
+    "jcb-card-w": "JCB CARD W",
+    "epos-card": "エポスカード",
+    "smbc-nl": "三井住友カード（NL）",
+    "dmm-kabu": "DMM 株",
+    "aupay-market": "au PAYマーケット",
+    "odakyu-op": "小田急ポイントカード（OPクレジット）",
+    "hapitas-signup": "ハピタス",
+    "moppy-signup": "モッピー",
+    "custom-1787211123687": "小田急ポイントカード",
+    "pointoinkamu": "ポイントインカム",
+    "cosmo-the-card-opus": "コスモ・ザ・カード・オーパス"
+  },
+  "banners": {
+    "rakuten-card": [
+      {
+        "title": "楽天カード券面画像",
+        "href": "https://ad2.trafficgate.net/t/r/519/1396/318860_398517",
+        "img": "https://srv2.trafficgate.net/t/b/519/1396/318860_398517"
+      },
+      {
+        "title": "ポイント訴求",
+        "href": "https://ad2.trafficgate.net/t/r/877/1396/318860_398517",
+        "img": "https://srv2.trafficgate.net/t/b/877/1396/318860_398517"
+      }
+    ],
+    "rakuten-premium": [
+      {
+        "title": "ポイント訴求",
+        "href": "https://ad2.trafficgate.net/t/r/497/1396/318860_398517",
+        "img": "https://srv2.trafficgate.net/t/b/497/1396/318860_398517"
+      },
+      {
+        "title": "券面",
+        "href": "https://ad2.trafficgate.net/t/r/298/1396/318860_398517",
+        "img": "https://srv2.trafficgate.net/t/b/298/1396/318860_398517"
+      }
+    ],
+    "epos-card": [
+      {
+        "href": "https://h.accesstrade.net/sp/cc?rk=0100i7hh00ox3w",
+        "img": "https://h.accesstrade.net/sp/rr?rk=0100i7hh00ox3w"
+      }
+    ],
+    "dmm-kabu": [
+      {
+        "title": "バナー",
+        "href": "https://h.accesstrade.net/sp/cc?rk=0100mjw400ox3w",
+        "img": "https://h.accesstrade.net/sp/rr?rk=0100mjw400ox3w"
+      },
+      {
+        "title": "バナー2",
+        "href": "https://h.accesstrade.net/sp/cc?rk=0100mkjk00ox3w",
+        "img": "https://h.accesstrade.net/sp/rr?rk=0100mkjk00ox3w"
+      },
+      {
+        "title": "バナー3",
+        "href": "https://h.accesstrade.net/sp/cc?rk=0100mkjq00ox3w",
+        "img": "https://h.accesstrade.net/sp/rr?rk=0100mkjq00ox3w"
+      },
+      {
+        "title": "テキスト",
+        "href": "https://h.accesstrade.net/sp/cc?rk=0100mkk200ox3w",
+        "img": "https://h.accesstrade.net/sp/rr?rk=0100mkk200ox3w"
+      }
+    ],
+    "aupay-market": [
+      {
+        "href": "https://px.a8.net/svt/ejp?a8mat=4BA41D+FG2VSI+54O2+62U35",
+        "img": "https://www29.a8.net/svt/bgt?aid=260812273934&wid=001&eno=01&mid=s00000023933001021000&mc=1"
+      }
+    ],
+    "hapitas-signup": [
+      {
+        "href": "https://hapitas.jp/register/?i=25513097",
+        "img": "https://hapitas.jp/published-assets/admin/uploads/202604081658437859.png"
+      }
+    ],
+    "custom-1787211123687": [
+      {
+        "href": "https://h.accesstrade.net/sp/cc?rk=01004q8100ox3w",
+        "img": "https://h.accesstrade.net/sp/rr?rk=01004q8100ox3w"
+      }
+    ]
+  }
+}
