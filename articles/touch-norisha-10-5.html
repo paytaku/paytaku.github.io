@@ -55,7 +55,9 @@
 <script>
 (function(){
   var STORAGE_KEY = 'paytaku-theme';
-  var DEFAULT = 'dark';
+  // 保存済みの選択が無ければ、本体アプリ（index.html）と同じくOS設定に合わせる。
+  var prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+  var DEFAULT = prefersLight ? 'light' : 'dark';
   var saved = localStorage.getItem(STORAGE_KEY) || DEFAULT;
   document.documentElement.setAttribute('data-theme', saved);
   window.addEventListener('DOMContentLoaded', function(){
