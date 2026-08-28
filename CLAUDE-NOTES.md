@@ -56,7 +56,25 @@
 - アフィリエイトリンクは `affiliates.json` で一元管理。記事側は `data-aff="キー"` を書くだけで `assets/affiliates.js` が自動的にリンク・文言・バナーを差し込む
 - ポイントサイト（ハピタス・モッピー・ポイントインカムなど）は `isPointSite:true` で管理。`data-aff-pointsites-list` を記事に置くだけで、`affiliates.json` に登録済みの全ポイントサイトが自動一覧表示される（新しいポイントサイトを追加しても記事側の編集は不要）
 
-## 4. ビルドスクリプトの実行
+## 4. アフィリエイト表示の仕組み（2026-08-28追加）
+
+`assets/affiliates.js` に、記事側のHTMLを毎回編集しなくていいように次の3つの自動表示ディレクティブを追加した。新しい記事を書くときはこれらを使うこと（`data-aff-banner-list`の全部並べ表示は非推奨。連続表示になって見た目が悪いため）。
+
+- **`data-aff-hero="キー"`**：記事冒頭で券面画像を「名前・訴求コピー・CTA」とセットで大きく見せるヒーローカード。HTML側は `.lp-hero-card` の型を `articles/rakuten-card-review.html` からコピーして使う。券面バナー（banners配列の1枚目）が未登録なら自動で非表示になる。
+- **`data-aff-banner-slot="キー"`**：章の切れ目（`</section>`の直後など）に置いておくだけの空枠。同じキーで複数箇所に置くと、admin側で登録したバナー枚数に応じて自動的に均等な間隔で振り分けられる（バナーが1〜2枚しかなければ連続せず離れた位置に1回だけ出る）。**バナー枚数を増減しても記事HTML側の編集は不要**——枠だけ多めに置いておけばよい。`articles/dmm-kabu-shindan.html` が実例。
+- **`data-aff-random-slot`**（任意で`data-aff-random-category="app"`）：クレカ以外の案件（アプリ案件など）をランダムに1つ差し込む枠。admin側でカードの「案件ジャンル」を「アプリ案件」または「その他」に設定した案件だけが候補になる。対象が無ければ自動で非表示。
+
+admin側（`admin/affiliates.html`）には各カードに「案件ジャンル」セレクトを追加済み（空欄＝通常のクレカ、`app`＝アプリ案件、`other`＝その他）。クレカ以外の案件を登録するときは、ここを必ずアプリ案件かその他に変更すること（デフォルトのままだとクレカ扱いになり、ランダム枠の対象にならない）。
+
+## 5. サムネイル自動生成について（2026-08-28検討・未実装）
+
+現状はLovart（lovart.ai）に記事タイトルを手入力してサムネイルを都度生成しており、これを「sitemap.xml更新時に自動生成」「チェックした記事だけ自動生成」にできないか検討した。結論：**Lovartには公開APIが無く、外部から自動呼び出しはできない**。自動化するなら、GitHub Actionsの`build-articles.yml`実行後に以下のようなワークフローを追加する方向性になる（未実装）：
+1. `content/articles.json` を走査し、`thumbnail`未設定 かつ `assets/thumbnails/{slug}.*` が存在しない記事、または `articles.json` 側に `generateThumbnail:true` フラグが立っている記事を抽出。
+2. それらの記事タイトル・overviewを画像生成API（OpenAIのgpt-image-1、Google Gemini（Imagen）など、公開APIがあるもの）に渡してサムネイルを生成。
+3. `assets/thumbnails/{slug}.png` として保存し、自動コミット。
+実装する場合はどの画像生成APIを使うか（費用・商用利用条件を含む）を先に決める必要がある。
+
+## 6. ビルドスクリプトの実行
 記事一覧・sitemap・健全性チェックを手元で確認したい場合は以下を実行（通常はGitHub Actionsが自動実行するので必須ではない）：
 ```
 node scripts/build-articles.mjs
