@@ -9,13 +9,26 @@
       "type": "direct",
       "url": "https://ad2.trafficgate.net/t/r/385/1396/318860_398517"
     },
+    "jcb-card-w": {
+      "type": "direct",
+      "url": "https://ad2.trafficgate.net/t/r/519/1396/jcb-card-w"
+    },
     "epos-card": {
       "type": "direct",
       "url": "https://admane.jp/ad/p/r?_site=1841&_article=658&_link=2922&_image=3165&_ns=1"
     },
+    "smbc-nl": {
+      "type": "direct",
+      "url": "https://ad2.trafficgate.net/t/r/519/1396/smbc-nl"
+    },
     "dmm-kabu": {
       "type": "direct",
       "url": "https://h.accesstrade.net/sp/cc?rk=0100mjw400ox3w"
+    },
+    "aupay-market": {
+      "type": "direct",
+      "url": "https://px.a8.net/svt/ejp?a8mat=4BA41D+FG2VSI+54O2+62U35",
+      "category": "other"
     },
     "hapitas-signup": {
       "type": "point",
@@ -34,21 +47,9 @@
       "url": "#",
       "isPointSite": true
     },
-    "jcb-card-w": {
-      "type": "direct",
-      "url": "https://ad2.trafficgate.net/t/r/519/1396/jcb-card-w"
-    },
-    "smbc-nl": {
-      "type": "direct",
-      "url": "https://ad2.trafficgate.net/t/r/519/1396/smbc-nl"
-    },
     "cosmo-the-card-opus": {
       "type": "direct",
       "url": "#"
-    },
-    "aupay-market": {
-      "type": "direct",
-      "url": "https://px.a8.net/svt/ejp?a8mat=4BA41D+FG2VSI+54O2+62U35"
     }
   },
   "names": {
@@ -65,9 +66,15 @@
     "odakyu-op": "小田急ポイントカード（OPクレジット）",
     "hapitas-signup": "ハピタス",
     "moppy-signup": "モッピー",
-    "custom-1787211123687": "小田急ポイントカード",
     "pointoinkamu": "ポイントインカム",
-    "cosmo-the-card-opus": "コスモ・ザ・カード・オーパス"
+    "custom-1787211123687": "小田急ポイントカード",
+    "kosumo-za-kaado-oopasu": "コスモ・ザ・カード・オーパス",
+    "au-pay-gold-card": "au PAY請求書払い 2026年8月版",
+    "cosmo-the-card-opus": "コスモ・ザ・カード・オーパス",
+    "daiichi-neobank-debit-premium": "ANA Pay→楽天Edy→楽天キャッシュ→楽天ペイ 2026年8月版",
+    "idare": "IDARE（イデア）",
+    "kateene-bank-debit": "カテエネBANKデビット 2026年8月版",
+    "lawson-ponta-plus": "ローソンPontaプラス"
   },
   "banners": {
     "rakuten-card": [
