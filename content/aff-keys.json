@@ -7,6 +7,13 @@
     ]
   },
   {
+    "key": "aupay-market",
+    "name": "au PAYマーケットに無料登録する",
+    "articles": [
+      "aupay-market-shindan.html"
+    ]
+  },
+  {
     "key": "cosmo-the-card-opus",
     "name": "コスモ・ザ・カード・オーパス",
     "articles": [
@@ -64,6 +71,7 @@
       "ana-pay-rakuten-edy-cash-route.html",
       "aupay-seikyusho-max-route.html",
       "cosmo-the-card-opus-shindan.html",
+      "hapitas-shindan.html",
       "lawson-ponta-plus-shindan.html",
       "odakyu-point-card-shindan.html",
       "point-site-card-hikaku.html",
@@ -97,6 +105,13 @@
     "name": "ローソンPontaプラス",
     "articles": [
       "lawson-ponta-plus-shindan.html"
+    ]
+  },
+  {
+    "key": "moppy-signup",
+    "name": "モッピー",
+    "articles": [
+      "moppy-shindan.html"
     ]
   },
   {
