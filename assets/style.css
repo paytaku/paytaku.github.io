@@ -210,6 +210,21 @@
     color: var(--muted);
   }
   .onboard-actions{ display: flex; gap: 9px; margin-top: 22px; }
+  .onboard-more-btn{
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px dashed var(--line);
+    border-radius: 10px;
+    background: none;
+    color: var(--primary);
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .onboard-more-btn:hover{ background: var(--primary-tint); }
 
   /* ===== my panel: wallet + amount ===== */
   .mypanel{
