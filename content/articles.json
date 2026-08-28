@@ -698,6 +698,28 @@
     "customHtml": true
   },
   {
+    "slug": "moppy-shindan",
+    "category": "ポイントサイト",
+    "title": "モッピーとハピタスはどっちがいい？1P=1円の仕組みと「同じカードでも得する」申し込み手順",
+    "publishedDate": "2026-08-28",
+    "updatedDate": "2026-08-28",
+    "tags": [
+      "モッピー",
+      "ハピタス",
+      "ポイントサイト",
+      "ポイ活",
+      "会員登録",
+      "カード発行"
+    ],
+    "overview": "モッピーは累計1,300万人以上が使う国内最大級のポイントサイトですが、「ハピタスと何が違うのか」「同じカードなのに公式サイト直接よりお得になる理由」を手順込みで説明した記事は多くありません。1P=1円の仕組みと、実際の申し込み手順、友達紹介・注意点までまとめました。",
+    "related": [
+      "hapitas-shindan",
+      "point-site-card-hikaku",
+      "pointoinkamu-shindan"
+    ],
+    "customHtml": true
+  },
+  {
     "slug": "aupay-market-shindan",
     "category": "キャンペーン",
     "title": "au PAYマーケットはauユーザーじゃなくても得か？「超BIGお買い物ラリー」で還元率が上がる仕組み",
@@ -735,28 +757,6 @@
     "related": [
       "point-site-card-hikaku",
       "moppy-shindan",
-      "pointoinkamu-shindan"
-    ],
-    "customHtml": true
-  },
-  {
-    "slug": "moppy-shindan",
-    "category": "ポイントサイト",
-    "title": "モッピーとハピタスはどっちがいい？1P=1円の仕組みと「同じカードでも得する」申し込み手順",
-    "publishedDate": "2026-08-28",
-    "updatedDate": "2026-08-28",
-    "tags": [
-      "モッピー",
-      "ハピタス",
-      "ポイントサイト",
-      "ポイ活",
-      "会員登録",
-      "カード発行"
-    ],
-    "overview": "モッピーは累計1,300万人以上が使う国内最大級のポイントサイトですが、「ハピタスと何が違うのか」「同じカードなのに公式サイト直接よりお得になる理由」を手順込みで説明した記事は多くありません。1P=1円の仕組みと、実際の申し込み手順、友達紹介・注意点までまとめました。",
-    "related": [
-      "hapitas-shindan",
-      "point-site-card-hikaku",
       "pointoinkamu-shindan"
     ],
     "customHtml": true
