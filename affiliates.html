@@ -44,6 +44,8 @@ h1{font-size:20px;font-weight:900;margin:0 0 4px;}
 .badge{font-size:10.5px;font-weight:800;padding:2px 9px;border-radius:999px;}
 .badge.set  {background:var(--good-tint);color:var(--good);}
 .badge.unset{background:var(--warn-tint);color:var(--warn);}
+.badge.type-badge.direct{background:rgba(79,70,229,0.12);color:#4F46E5;}
+.badge.type-badge.point{background:rgba(217,70,239,0.12);color:#C026D3;}
 
 /* フィールド */
 .field{margin-bottom:10px;}
@@ -61,11 +63,14 @@ h1{font-size:20px;font-weight:900;margin:0 0 4px;}
 
 /* タイプ切り替え */
 .type-row{display:flex;gap:6px;margin-bottom:10px;}
+.is-point-site-row{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);margin-bottom:10px;cursor:pointer;}
+.is-point-site-row input{width:15px;height:15px;flex-shrink:0;cursor:pointer;}
 .type-btn{flex:1;padding:8px;border:1px solid var(--line);border-radius:8px;background:transparent;color:var(--muted);font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer;transition:all .15s;}
 .type-btn:hover{border-color:var(--primary);color:var(--text);}
 .type-btn.active{background:var(--ptint);border-color:var(--primary);color:var(--primary);}
 .via-row{display:none;}
 .via-row.show{display:block;}
+.via-hint{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.5;}
 
 /* バナー */
 .sep{border:none;border-top:1px solid var(--line);margin:14px 0;}
@@ -78,6 +83,10 @@ h1{font-size:20px;font-weight:900;margin:0 0 4px;}
 .banner-title-input{flex:1;padding:6px 10px;background:var(--bg);border:1px solid var(--line);border-radius:7px;color:var(--text);font-family:inherit;font-size:13px;font-weight:700;outline:none;}
 .banner-title-input:focus{border-color:var(--primary);}
 .banner-title-input::placeholder{color:var(--dim);font-weight:400;}
+.banner-move{background:none;border:none;color:var(--dim);font-size:13px;cursor:pointer;padding:0 4px;line-height:1;flex-shrink:0;}
+.banner-move:hover{color:var(--primary);}
+.banner-move:disabled{opacity:0.25;cursor:default;}
+.banner-move:disabled:hover{color:var(--dim);}
 .banner-del{background:none;border:none;color:var(--dim);font-size:18px;cursor:pointer;padding:0 4px;line-height:1;flex-shrink:0;}
 .banner-del:hover{color:var(--danger);}
 .paste-area{width:100%;padding:8px 10px;background:var(--bg);border:1px solid var(--line);border-radius:7px;color:var(--muted);font-family:monospace;font-size:11.5px;resize:vertical;min-height:72px;display:block;margin-bottom:5px;}
@@ -276,16 +285,27 @@ var CARDS = [
   {key:'dmm-kabu',        name:'DMM 株'},
   {key:'aupay-market',    name:'au PAYマーケット'},
   {key:'odakyu-op',       name:'小田急ポイントカード（OPクレジット）'},
+  {key:'hapitas-signup',  name:'ハピタス', isPointSite:true},
+  {key:'moppy-signup',    name:'モッピー', isPointSite:true},
+  {key:'pointoinkamu',    name:'ポイントインカム', isPointSite:true},
 ];
-var ASP_LIST = ['トラフィックゲート','A8.net','afb','バリューコマース','LinkShare','ハピタス','モッピー','その他（手動入力）'];
+var ASP_LIST = ['トラフィックゲート','A8.net','afb','バリューコマース','LinkShare','ハピタス','モッピー','ポイントインカム','その他（手動入力）'];
 
 /* ===== 状態 ===== */
-var linkState   = {}; // key -> {type,url,via,banners:[]}
+var linkState   = {}; // key -> {type,url,via,banners:[],isPointSite}
 var rewardState = {}; // key -> {asp,reward,rewardNote,memo}
 CARDS.forEach(function(c){
-  linkState[c.key]   = {type:'direct',url:'',via:'',banners:[]};
+  linkState[c.key]   = {type:'direct',url:'',via:'',code:'',banners:[],isPointSite:!!c.isPointSite,category:c.category||'',aliasOf:''};
   rewardState[c.key] = {asp:'',aspOther:'',reward:'',rewardNote:'',memo:''};
 });
+/* 案件ジャンル（category）の選択肢。
+   記事側の data-aff-random-slot（data-aff-random-category）はこの値と一致する
+   案件だけをランダム表示の候補にする。空欄＝通常のクレジットカード案件。 */
+var CATEGORY_OPTIONS = [
+  {value:'',      label:'クレジットカード（通常）'},
+  {value:'app',   label:'アプリ案件（インストール・利用系など）'},
+  {value:'other', label:'その他（ジャンル不問の非カード案件）'}
+];
 
 /* ===== ユーティリティ ===== */
 var LS = {
@@ -359,12 +379,19 @@ function buildLinksJson(){
   CARDS.forEach(function(card){
     var s=linkState[card.key];
     names[card.key]=card.name; // サイト側がカード名で照合できるよう、キー→名前も公開する
-    if(s.url){
-      var entry={type:s.type,url:s.url};
+    if(s.aliasOf){
+      // このカードは自前のURL/バナーを持たず、別カードのリンクをそのまま使う。
+      // 解決（実際のURL引き当て）は読み取り側（assets/affiliates.js・app.js）が行う。
+      links[card.key]={type:'alias',aliasOf:s.aliasOf};
+    } else if(s.url || s.isPointSite){
+      var entry={type:s.type,url:s.url||''};
       if(s.type==='point'&&s.via) entry.via=s.via;
+      if(s.type==='point'&&s.code) entry.code=s.code;
+      if(s.isPointSite) entry.isPointSite=true;
+      if(s.category) entry.category=s.category;
       links[card.key]=entry;
     }
-    var vb=s.banners.filter(function(b){ return b.href||b.img; });
+    var vb = s.aliasOf ? [] : s.banners.filter(function(b){ return b.href||b.img; });
     if(vb.length){
       banners[card.key]=vb.map(function(b){
         var o={}; if(b.title) o.title=b.title; if(b.href) o.href=b.href; if(b.img) o.img=b.img; return o;
@@ -379,7 +406,14 @@ function buildLinksJson(){
   if(Object.keys(banners).length) obj.banners=banners;
   return obj;
 }
-function updatePreview(){ document.getElementById('preview').textContent=JSON.stringify(buildLinksJson(),null,2); }
+function updatePreview(){
+  document.getElementById('preview').textContent=JSON.stringify(buildLinksJson(),null,2);
+  // 「GitHubに保存」を押す前に閉じる・再読み込みすると入力内容が消えていた問題の対策。
+  // 編集するたびに、下書きとしてブラウザのlocalStorageへ自動保存しておく。
+  // GitHubへの反映には引き続き「GitHubに保存」ボタンが必要（誤操作防止のため）。
+  LS.set('paytaku-link-state', linkState);
+  LS.set('paytaku-reward-state', rewardState);
+}
 
 /* ===== GitHub保存 ===== */
 document.getElementById('saveBtn').addEventListener('click',async function(){
@@ -414,12 +448,14 @@ document.getElementById('saveBtn').addEventListener('click',async function(){
 });
 
 /* ===== リンクカードUI ===== */
-function buildBannerHtml(key,idx,b){
+function buildBannerHtml(key,idx,b,total){
   var id=key+'-b'+idx;
   return '<div class="banner-item" id="bi-'+id+'">'
     +'<div class="banner-item-top">'
-      +'<span class="banner-num">バナー '+(idx+1)+'</span>'
+      +'<span class="banner-num">バナー '+(idx+1)+(idx===0?'（記事に表示される1枚）':'')+'</span>'
       +'<input type="text" class="banner-title-input" id="btitle-'+id+'" placeholder="例：券面画像、ポイント訴求 など" value="'+esc(b.title||'')+'">'
+      +'<button class="banner-move" data-key="'+key+'" data-idx="'+idx+'" data-dir="up" title="上に移動"'+(idx===0?' disabled':'')+'>▲</button>'
+      +'<button class="banner-move" data-key="'+key+'" data-idx="'+idx+'" data-dir="down" title="下に移動"'+(idx===total-1?' disabled':'')+'>▼</button>'
       +'<button class="banner-del" data-key="'+key+'" data-idx="'+idx+'" title="削除">×</button>'
     +'</div>'
     +'<div class="field"><label>バナーコードをペースト（自動解析）</label>'
@@ -440,21 +476,55 @@ function buildLinkCard(card){
     '<div class="card-top">'
       +'<span class="card-name">'+esc(card.name)+'</span>'
       +'<span class="card-key">'+esc(key)+'</span>'
+      +'<span class="badge type-badge '+(s.type==='point'?'point':'direct')+'" id="typebadge-'+key+'">'+(s.type==='point'?'🎯 ポイントサイト経由':'🔗 直アフィリエイト')+'</span>'
       +'<span class="badge '+(s.url?'set':'unset')+'" id="badge-'+key+'">'+(s.url?'設定済み':'未設定')+'</span>'
       +(card.custom?'<button class="card-del-btn" data-del-key="'+key+'" title="削除">削除</button>':'')
     +'</div>'
+    +'<label class="is-point-site-row">'
+      +'<input type="checkbox" id="ispoint-'+key+'"'+(s.isPointSite?' checked':'')+'>'
+      +'このサービス自体がポイントサイトである（他のカードの「経由」プルダウンにも表示する）'
+    +'</label>'
+    +'<div class="field" style="margin-top:8px;"><label>案件ジャンル（記事内のランダム表示枠に出す対象を決める）</label>'
+      +'<select id="category-'+key+'">'
+        +CATEGORY_OPTIONS.map(function(o){ return '<option value="'+o.value+'"'+(s.category===o.value?' selected':'')+'>'+esc(o.label)+'</option>'; }).join('')
+      +'</select>'
+      +'<div style="font-size:11px;color:var(--dim);margin-top:4px;">「アプリ案件」「その他」に設定すると、記事内の data-aff-random-slot 枠にランダムで表示される候補になる（クレカ案件はここに出ない）。</div>'
+    +'</div>'
+    +'<label class="is-point-site-row" style="margin-top:8px;">'
+      +'<input type="checkbox" id="alias-toggle-'+key+'"'+(s.aliasOf?' checked':'')+'>'
+      +'このカード専用のリンクは登録せず、他のカードと同じリンクを使う（自動で追随）'
+    +'</label>'
+    +'<div class="field alias-row'+(s.aliasOf?' show':'')+'" id="alias-row-'+key+'" style="'+(s.aliasOf?'':'display:none;')+'margin-top:6px;">'
+      +'<label>リンクの共有元カード</label>'
+      +'<select id="alias-select-'+key+'">'
+        +'<option value="">選択してください</option>'
+        +CARDS.filter(function(c){ return c.key!==key; }).map(function(c){
+          return '<option value="'+esc(c.key)+'"'+(s.aliasOf===c.key?' selected':'')+'>'+esc(c.name)+'</option>';
+        }).join('')
+      +'</select>'
+      +'<div style="font-size:11px;color:var(--dim);margin-top:4px;">選んだカードのURL・バナーをそのまま使う。共有元のリンクを更新すると、このカードにも自動で反映される（このカードの下のURL・バナー欄は使わない）。</div>'
+    +'</div>'
+    +'<div class="normal-fields'+(s.aliasOf?'':' show')+'" id="normal-fields-'+key+'" style="'+(s.aliasOf?'display:none;':'')+'">'
     +'<div class="type-row">'
       +'<button class="type-btn'+(s.type==='direct'?' active':'')+'" data-key="'+key+'" data-type="direct">直アフィリエイト</button>'
       +'<button class="type-btn'+(s.type==='point'?' active':'')+'" data-key="'+key+'" data-type="point">ポイントサイト経由</button>'
     +'</div>'
     +'<div class="field"><label>申し込みURL</label><input type="url" id="url-'+key+'" placeholder="https://..." value="'+esc(s.url)+'"></div>'
     +'<div class="via-row'+(s.type==='point'?' show':'')+'" id="via-'+key+'">'
-      +'<div class="field"><label>ポイントサイト名（例：ハピタス）</label><input type="text" id="via-input-'+key+'" placeholder="ハピタス" value="'+esc(s.via||'')+'"></div>'
+      +'<div class="field"><label>ポイントサイト名</label>'
+      +'<select id="via-input-'+key+'">'
+        +'<option value="">選択してください</option>'
+        +getPointSiteOptions().map(function(name){ return '<option value="'+esc(name)+'"'+(s.via===name?' selected':'')+'>'+esc(name)+'</option>'; }).join('')
+        +'<option value="__add_new__">＋ 新しいポイントサイトを追加...</option>'
+      +'</select></div>'
+      +'<div class="field"><label>紹介コード（任意・招待コード等があれば）</label><input type="text" id="code-'+key+'" placeholder="例：ABC1234" value="'+esc(s.code||'')+'"></div>'
+      +'<p class="via-hint">ポイントサイト経由は「紹介リンク・紹介コード・バナー」の3点セットで出せます。コードを入れると、サイト上のボタン付近に自動で表示されます。バナーは下のフォームから登録してください。</p>'
     +'</div>'
     +'<div class="sep"></div>'
     +'<div class="banner-head"><span class="banner-head-label">バナー（任意・複数登録可）</span></div>'
-    +'<div class="banner-list" id="blist-'+key+'">'+s.banners.map(function(b,i){ return buildBannerHtml(key,i,b); }).join('')+'</div>'
-    +'<button class="btn-add" id="badd-'+key+'"><span>＋</span> バナーを追加</button>';
+    +'<div class="banner-list" id="blist-'+key+'">'+s.banners.map(function(b,i){ return buildBannerHtml(key,i,b,s.banners.length); }).join('')+'</div>'
+    +'<button class="btn-add" id="badd-'+key+'"><span>＋</span> バナーを追加</button>'
+    +'</div>';
   document.getElementById('cardList').appendChild(el);
   bindLinkCard(card);
 }
@@ -466,6 +536,11 @@ function bindLinkCard(card){
       var type=btn.getAttribute('data-type'); s.type=type;
       document.querySelectorAll('.type-btn[data-key="'+key+'"]').forEach(function(b){ b.classList.toggle('active',b===btn); });
       document.getElementById('via-'+key).classList.toggle('show',type==='point');
+      var tb=document.getElementById('typebadge-'+key);
+      if(tb){
+        tb.className='badge type-badge '+(type==='point'?'point':'direct');
+        tb.textContent=type==='point'?'🎯 ポイントサイト経由':'🔗 直アフィリエイト';
+      }
       updatePreview();
     });
   });
@@ -474,7 +549,69 @@ function bindLinkCard(card){
     el.classList.toggle('has-value',!!el.value);
     el.addEventListener('input',function(){ s[sk]=el.value.trim(); el.classList.toggle('has-value',!!el.value); if(sk==='url'){ var b=document.getElementById('badge-'+key); b.textContent=el.value?'設定済み':'未設定'; b.className='badge '+(el.value?'set':'unset'); } updatePreview(); });
   }
-  bi('url-'+key,'url'); bi('via-input-'+key,'via');
+  // ポイントサイトのプルダウンは、選択中の値をlinkStateに反映するほか、
+  // 「＋ 新しいポイントサイトを追加...」を選んだ場合は名前を聞いてマスタに登録し、
+  // 他のカードのプルダウンにも即座に反映されるようにする（selectを作り直す）。
+  function bindViaSelect(key){
+    var el=document.getElementById('via-input-'+key); if(!el) return;
+    el.addEventListener('change',function(){
+      if(el.value === '__add_new__'){
+        var name = prompt('追加するポイントサイト名を入力してください（例：ワラウ）');
+        if(name && name.trim()){
+          addPointSite(name.trim());
+          refreshAllViaSelects(); // 全カードのプルダウンを最新のPOINT_SITESで作り直す
+          linkState[key].via = name.trim();
+          var newEl = document.getElementById('via-input-'+key);
+          if(newEl) newEl.value = name.trim();
+        } else {
+          el.value = linkState[key].via || '';
+        }
+      } else {
+        linkState[key].via = el.value;
+      }
+      updatePreview();
+    });
+  }
+  bi('url-'+key,'url');
+  bi('code-'+key,'code');
+  bindViaSelect(key);
+  document.getElementById('ispoint-'+key).addEventListener('change',function(e){
+    s.isPointSite = e.target.checked;
+    refreshAllViaSelects(); // このカードが経由先の選択肢として増減するので、全カードのプルダウンを更新
+    updatePreview();
+  });
+  var catEl=document.getElementById('category-'+key);
+  if(catEl) catEl.addEventListener('change',function(e){
+    s.category = e.target.value;
+    updatePreview();
+  });
+  var aliasToggle=document.getElementById('alias-toggle-'+key);
+  var aliasRow=document.getElementById('alias-row-'+key);
+  var aliasSelect=document.getElementById('alias-select-'+key);
+  var normalFields=document.getElementById('normal-fields-'+key);
+  if(aliasToggle) aliasToggle.addEventListener('change',function(e){
+    var on = e.target.checked;
+    if(!on){ s.aliasOf = ''; }
+    else if(aliasSelect) s.aliasOf = aliasSelect.value || '';
+    if(aliasRow) aliasRow.style.display = on ? '' : 'none';
+    if(normalFields) normalFields.style.display = on ? 'none' : '';
+    var badge=document.getElementById('badge-'+key);
+    if(badge){
+      var isSet = on ? !!s.aliasOf : !!s.url;
+      badge.textContent = isSet ? '設定済み' : '未設定';
+      badge.className = 'badge ' + (isSet ? 'set' : 'unset');
+    }
+    updatePreview();
+  });
+  if(aliasSelect) aliasSelect.addEventListener('change',function(e){
+    s.aliasOf = e.target.value;
+    var badge=document.getElementById('badge-'+key);
+    if(badge){
+      badge.textContent = s.aliasOf ? '設定済み' : '未設定';
+      badge.className = 'badge ' + (s.aliasOf ? 'set' : 'unset');
+    }
+    updatePreview();
+  });
   s.banners.forEach(function(_,i){ bindBannerItem(key,i); });
   document.getElementById('badd-'+key).addEventListener('click',function(){
     var i=s.banners.length; s.banners.push({title:'',href:'',img:''});
@@ -511,6 +648,18 @@ function bindBannerItem(key,idx){
     var c=CARDS.find(function(c){ return c.key===key; });
     var el=document.getElementById('card-'+key); if(el) el.parentNode.removeChild(el);
     buildLinkCard(c); updatePreview();
+  });
+  document.querySelectorAll('.banner-move[data-key="'+key+'"][data-idx="'+idx+'"]').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var dir=btn.getAttribute('data-dir');
+      var swapWith=dir==='up'?idx-1:idx+1;
+      if(swapWith<0||swapWith>=s.banners.length) return;
+      var tmp=s.banners[idx]; s.banners[idx]=s.banners[swapWith]; s.banners[swapWith]=tmp;
+      var c=CARDS.find(function(c){ return c.key===key; });
+      var el=document.getElementById('card-'+key); if(el) el.parentNode.removeChild(el);
+      buildLinkCard(c); updatePreview();
+      setStatus(dir==='up'&&swapWith===0?'バナー'+(idx+1)+'が記事に表示される1枚になりました。':'並び順を変更しました。','ok',3000);
+    });
   });
 }
 
@@ -623,7 +772,61 @@ document.getElementById('rewardFileInput').addEventListener('change',function(e)
   reader.readAsText(file); e.target.value='';
 });
 
-/* ===== カスタムカード管理 ===== */
+/* ===== ポイントサイトのマスタ管理 =====
+   「ワラウ経由で三菱UFJカードをアフィリエイトしたい」のように、複数のカードが
+   同じポイントサイトを経由するケースが多いため、ポイントサイト名の一覧を
+   一箇所にまとめ、各カードの「経由」欄はここから選択する方式にする。
+
+   一覧は3つを合わせて作る：
+   ① デフォルトの候補名（まだカードとして登録していないポイントサイトも選べるように）
+   ② 手動で「＋新しいポイントサイトを追加」した名前（localStorageに保存）
+   ③ CARDS一覧の中で「このサービス自体がポイントサイトである」にチェックが
+      入っているカードの名前（例：hapitas-signup＝「ハピタス（新規登録）」）
+   ③があるおかげで、カード追加でポイントサイトを登録すれば、他のカードの
+   経由先プルダウンにも自動で反映される（二重登録が不要になる）。 */
+var DEFAULT_POINT_SITES = ['ハピタス','モッピー','ちょびリッチ','ポイントインカム','ワラウ','ECナビ','げん玉'];
+function loadExtraPointSites(){
+  return LS.get('paytaku-point-sites-extra') || [];
+}
+function saveExtraPointSites(list){
+  LS.set('paytaku-point-sites-extra', list);
+}
+var EXTRA_POINT_SITES = loadExtraPointSites();
+
+function getPointSiteOptions(){
+  var names = DEFAULT_POINT_SITES.slice();
+  EXTRA_POINT_SITES.forEach(function(n){ if(names.indexOf(n)===-1) names.push(n); });
+  CARDS.forEach(function(c){
+    if(linkState[c.key] && linkState[c.key].isPointSite && names.indexOf(c.name)===-1){
+      names.push(c.name);
+    }
+  });
+  return names;
+}
+
+function addPointSite(name){
+  name = (name||'').trim();
+  if(!name) return false;
+  if(getPointSiteOptions().indexOf(name) !== -1) return true; // 既にある
+  EXTRA_POINT_SITES.push(name);
+  saveExtraPointSites(EXTRA_POINT_SITES);
+  return true;
+}
+// 新しいポイントサイトが追加・チェック変更されたとき、既に表示済みの全カードの
+// プルダウンに選択肢を反映させる（保存中の選択値は維持する）。
+function refreshAllViaSelects(){
+  var options = getPointSiteOptions();
+  CARDS.forEach(function(card){
+    var el = document.getElementById('via-input-'+card.key);
+    if(!el) return;
+    var current = linkState[card.key].via || '';
+    el.innerHTML = '<option value="">選択してください</option>'
+      + options.map(function(name){ return '<option value="'+esc(name)+'"'+(current===name?' selected':'')+'>'+esc(name)+'</option>'; }).join('')
+      + '<option value="__add_new__">＋ 新しいポイントサイトを追加...</option>';
+  });
+}
+
+/* カスタムカード管理 */
 function saveCustomCards(){
   LS.set('paytaku-custom-cards', CARDS.filter(function(c){ return c.custom; }));
 }
@@ -632,7 +835,7 @@ function loadCustomCards(){
   saved.forEach(function(c){
     if(!CARDS.find(function(x){ return x.key===c.key; })){
       CARDS.push({key:c.key,name:c.name,custom:true});
-      linkState[c.key]  ={type:'direct',url:'',via:'',banners:[]};
+      linkState[c.key]  ={type:'direct',url:'',via:'',code:'',banners:[],isPointSite:false,category:'',aliasOf:''};
       rewardState[c.key]={asp:'',aspOther:'',reward:'',rewardNote:'',memo:''};
     }
   });
@@ -742,6 +945,10 @@ document.getElementById('addCardBtn').addEventListener('click',function(){
   document.getElementById('newCardKey').value='';
   document.getElementById('addCardModal').classList.add('show');
   setTimeout(function(){ document.getElementById('newCardName').focus(); },50);
+  // モーダルを開くたびに記事側の最新data-affキーを読み直す。
+  // ビルド直後にしか反映されない情報なので、ここで再取得しないと「実は既に
+  // 別キーで検出済みだった」ことに気づけないまま重複登録してしまう事故につながる。
+  loadArticleAffKeys();
 });
 document.getElementById('addCardCancel').addEventListener('click',function(){
   document.getElementById('addCardModal').classList.remove('show');
@@ -767,13 +974,30 @@ document.getElementById('addCardConfirm').addEventListener('click',function(){
   var name=document.getElementById('newCardName').value.trim();
   var key =document.getElementById('newCardKey').value.trim().replace(/[^a-z0-9-]/g,'');
   if(!name){ alert('カード名を入力してください。'); return; }
+  // 名前の重複チェック：既に別のキーで同じ（またはほぼ同じ）名前のカードが
+  // 登録されていないか確認する。これに気づかず追加すると、記事側は既存キーを
+  // 使っているのに、ここで別キーの重複カードができてしまい、管理画面でリンクを
+  // 保存しても記事に反映されない、という事故（コスモ・ザ・カード・オーパスで実際に発生）につながる。
+  var normalize = function(s){ return (s||'').replace(/[\\s・\\-ー（）()]/g,'').toLowerCase(); };
+  var normName = normalize(name);
+  var dup = CARDS.find(function(c){ return c.key !== key && normalize(c.name) === normName; });
+  if(dup){
+    var proceed = confirm(
+      '「' + dup.name + '」は既に別のキー「' + dup.key + '」で登録されています。\\n\\n' +
+      'このまま新しいキー「' + key + '」で追加すると、同じカードが2件に分かれて、' +
+      'どちらか一方にしかリンクが反映されなくなります。\\n\\n' +
+      '（推奨）キャンセルして、既存の「' + dup.key + '」の方にリンクを設定してください。\\n\\n' +
+      'それでも別カードとして追加しますか？'
+    );
+    if(!proceed) return;
+  }
   if(!key){ alert('キーを入力してください（半角英数字・ハイフン）。'); return; }
   if(CARDS.find(function(c){ return c.key===key; })){
     alert('そのキーは既に使われています。別のキーを入力してください。'); return;
   }
   var card={key:key,name:name,custom:true};
   CARDS.push(card);
-  linkState[key]  ={type:'direct',url:'',via:'',banners:[]};
+  linkState[key]  ={type:'direct',url:'',via:'',code:'',banners:[],isPointSite:false,category:'',aliasOf:''};
   rewardState[key]={asp:'',aspOther:'',reward:'',rewardNote:'',memo:''};
   buildLinkCard(card);
   buildRewardCard(card);
@@ -792,7 +1016,7 @@ function applyLinksJson(data){
     if(!CARDS.find(function(c){ return c.key===key; })){
       var card={key:key,name:key,custom:true};
       CARDS.push(card);
-      linkState[key]  ={type:'direct',url:'',via:'',banners:[]};
+      linkState[key]  ={type:'direct',url:'',via:'',code:'',banners:[],isPointSite:false,category:'',aliasOf:''};
       rewardState[key]={asp:'',aspOther:'',reward:'',rewardNote:'',memo:''};
       saveCustomCards();
     }
@@ -804,6 +1028,10 @@ function applyLinksJson(data){
       linkState[card.key].type=typeof l==='string'?'direct':(l.type||'direct');
       linkState[card.key].url =typeof l==='string'?l:(l.url||'');
       linkState[card.key].via =typeof l==='string'?'':(l.via||'');
+      linkState[card.key].code =typeof l==='string'?'':(l.code||'');
+      linkState[card.key].isPointSite = typeof l==='string'?false:!!l.isPointSite;
+      linkState[card.key].category = typeof l==='string'?'':(l.category||'');
+      linkState[card.key].aliasOf = typeof l==='string'?'':(l.type==='alias'?(l.aliasOf||''):'');
     }
     var b=banners[card.key];
     if(b) linkState[card.key].banners=Array.isArray(b)?b.map(function(x){ return Object.assign({title:'',href:'',img:''},x); }):[Object.assign({title:'',href:'',img:''},b)];
@@ -851,11 +1079,46 @@ function init(){
   updatePreview();
   updateRewardSummary();
 
-  // GitHub APIからaffiliates.jsonを自動読み込み（PAT設定済みの場合）
+  // 記事HTMLが実際に使っているdata-affキー一覧を読み込み、まだCARDSに無いものを
+  // 自動でカード候補として追加する。手入力でキーを作ると「かな→ローマ字」の
+  // 自動変換と記事側のキーが一致せず、アフィリエイトリンクが繋がらない事故が
+  // 起きていたため、これを防ぐための恒久対策（content/aff-keys.jsonはビルド時に
+  // scripts/build-articles.mjs が自動生成する）。
+  loadArticleAffKeys();
+
+  // GitHub APIからaffiliates.jsonを自動読み込み（PAT設定済みの場合）。
+  // ただし、既にこの端末にローカル下書き（前回の編集内容）がある場合は、
+  // それを勝手にGitHubの内容で上書きしない（未保存の編集が消える事故を防ぐため）。
+  // 最新のGitHubの内容を取り込みたいときは、手動で「GitHubから読み込む」を押す。
   var gh=LS.get('paytaku-gh-settings');
-  if(gh&&gh.token&&gh.owner&&gh.repo){
-    fetchFromGitHub(true); // 初回は静かに読み込む
+  var hasLocalDraft = !!LS.get('paytaku-link-state');
+  if(gh&&gh.token&&gh.owner&&gh.repo&&!hasLocalDraft){
+    fetchFromGitHub(true); // 初回（下書きが無いとき）だけ静かに読み込む
   }
+}
+
+function loadArticleAffKeys(){
+  fetch('../content/aff-keys.json', { cache: 'no-cache' })
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(list){
+      if(!Array.isArray(list)) return;
+      var added = [];
+      list.forEach(function(item){
+        if(CARDS.find(function(c){ return c.key === item.key; })) return; // 既にある
+        var card = { key: item.key, name: item.name, custom: true, fromArticle: true };
+        CARDS.push(card);
+        linkState[item.key]   = {type:'direct',url:'',via:'',code:'',banners:[],isPointSite:false,category:'',aliasOf:''};
+        rewardState[item.key] = {asp:'',aspOther:'',reward:'',rewardNote:'',memo:''};
+        added.push(card);
+      });
+      if(added.length){
+        saveCustomCards();
+        added.forEach(function(card){ buildLinkCard(card); buildRewardCard(card); });
+        updatePreview();
+        setStatus(added.length + '件のカードを記事から自動検出しました（' + added.map(function(c){return c.name;}).join('、') + '）。キーは記事のdata-aff属性と完全に一致しています。', 'good');
+      }
+    })
+    .catch(function(){ /* content/aff-keys.json が無い/取得できない場合は何もしない */ });
 }
 
 /* GitHub APIから読み込む関数 */
