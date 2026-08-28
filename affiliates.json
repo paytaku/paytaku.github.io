@@ -45,6 +45,10 @@
     "cosmo-the-card-opus": {
       "type": "direct",
       "url": "#"
+    },
+    "aupay-market": {
+      "type": "direct",
+      "url": "https://px.a8.net/svt/ejp?a8mat=4BA41D+FG2VSI+54O2+62U35"
     }
   },
   "names": {
