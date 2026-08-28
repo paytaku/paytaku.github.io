@@ -280,6 +280,113 @@
           container.appendChild(box);
         });
       });
+
+      /* ---- ヒーローカード（券面を記事冒頭で大きく見せる） ----
+         使い方（記事HTML側）：
+           <div class="lp-hero-card" data-aff-hero="rakuten-card">
+             <img class="lp-hero-card-img" alt="楽天カード">
+             <div class="lp-hero-card-name">楽天カード</div>
+             <div class="lp-hero-card-copy">年会費永年無料で還元率1.0%〜</div>
+             <a class="lp-hero-card-cta" data-aff="rakuten-card" href="#" target="_blank" rel="sponsored noopener nofollow">今すぐ申し込む（PR）</a>
+           </div>
+         banners[key] の1枚目（＝管理画面で「バナー1」に登録した券面画像）を
+         そのまま大きく表示する。名前・コピー・CTAは既存のdata-aff処理と共存する。
+         券面バナーが未登録の場合はカード自体を非表示にする（空枠を出さない）。 */
+      document.querySelectorAll('[data-aff-hero]').forEach(function(box){
+        var key = box.getAttribute('data-aff-hero');
+        var arr = banners[key];
+        var b   = arr ? (Array.isArray(arr) ? arr[0] : arr) : null;
+        if(!b || !b.img || !isSafeHttpUrl(b.img)){ box.style.display = 'none'; return; }
+        var img = box.querySelector('.lp-hero-card-img');
+        if(img) img.setAttribute('src', b.img);
+        var nameEl = box.querySelector('.lp-hero-card-name');
+        if(nameEl && !nameEl.textContent.trim() && names[key]) nameEl.textContent = names[key];
+      });
+
+      /* ---- 章ごとのバナー自動配分 ----
+         使い方（記事HTML側）：各章の切れ目に、同じキーで何個でも置いておく
+           <div data-aff-banner-slot="dmm-kabu"></div>
+         affiliates.json に登録されたバナー枚数に応じて、置いてある枠（スロット）の
+         どこにどのバナーを出すかを自動で決める：
+           - バナー枚数 <= スロット数 → スロット全体に均等な間隔で振り分け、余った枠は非表示
+             （＝「1〜2枚しかないカード」は連続表示にならず、ちょうどいい間隔で1回だけ出る）
+           - バナー枚数 > スロット数 → 全スロットを使い切り、余ったバナーは出さない
+             （枠を増やしたい記事は data-aff-banner-slot を追記すればよい）
+         これにより、案件ごとにバナー枚数が違っても、管理画面でバナーを増減するだけで
+         記事側の配置を毎回調整し直す必要がなくなる。 */
+      var slotGroups = {};
+      document.querySelectorAll('[data-aff-banner-slot]').forEach(function(el){
+        var key = el.getAttribute('data-aff-banner-slot');
+        (slotGroups[key] = slotGroups[key] || []).push(el);
+      });
+      Object.keys(slotGroups).forEach(function(key){
+        var slots = slotGroups[key];
+        var arr   = banners[key];
+        var valid = (arr || []).filter(function(b){ return b && b.img && b.href && isSafeHttpUrl(b.href) && isSafeHttpUrl(b.img); });
+        if(!valid.length){ slots.forEach(function(s){ s.style.display = 'none'; }); return; }
+
+        var n = slots.length, m = valid.length;
+        var chosen = new Array(n).fill(-1); // スロットindex -> バナーindex（-1は非表示）
+        if(m <= n){
+          // m枚を n個の枠に均等な間隔で割り当てる（例：2枚を9枠なら 0番目と8番目、のように離す）
+          for(var i = 0; i < m; i++){
+            var pos = m === 1 ? Math.floor((n - 1) / 2) : Math.round(i * (n - 1) / (m - 1));
+            chosen[pos] = i;
+          }
+        } else {
+          // バナーの方が多い場合は、全スロットを使い切る形で先頭から均等に割り当てる
+          for(var j = 0; j < n; j++){
+            chosen[j] = Math.floor(j * m / n);
+          }
+        }
+
+        slots.forEach(function(slotEl, idx){
+          var bIdx = chosen[idx];
+          if(bIdx === -1 || bIdx == null){ slotEl.style.display = 'none'; return; }
+          var b = valid[bIdx];
+          var box = document.createElement('div');
+          box.className = 'lp-banner-box';
+          box.innerHTML = '<div class="lp-banner-label">📣 PR</div>'
+            + '<a href="' + b.href + '" target="_blank" rel="sponsored noopener nofollow"'
+            + (b.title ? ' title="' + b.title.replace(/"/g,'&quot;') + '"' : '') + '>'
+            + '<img src="' + b.img + '" alt="' + (b.title || names[key] || key).replace(/"/g,'&quot;') + '" class="lp-banner-img" loading="lazy"></a>';
+          slotEl.replaceWith(box);
+        });
+      });
+
+      /* ---- クレカ以外の案件をランダムに1つ表示（アプリ案件などの空き枠埋め） ----
+         使い方（記事HTML側）：
+           <div data-aff-random-slot></div>
+           <div data-aff-random-slot data-aff-random-category="app"></div>
+         affiliates.json の links 内で category が指定ジャンル（省略時は "app"）の
+         案件から、実URL登録済みのものをランダムに1つ選んで表示する。
+         同一ページ内で同じ案件が重複しないようにし、対象案件が無ければ枠ごと非表示にする。
+         新しい案件を管理画面で追加するだけで、次にページを開いたときからランダム表示の
+         候補に自動で加わる（記事側の編集は不要）。 */
+      var usedRandomKeys = [];
+      document.querySelectorAll('[data-aff-random-slot]').forEach(function(el){
+        var cat = el.getAttribute('data-aff-random-category') || 'app';
+        var pool = Object.keys(links).filter(function(k){
+          var l = links[k];
+          if(!l || l.category !== cat) return false;
+          if(usedRandomKeys.indexOf(k) !== -1) return false;
+          var b = banners[k];
+          var banner = b ? (Array.isArray(b) ? b[0] : b) : null;
+          return isSafeHttpUrl(l.url) && l.url !== '#' && banner && banner.img && banner.href
+            && isSafeHttpUrl(banner.img) && isSafeHttpUrl(banner.href);
+        });
+        if(!pool.length){ el.style.display = 'none'; return; }
+        var key = pool[Math.floor(Math.random() * pool.length)];
+        usedRandomKeys.push(key);
+        var b = banners[key];
+        var banner = Array.isArray(b) ? b[0] : b;
+        var box = document.createElement('div');
+        box.className = 'lp-banner-box lp-random-slot';
+        box.innerHTML = '<div class="lp-banner-label">📱 PR</div>'
+          + '<a href="' + banner.href + '" target="_blank" rel="sponsored noopener nofollow">'
+          + '<img src="' + banner.img + '" alt="' + (names[key] || key).replace(/"/g,'&quot;') + '" class="lp-banner-img" loading="lazy"></a>';
+        el.replaceWith(box);
+      });
     })
     .catch(function(){ /* 失敗時はHTMLの元href・文言をそのまま使う */ });
 })();
