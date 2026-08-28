@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>サムネイル管理 | ペイ択</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;}
+:root{
+  --bg:#0F172A; --surface:#1E293B; --surface2:#273449; --line:#334155;
+  --text:#F1F5F9; --muted:#94A3B8; --dim:#64748B;
+  --primary:#4F46E5; --ptint:rgba(79,70,229,0.18);
+  --good:#10B981; --good-tint:rgba(16,185,129,0.12);
+  --warn:#F59E0B; --warn-tint:rgba(245,158,11,0.12);
+  --danger:#F87171; --danger-tint:rgba(248,113,113,0.12);
+  --radius:12px; --shadow:0 1px 4px rgba(0,0,0,0.5);
+}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Noto Sans JP",system-ui,sans-serif;font-size:14px;line-height:1.6;}
+.wrap{max-width:760px;margin:0 auto;padding:28px 16px 80px;}
+.logo{font-size:13px;font-weight:800;color:var(--primary);margin-bottom:20px;display:block;text-decoration:none;}
+h1{font-size:20px;font-weight:900;margin:0 0 4px;}
+.subtitle{font-size:12.5px;color:var(--muted);margin:0 0 20px;}
+
+.status-bar{padding:11px 16px;border-radius:var(--radius);font-size:13px;font-weight:600;margin-bottom:16px;display:none;line-height:1.5;}
+.status-bar.show{display:block;}
+.status-bar.ok   {background:var(--good-tint);  color:var(--good);   border:1px solid var(--good);}
+.status-bar.warn {background:var(--warn-tint);  color:var(--warn);   border:1px solid var(--warn);}
+.status-bar.error{background:var(--danger-tint);color:var(--danger); border:1px solid var(--danger);}
+
+.section-head{display:flex;align-items:center;gap:10px;margin:28px 0 12px;}
+.section-head h2{font-size:15px;font-weight:800;margin:0;flex:1;}
+.section-count{font-size:11.5px;font-weight:800;padding:2px 10px;border-radius:999px;background:var(--surface2);color:var(--muted);}
+.section-count.warn{background:var(--warn-tint);color:var(--warn);}
+.section-count.ok{background:var(--good-tint);color:var(--good);}
+
+.loading{color:var(--dim);font-size:13px;padding:20px 0;text-align:center;}
+
+.article-row{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px;box-shadow:var(--shadow);}
+.article-top{display:flex;align-items:flex-start;gap:10px;}
+.article-info{flex:1;min-width:0;}
+.article-title{font-size:14px;font-weight:800;margin:0 0 4px;line-height:1.45;}
+.article-meta{font-size:11px;color:var(--dim);display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.article-cat{background:var(--surface2);border-radius:6px;padding:1px 8px;font-weight:700;}
+.article-overview{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.65;}
+.article-actions{display:flex;flex-direction:column;gap:6px;flex-shrink:0;}
+.btn{
+  display:inline-flex;align-items:center;gap:5px;justify-content:center;
+  padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:var(--surface2);
+  color:var(--text);font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;
+  white-space:nowrap;text-decoration:none;transition:all .12s;
+}
+.btn:hover{border-color:var(--primary);}
+.btn.primary{background:var(--primary);border-color:var(--primary);color:#fff;}
+.btn.primary:hover{opacity:.9;}
+.btn.copied{background:var(--good-tint);border-color:var(--good);color:var(--good);}
+
+.thumb-preview{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:8px;margin-top:10px;border:1px solid var(--line);}
+
+.empty-msg{color:var(--dim);font-size:13px;padding:16px;text-align:center;background:var(--surface);border:1px dashed var(--line);border-radius:var(--radius);}
+.hint{font-size:11.5px;color:var(--dim);margin-top:6px;line-height:1.6;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="logo" href="../index.html">← ペイ択トップに戻る</a>
+  <h1>🖼 サムネイル管理</h1>
+  <p class="subtitle">
+    Lovartなどでサムネイルを作るときに使う一覧です。タイトルをボタンひとつでコピーできます。
+    このページは一般の訪問者には案内しておらず、サイト内検索にも出ません（<code>noindex</code>設定・トップページのナビからはリンクしていません）。
+  </p>
+
+  <div class="status-bar" id="statusBar"></div>
+
+  <div class="section-head">
+    <h2>サムネイル未設定の記事</h2>
+    <span class="section-count warn" id="countMissing">-</span>
+  </div>
+  <div id="listMissing"><div class="loading">読み込み中…</div></div>
+
+  <div class="section-head">
+    <h2>サムネイル設定済みの記事</h2>
+    <span class="section-count ok" id="countDone">-</span>
+  </div>
+  <div id="listDone"><div class="loading">読み込み中…</div></div>
+</div>
+
+<script>
+(function(){
+  var EXTS = ['png','jpg','jpeg','webp'];
+
+  function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  // assets/thumbnails/{slug}.{ext} が実在するかどうかを、画像読み込みの成否で判定する。
+  // （記事側の初期表示ロジックと同じ手法。サーバー側の一覧APIが無いので、これが一番確実。）
+  function findLocalThumb(slug){
+    return new Promise(function(resolve){
+      (function tryExt(i){
+        if(i >= EXTS.length){ resolve(null); return; }
+        var url = '../assets/thumbnails/' + slug + '.' + EXTS[i];
+        var img = new Image();
+        img.onload = function(){ resolve(url); };
+        img.onerror = function(){ tryExt(i + 1); };
+        img.src = url;
+      })(0);
+    });
+  }
+
+  function copyToClipboard(text, btn){
+    var done = function(){
+      var original = btn.getAttribute('data-label');
+      btn.textContent = '✓ コピーしました';
+      btn.classList.add('copied');
+      setTimeout(function(){ btn.textContent = original; btn.classList.remove('copied'); }, 1500);
+    };
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(done).catch(function(){ fallbackCopy(text); done(); });
+    } else {
+      fallbackCopy(text); done();
+    }
+  }
+  function fallbackCopy(text){
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); }catch(e){}
+    document.body.removeChild(ta);
+  }
+
+  function buildRow(article, thumbUrl){
+    var row = document.createElement('div');
+    row.className = 'article-row';
+    var url = '../articles/' + article.slug + '.html';
+    row.innerHTML =
+      '<div class="article-top">'
+        +'<div class="article-info">'
+          +'<p class="article-title">'+esc(article.title)+'</p>'
+          +'<div class="article-meta">'
+            +'<span class="article-cat">'+esc(article.category||'未分類')+'</span>'
+            +'<span>更新日: '+esc(article.updatedDate||article.publishedDate||'-')+'</span>'
+          +'</div>'
+          +(article.overview ? '<p class="article-overview">'+esc(article.overview)+'</p>' : '')
+        +'</div>'
+        +'<div class="article-actions">'
+          +'<button class="btn primary" data-copy="title" data-label="📋 タイトルをコピー">📋 タイトルをコピー</button>'
+          +'<button class="btn" data-copy="url" data-label="🔗 記事URLをコピー">🔗 記事URLをコピー</button>'
+          +'<a class="btn" href="'+url+'" target="_blank" rel="noopener">記事を開く ↗</a>'
+        +'</div>'
+      +'</div>';
+    if(thumbUrl){
+      var img = document.createElement('img');
+      img.className = 'thumb-preview';
+      img.src = thumbUrl;
+      img.alt = article.title;
+      row.appendChild(img);
+    }
+    row.querySelectorAll('[data-copy]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var text = btn.getAttribute('data-copy') === 'title'
+          ? article.title
+          : 'https://paytaku.github.io/articles/' + article.slug + '.html';
+        copyToClipboard(text, btn);
+      });
+    });
+    return row;
+  }
+
+  function render(list){
+    var listMissing = document.getElementById('listMissing');
+    var listDone = document.getElementById('listDone');
+    listMissing.innerHTML = '';
+    listDone.innerHTML = '';
+
+    var missing = list.filter(function(x){ return !x.thumbUrl; });
+    var done    = list.filter(function(x){ return x.thumbUrl; });
+
+    document.getElementById('countMissing').textContent = missing.length + '件';
+    document.getElementById('countDone').textContent = done.length + '件';
+
+    if(!missing.length){
+      listMissing.innerHTML = '<div class="empty-msg">未設定の記事はありません。🎉</div>';
+    } else {
+      // 更新日が新しい記事を優先して上に出す（直近公開分から手を付けやすいように）
+      missing.sort(function(a,b){
+        return (b.article.updatedDate||b.article.publishedDate||'').localeCompare(a.article.updatedDate||a.article.publishedDate||'');
+      });
+      missing.forEach(function(x){ listMissing.appendChild(buildRow(x.article, x.thumbUrl)); });
+    }
+
+    if(!done.length){
+      listDone.innerHTML = '<div class="empty-msg">まだありません。</div>';
+    } else {
+      done.forEach(function(x){ listDone.appendChild(buildRow(x.article, x.thumbUrl)); });
+    }
+  }
+
+  function setStatus(msg, type){
+    var el = document.getElementById('statusBar');
+    el.textContent = msg; el.className = 'status-bar show ' + type;
+  }
+
+  fetch('../content/articles.json', { cache: 'no-cache' })
+    .then(function(r){ return r.ok ? r.json() : Promise.reject(new Error('articles.json の取得に失敗（' + r.status + '）')); })
+    .then(function(articles){
+      if(!Array.isArray(articles) || !articles.length){
+        setStatus('記事データが見つかりませんでした。', 'warn');
+        return;
+      }
+      return Promise.all(articles.map(function(article){
+        // articles.json 側に外部URLの thumbnail フィールドがあればそれを優先し、
+        // 無ければ assets/thumbnails/{slug}.{ext} の実在チェックにフォールバックする
+        // （記事ページの表示ロジックと同じ優先順位）。
+        if(article.thumbnail){
+          return Promise.resolve({ article: article, thumbUrl: article.thumbnail });
+        }
+        return findLocalThumb(article.slug).then(function(url){
+          return { article: article, thumbUrl: url };
+        });
+      }));
+    })
+    .then(function(list){
+      if(list) render(list);
+    })
+    .catch(function(err){
+      setStatus('読み込みエラー: ' + (err && err.message ? err.message : '不明なエラー'), 'error');
+      document.getElementById('listMissing').innerHTML = '';
+      document.getElementById('listDone').innerHTML = '';
+    });
+})();
+</script>
+</body>
+</html>
