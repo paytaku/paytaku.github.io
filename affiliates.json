@@ -43,8 +43,9 @@
       "isPointSite": true
     },
     "pointoinkamu": {
-      "type": "direct",
-      "url": "#",
+      "type": "point",
+      "url": "https://sp.pointi.jp/p/?a=rbf882486752",
+      "code": "rbf882486752",
       "isPointSite": true
     },
     "cosmo-the-card-opus": {
