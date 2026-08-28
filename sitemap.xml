@@ -2,15 +2,27 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://paytaku.github.io/</loc>
-    <lastmod>2026-08-27</lastmod>
+    <lastmod>2026-08-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://paytaku.github.io/articles/</loc>
-    <lastmod>2026-08-27</lastmod>
+    <lastmod>2026-08-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://paytaku.github.io/articles/pointoinkamu-shindan.html</loc>
+    <lastmod>2026-08-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://paytaku.github.io/articles/card-combo-smbc-nl-shindan.html</loc>
+    <lastmod>2026-08-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://paytaku.github.io/articles/rakuten-premium-card-shindan.html</loc>
@@ -122,7 +134,7 @@
   </url>
   <url>
     <loc>https://paytaku.github.io/articles/idare-card-katsuyo.html</loc>
-    <lastmod>2026-08-26</lastmod>
+    <lastmod>2026-08-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -182,31 +194,31 @@
   </url>
   <url>
     <loc>https://paytaku.github.io/pages/kabu-koza.html</loc>
-    <lastmod>2026-08-27</lastmod>
+    <lastmod>2026-08-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://paytaku.github.io/pages/nettsuuhan.html</loc>
-    <lastmod>2026-08-27</lastmod>
+    <lastmod>2026-08-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://paytaku.github.io/pages/odakyu-point.html</loc>
-    <lastmod>2026-08-27</lastmod>
+    <lastmod>2026-08-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://paytaku.github.io/pages/about.html</loc>
-    <lastmod>2026-08-27</lastmod>
+    <lastmod>2026-08-28</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://paytaku.github.io/pages/privacy.html</loc>
-    <lastmod>2026-08-27</lastmod>
+    <lastmod>2026-08-28</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>

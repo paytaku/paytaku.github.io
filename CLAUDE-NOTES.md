@@ -23,7 +23,7 @@
 - 個別に`present_files`で1ファイルずつ提示する必要もない。zip 1つにまとめて渡せばよい。
 
 **必ず人間・Claudeが直接編集するソース（zipに含めるのは当然として、変更差分として意識すべきもの）：**
-`content/articles.json` / `articles/{slug}.html`（customHtml:trueのもの）/ `affiliates.json` / `assets/affiliates.js` / `admin/affiliates.html` / `scripts/build-articles.mjs`（変更した場合のみ）。
+`content/articles.json`（実際にこのファイルの中身を変更した時だけ送る。新規記事の登録、`updatedDate`・`tags`・`related`・`customHtml`フラグなどを変えた場合が対象。記事HTMLの本文だけ直してこのファイルに触れていない場合は送らなくてよい）/ `articles/{slug}.html`（customHtml:trueのもの）/ `affiliates.json` / `assets/affiliates.js` / `admin/affiliates.html` / `scripts/build-articles.mjs`（変更した場合のみ）。
 
 ### aff-keys.json だけでは防ぎきれない点（重要）
 `content/aff-keys.json`（記事内の実際のdata-affキー一覧）は自動検出の土台にはなるが、単体では下記2点を防げない。実際に一度、この事故が発生している（コスモ・ザ・カード・オーパス：記事は`cosmo-the-card-opus`キーを使用、管理画面には別キー`kosumo-za-kaado-oopasu`で登録され、リンクが繋がっていなかった）。
