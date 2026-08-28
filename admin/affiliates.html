@@ -295,9 +295,17 @@ var ASP_LIST = ['トラフィックゲート','A8.net','afb','バリューコマ
 var linkState   = {}; // key -> {type,url,via,banners:[],isPointSite}
 var rewardState = {}; // key -> {asp,reward,rewardNote,memo}
 CARDS.forEach(function(c){
-  linkState[c.key]   = {type:'direct',url:'',via:'',code:'',banners:[],isPointSite:!!c.isPointSite};
+  linkState[c.key]   = {type:'direct',url:'',via:'',code:'',banners:[],isPointSite:!!c.isPointSite,category:c.category||''};
   rewardState[c.key] = {asp:'',aspOther:'',reward:'',rewardNote:'',memo:''};
 });
+/* 案件ジャンル（category）の選択肢。
+   記事側の data-aff-random-slot（data-aff-random-category）はこの値と一致する
+   案件だけをランダム表示の候補にする。空欄＝通常のクレジットカード案件。 */
+var CATEGORY_OPTIONS = [
+  {value:'',      label:'クレジットカード（通常）'},
+  {value:'app',   label:'アプリ案件（インストール・利用系など）'},
+  {value:'other', label:'その他（ジャンル不問の非カード案件）'}
+];
 
 /* ===== ユーティリティ ===== */
 var LS = {
@@ -376,6 +384,7 @@ function buildLinksJson(){
       if(s.type==='point'&&s.via) entry.via=s.via;
       if(s.type==='point'&&s.code) entry.code=s.code;
       if(s.isPointSite) entry.isPointSite=true;
+      if(s.category) entry.category=s.category;
       links[card.key]=entry;
     }
     var vb=s.banners.filter(function(b){ return b.href||b.img; });
@@ -471,6 +480,12 @@ function buildLinkCard(card){
       +'<input type="checkbox" id="ispoint-'+key+'"'+(s.isPointSite?' checked':'')+'>'
       +'このサービス自体がポイントサイトである（他のカードの「経由」プルダウンにも表示する）'
     +'</label>'
+    +'<div class="field" style="margin-top:8px;"><label>案件ジャンル（記事内のランダム表示枠に出す対象を決める）</label>'
+      +'<select id="category-'+key+'">'
+        +CATEGORY_OPTIONS.map(function(o){ return '<option value="'+o.value+'"'+(s.category===o.value?' selected':'')+'>'+esc(o.label)+'</option>'; }).join('')
+      +'</select>'
+      +'<div style="font-size:11px;color:var(--dim);margin-top:4px;">「アプリ案件」「その他」に設定すると、記事内の data-aff-random-slot 枠にランダムで表示される候補になる（クレカ案件はここに出ない）。</div>'
+    +'</div>'
     +'<div class="type-row">'
       +'<button class="type-btn'+(s.type==='direct'?' active':'')+'" data-key="'+key+'" data-type="direct">直アフィリエイト</button>'
       +'<button class="type-btn'+(s.type==='point'?' active':'')+'" data-key="'+key+'" data-type="point">ポイントサイト経由</button>'
@@ -543,6 +558,11 @@ function bindLinkCard(card){
   document.getElementById('ispoint-'+key).addEventListener('change',function(e){
     s.isPointSite = e.target.checked;
     refreshAllViaSelects(); // このカードが経由先の選択肢として増減するので、全カードのプルダウンを更新
+    updatePreview();
+  });
+  var catEl=document.getElementById('category-'+key);
+  if(catEl) catEl.addEventListener('change',function(e){
+    s.category = e.target.value;
     updatePreview();
   });
   s.banners.forEach(function(_,i){ bindBannerItem(key,i); });
@@ -768,7 +788,7 @@ function loadCustomCards(){
   saved.forEach(function(c){
     if(!CARDS.find(function(x){ return x.key===c.key; })){
       CARDS.push({key:c.key,name:c.name,custom:true});
-      linkState[c.key]  ={type:'direct',url:'',via:'',code:'',banners:[],isPointSite:false};
+      linkState[c.key]  ={type:'direct',url:'',via:'',code:'',banners:[],isPointSite:false,category:''};
       rewardState[c.key]={asp:'',aspOther:'',reward:'',rewardNote:'',memo:''};
     }
   });
@@ -930,7 +950,7 @@ document.getElementById('addCardConfirm').addEventListener('click',function(){
   }
   var card={key:key,name:name,custom:true};
   CARDS.push(card);
-  linkState[key]  ={type:'direct',url:'',via:'',code:'',banners:[],isPointSite:false};
+  linkState[key]  ={type:'direct',url:'',via:'',code:'',banners:[],isPointSite:false,category:''};
   rewardState[key]={asp:'',aspOther:'',reward:'',rewardNote:'',memo:''};
   buildLinkCard(card);
   buildRewardCard(card);
@@ -949,7 +969,7 @@ function applyLinksJson(data){
     if(!CARDS.find(function(c){ return c.key===key; })){
       var card={key:key,name:key,custom:true};
       CARDS.push(card);
-      linkState[key]  ={type:'direct',url:'',via:'',code:'',banners:[],isPointSite:false};
+      linkState[key]  ={type:'direct',url:'',via:'',code:'',banners:[],isPointSite:false,category:''};
       rewardState[key]={asp:'',aspOther:'',reward:'',rewardNote:'',memo:''};
       saveCustomCards();
     }
@@ -963,6 +983,7 @@ function applyLinksJson(data){
       linkState[card.key].via =typeof l==='string'?'':(l.via||'');
       linkState[card.key].code =typeof l==='string'?'':(l.code||'');
       linkState[card.key].isPointSite = typeof l==='string'?false:!!l.isPointSite;
+      linkState[card.key].category = typeof l==='string'?'':(l.category||'');
     }
     var b=banners[card.key];
     if(b) linkState[card.key].banners=Array.isArray(b)?b.map(function(x){ return Object.assign({title:'',href:'',img:''},x); }):[Object.assign({title:'',href:'',img:''},b)];
@@ -1038,7 +1059,7 @@ function loadArticleAffKeys(){
         if(CARDS.find(function(c){ return c.key === item.key; })) return; // 既にある
         var card = { key: item.key, name: item.name, custom: true, fromArticle: true };
         CARDS.push(card);
-        linkState[item.key]   = {type:'direct',url:'',via:'',code:'',banners:[],isPointSite:false};
+        linkState[item.key]   = {type:'direct',url:'',via:'',code:'',banners:[],isPointSite:false,category:''};
         rewardState[item.key] = {asp:'',aspOther:'',reward:'',rewardNote:'',memo:''};
         added.push(card);
       });
