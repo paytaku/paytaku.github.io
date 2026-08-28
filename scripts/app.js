@@ -24,7 +24,7 @@ document.addEventListener("click", function(e){
   if(link && window.gtag){
     var url = link.href;
     var product = url.includes("15QHIA") || url.includes("15P77L") || url.includes("15Q22P") ? "dmm_kabu" :
-                  url.includes("61JSH") ? "aupay_market" :
+                  url.includes("61JSH") || url.includes("62U35") ? "aupay_market" :
                   url.includes("ox3w") ? "odakyu_point" : "other";
     gtag("event", "affiliate_click", {
       product: product,
@@ -54,7 +54,24 @@ function saveAffiliates(){
   try{ localStorage.setItem(AFFILIATE_KEY, JSON.stringify(affiliates)); } catch {}
 }
 
+// エイリアス解決：admin/affiliates.html で「他のカードとリンクを共有する」に設定したカードは
+// links[key] = {type:'alias', aliasOf:'otherKey'} という形で保存されている。参照先のURL・バナーを
+// そのまま使うことで、参照先を更新するとこのカードにも自動で反映される。
+// （2段階以上のエイリアス連鎖は想定しておらず、参照先自体がさらにエイリアスの場合は解決しない）
+function resolveAffiliateAliases(data){
+  if(!data || !data.links) return;
+  const links = data.links, banners = data.banners || (data.banners = {});
+  Object.keys(links).forEach(k => {
+    const l = links[k];
+    if(l && l.type === "alias" && l.aliasOf && links[l.aliasOf]){
+      links[k] = links[l.aliasOf];
+      if(!banners[k] && banners[l.aliasOf]) banners[k] = banners[l.aliasOf];
+    }
+  });
+}
+
 let affiliates = loadAffiliates();
+resolveAffiliateAliases(affiliates);
 
 // admin/affiliates.html の CARDS 配列のデフォルトと対応させたスラッグ→カード名の対応表。
 // 本来は affiliates.json 自体に含まれる "names" を優先して使うが、
@@ -78,6 +95,18 @@ const AFFILIATE_SLUG_FALLBACK_NAMES = {
 // ルート側に affKey を明示しておけば、あいまいな名前一致より確実に狙った
 // リンクが採用される。affKey が無い/該当が無い場合は呼び出し側で
 // 従来のaffiliateFor（名前のあいまい一致）にフォールバックする。
+// 「お店から探す」リストの合間に挟むPR枠。admin/affiliates.html の管理画面で
+// 実際にリンクが設定されている案件だけが表示され、未設定のものは自動でスキップされる。
+// affKey は affiliates.json のキーと一致させること（"category-store" を模した一覧表示）。
+const STORE_AD_SLOTS = [
+  { kind: "card", affKey: "rakuten-card", name: "楽天カード", tagline: "年会費無料・還元率1.0%〜", articleUrl: "articles/rakuten-card-shindan.html" },
+  { kind: "card", affKey: "jcb-card-w", name: "JCB CARD W", tagline: "39歳までの申込みで年会費永年無料", articleUrl: "articles/jcb-card-w-shindan.html" },
+  { kind: "card", affKey: "smbc-nl", name: "三井住友カード（NL）", tagline: "対象コンビニ・飲食店でタッチ決済7%還元", articleUrl: "articles/smbc-nl-shindan.html" },
+  { kind: "card", affKey: "epos-card", name: "エポスカード", tagline: "年会費無料・海外旅行保険と優待が強い1枚", articleUrl: "articles/epos-card-shindan.html" },
+  { kind: "pointsite", affKey: "hapitas-signup", name: "ハピタス", tagline: "買い物・カード発行の前に経由するだけでポイント上乗せ", articleUrl: "articles/hapitas-shindan.html" },
+  { kind: "pointsite", affKey: "moppy-signup", name: "モッピー", tagline: "1P=1円、会員1,300万人超のポイントサイト", articleUrl: "articles/moppy-shindan.html" },
+];
+
 function affiliateForKey(key){
   if(!key) return null;
   const links = (affiliates && affiliates.links) || {};
@@ -336,7 +365,7 @@ const FEATURED_CARDS = [
     badge: "PR｜提携中",
     badgeColor: "#C8701A",
     articleUrl: "articles/dmm-kabu-shindan.html", // 詳細を見る＝この解説記事に飛ばす
-    lpHash: "pages/kabu-koza.html",
+    lpHash: "#/kabu-koza",
     directUrl: "https://px.a8.net/svt/ejp?a8mat=4BA41D+C7ZCTU+1WP2+15QHIA", // 管理画面が未設定のときのフォールバック
     trackingPixel: "https://www11.a8.net/0.gif?a8mat=4BA41D+C7ZCTU+1WP2+15QHIA"
   },
@@ -348,9 +377,9 @@ const FEATURED_CARDS = [
     reason: "チャージルートで貯めたPontaポイント・au PAY残高をそのまま使えるネット通販。対象ショップならポイントアップで実質的な二重取り。",
     badge: "PR｜提携中",
     badgeColor: "#1A6EC8",
-    lpHash: "pages/nettsuuhan.html",
-    directUrl: "https://px.a8.net/svt/ejp?a8mat=4BA41D+FG2VSI+54O2+61JSH", // 管理画面が未設定のときのフォールバック
-    trackingPixel: "https://www12.a8.net/0.gif?a8mat=4BA41D+FG2VSI+54O2+61JSH"
+    lpHash: "#/nettsuuhan",
+    directUrl: "https://px.a8.net/svt/ejp?a8mat=4BA41D+FG2VSI+54O2+62U35", // 管理画面が未設定のときのフォールバック
+    trackingPixel: "https://www12.a8.net/0.gif?a8mat=4BA41D+FG2VSI+54O2+62U35"
   },
   {
     affiliate: "odakyu",
@@ -361,7 +390,7 @@ const FEATURED_CARDS = [
     badge: "PR｜提携中",
     badgeColor: "#0066B3",
     articleUrl: "articles/odakyu-point-card-shindan.html", // 詳細を見る＝この解説記事に飛ばす
-    lpHash: "pages/odakyu-point.html",
+    lpHash: "#/odakyu-point",
     directUrl: "https://h.accesstrade.net/sp/cc?rk=0100kw0d00ox3w" // 管理画面が未設定のときのフォールバック
   }
 ];
@@ -4879,6 +4908,7 @@ async function refreshAffiliatesFromGithubPages(){
     const data = await res.json();
     if(data && typeof data === "object" && !Array.isArray(data)){
       affiliates = data;
+      resolveAffiliateAliases(affiliates);
       saveAffiliates();
       renderStores(); renderInvest(); renderRoutes(); renderFeaturedCards();
     }
@@ -5182,6 +5212,37 @@ document.addEventListener("click", (e) => {
   if(extraEl) extraEl.hidden = !expanded;
   btn.textContent = expanded ? "閉じる" : "続きを読む";
 });
+
+// 「お店から探す」リストの合間に挟むPRカード。.store-card と同じ見た目のトーンで作るが、
+// クリックできる要素・「PR」ラベル・遷移先が違う（アフィリエイトの詳細記事へ）。
+function buildAdCardEl(slot){
+  const url = affiliateForKey(slot.affKey);
+  if(!url) return null; // 管理画面でリンク未設定なら広告自体を出さない
+
+  const card = document.createElement("div");
+  card.className = "store-card store-ad-card";
+
+  const iconSvg = slot.kind === "pointsite"
+    ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>`
+    : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>`;
+
+  card.innerHTML = `
+    <a class="store-ad-link" href="${escapeAttr(url)}" target="_blank" rel="noopener noreferrer nofollow sponsored">
+      <div class="store-head">
+        <div class="store-head-icon store-ad-icon">${iconSvg}</div>
+        <div class="store-head-mid">
+          <div class="store-name">${escapeHtml(slot.name)}</div>
+          <div class="store-sub">${escapeHtml(slot.tagline)}</div>
+        </div>
+        <div class="store-head-right">
+          <div class="store-ad-badge">PR</div>
+          <div class="store-rate-label" style="margin-top:6px;">詳しく見る →</div>
+        </div>
+      </div>
+    </a>
+  `;
+  return card;
+}
 
 function buildStoreCardEl(store, distanceMeters){
   const shown = combinedCards(store);
@@ -5834,18 +5895,38 @@ function renderStores(){
     }
   }
 
+  // 検索中は無関係な広告が紛れ込むと邪魔なので、絞り込みが掛かっていないときだけ広告を挟む。
+  const showAds = !q;
+  let adPool = [...STORE_AD_SLOTS];
+  function shuffle(arr){ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; }
+  shuffle(adPool);
+  let adCursor = 0;
+  const AD_INTERVAL = 5; // 実店舗カード5件ごとに1枠
+  function maybeInsertAd(realCardCount){
+    if(!showAds || !adPool.length) return;
+    if(realCardCount === 0 || realCardCount % AD_INTERVAL !== 0) return;
+    for(let tries=0; tries<adPool.length; tries++){
+      const slot = adPool[adCursor % adPool.length];
+      adCursor++;
+      const adEl = buildAdCardEl(slot);
+      if(adEl){ list.appendChild(adEl); return; }
+    }
+  }
+
   if(storeState.sortByRate){
     // 還元率が高い順：カテゴリ見出しは出さず、フラットに並べる
     filtered = [...filtered].sort((a,b) => storeBestRate(b) - storeBestRate(a));
-    filtered.forEach(store => {
+    filtered.forEach((store, i) => {
       const card = buildStoreCardEl(store);
       card.classList.remove("collapsed");
       list.appendChild(card);
+      maybeInsertAd(i + 1);
     });
     return;
   }
 
   let lastCategory = null;
+  let realCardCount = 0;
   filtered.forEach(store => {
     if(store.category !== lastCategory){
       const label = document.createElement("div");
@@ -5857,6 +5938,8 @@ function renderStores(){
     const card = buildStoreCardEl(store);
     card.classList.remove("collapsed"); // keep list view expanded by default, as before
     list.appendChild(card);
+    realCardCount++;
+    maybeInsertAd(realCardCount);
   });
 }
 
