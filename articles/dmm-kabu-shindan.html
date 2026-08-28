@@ -226,6 +226,10 @@ ARTICLE_META-->
     </section>
 
     <!-- STEP2: 結論 -->
+    <!-- 章の切れ目ごとに置く自動配分バナー枠。同じキーで何個置いても、
+         登録済みバナー枚数（4枚）に応じて重複せず均等に間隔をあけて表示される。 -->
+    <div data-aff-banner-slot="dmm-kabu"></div>
+
     <section class="nl-block" id="conc">
       <h2 class="nl-h2">2. 結論：SBI・楽天を持っていても「2つ目」に開く理由</h2>
       <p class="nl-text">「もうSBIか楽天を持っているのに、また口座を増やす意味があるのか」——これがDMM株を検討する人の一番の疑問です。答えは、<b>DMM株は積立の代わりではなく、個別株取引の専用口座</b>という点にあります。</p>
@@ -244,6 +248,8 @@ ARTICLE_META-->
     </section>
 
     <!-- STEP4: 手数料の実態 -->
+    <div data-aff-banner-slot="dmm-kabu"></div>
+
     <section class="nl-block" id="tesuryo">
       <h2 class="nl-h2">4. 「手数料最安水準」の実態</h2>
       <p class="nl-text">DMM株の現物取引手数料は、取引金額に応じて次のように設定されています。</p>
@@ -269,8 +275,10 @@ ARTICLE_META-->
       <p class="nl-text" style="margin-top:10px;">一方で、取扱銘柄数は大手ネット証券より少なめです。狙っている個別銘柄がある場合は、開設前に公式サイトの取扱銘柄一覧で確認しておくと二度手間になりません。</p>
     </section>
 
-    <!-- 登録済みのPRバナーをすべて表示（affiliates.json の登録数に連動） -->
-    <div class="lp-banner-list" data-aff-banner-list="dmm-kabu"></div>
+    <!-- 章の切れ目に置く自動配分バナー枠。バナーを連続で並べず、
+         登録数（現在4枚）に応じて章間に間隔をあけて自動的に振り分ける。
+         admin側でバナー枚数を増減しても、この記事のHTMLは触らなくてよい。 -->
+    <div data-aff-banner-slot="dmm-kabu"></div>
 
     <section class="nl-block" id="chuii">
       <h2 class="nl-h2-plain">6. 口座開設前に知る3つの注意点</h2>
@@ -283,6 +291,11 @@ ARTICLE_META-->
     </section>
 
     <!-- STEP6: 手順 -->
+    <div data-aff-banner-slot="dmm-kabu"></div>
+
+    <!-- クレカ以外の案件（アプリ案件など）のランダム枠。対象案件が無ければ自動非表示。 -->
+    <div data-aff-random-slot></div>
+
     <section class="nl-block" id="step">
       <h2 class="nl-h2">7. 口座開設〜取引開始までの手順</h2>
       <div class="nl-steps">
@@ -319,6 +332,8 @@ ARTICLE_META-->
         </div>
       </div>
     </section>
+
+    <div data-aff-banner-slot="dmm-kabu"></div>
 
     <section class="nl-block" id="faq">
       <h2 class="nl-h2-plain">8. よくある質問</h2>
