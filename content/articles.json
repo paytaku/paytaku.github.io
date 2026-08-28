@@ -1,5 +1,49 @@
 [
   {
+    "slug": "pointoinkamu-shindan",
+    "category": "ポイントサイト",
+    "title": "ポイントインカムはハピタス・モッピーと何が違う？ランク制度を活かす使い方",
+    "publishedDate": "2026-08-27",
+    "updatedDate": "2026-08-27",
+    "tags": [
+      "ポイントインカム",
+      "ポイントサイト",
+      "ハピタス",
+      "モッピー",
+      "ポイ活",
+      "会員ランク"
+    ],
+    "overview": "ポイントインカムは、累計獲得ポイントに応じてランクが上がり、一度上がったランクは基本的に下がらない「ランク制度」が最大の特徴です。上位ランクで対象広告にボーナスが付く仕組み、友達紹介コードのステージ制度、トロフィー制度との違いまで、具体的にまとめました。",
+    "related": [
+      "point-site-card-hikaku",
+      "rakuten-card-shindan",
+      "epos-card-shindan"
+    ],
+    "customHtml": true
+  },
+  {
+    "slug": "card-combo-smbc-nl-shindan",
+    "category": "カード解説",
+    "title": "楽天カード×三井住友カード(NL)の2枚持ちは本当に得か｜月の使い方別に上乗せ額を試算した",
+    "publishedDate": "2026-08-27",
+    "updatedDate": "2026-08-27",
+    "tags": [
+      "楽天カード",
+      "三井住友カード(NL)",
+      "JCB CARD W",
+      "2枚持ち",
+      "クレジットカード",
+      "還元率"
+    ],
+    "overview": "「メインカード＋三井住友カード(NL)」の2枚持ちは、当サイトの複数記事で鉄板の組み合わせとして名前だけ挙がっていましたが、実際にいくら上乗せになるかをちゃんと試算した記事はありませんでした。月の使い方別のシミュレーションと、2枚持ちの管理の手間を減らす方法までまとめました。",
+    "related": [
+      "rakuten-card-shindan",
+      "smbc-nl-shindan",
+      "jcb-card-w-shindan"
+    ],
+    "customHtml": true
+  },
+  {
     "slug": "rakuten-premium-card-shindan",
     "category": "カード解説",
     "title": "楽天プレミアムカードは年会費11,000円の元を取れるか｜空港ラウンジ利用回数で試算した",
@@ -41,7 +85,8 @@
       "credit-card-erabikata-shindan",
       "rakuten-card-shindan",
       "epos-card-shindan",
-      "jcb-card-w-shindan"
+      "jcb-card-w-shindan",
+      "pointoinkamu-shindan"
     ],
     "customHtml": true
   },
@@ -83,7 +128,8 @@
     "overview": "三井住友カード（NL）は対象コンビニ・飲食店でスマホのタッチ決済7%還元。でも2026年2月からカード現物・iDは対象外に。7%を取り逃さない設定、ファミマ派の立ち回り、楽天・JCB Wをメイン＋NLをサブにする2枚持ち設計、一般とゴールドの選び方まで、申し込み前に知りたいことをまとめました。",
     "related": [
       "epos-card-shindan",
-      "jcb-card-w-shindan"
+      "jcb-card-w-shindan",
+      "card-combo-smbc-nl-shindan"
     ],
     "customHtml": true
   },
@@ -125,7 +171,8 @@
     "overview": "JCB CARD Wは39歳までに作れば40歳以降もずっと年会費無料。「還元率が悪い」と言われる理由を数字で分解し、J-POINT（旧OkiDoki）を1ポイント1円以上で使う交換先、優待店を使わない人でも元が取れる基準、楽天カード・三井住友NLとの選び方まで、申し込み前に知りたいことをまとめました。",
     "related": [
       "rakuten-card-shindan",
-      "dcard-series-shindan"
+      "dcard-series-shindan",
+      "card-combo-smbc-nl-shindan"
     ],
     "customHtml": true
   },
@@ -146,7 +193,8 @@
     "overview": "楽天市場をほぼ使わなくても、楽天カード＋楽天ペイで街の買い物を実質1.5%還元にできます。「やばい」と言われる理由の真相、期間限定ポイントを失効させない初期設定、他社カードからの乗り換え判定まで、申し込み前に知りたいことをまとめました。",
     "related": [
       "dcard-series-shindan",
-      "vpoint-pay-yusen-10"
+      "vpoint-pay-yusen-10",
+      "card-combo-smbc-nl-shindan"
     ],
     "customHtml": true
   },
@@ -439,7 +487,7 @@
     "category": "チャージルート",
     "title": "IDAREカードは「使うほど」ではなく「置いておくほど」得なプリペイドカード｜具体的にいくら貯まるか計算した",
     "publishedDate": "2026-08-20",
-    "updatedDate": "2026-08-26",
+    "updatedDate": "2026-08-27",
     "tags": [
       "IDARE",
       "イデア",

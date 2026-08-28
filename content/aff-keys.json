@@ -100,9 +100,17 @@
     ]
   },
   {
-    "key": "rakuten-card",
-    "name": "rakuten-card",
+    "key": "pointoinkamu",
+    "name": "ポイントインカム",
     "articles": [
+      "pointoinkamu-shindan.html"
+    ]
+  },
+  {
+    "key": "rakuten-card",
+    "name": "メインカード ＋ 三井住友カード(NL)",
+    "articles": [
+      "card-combo-smbc-nl-shindan.html",
       "rakuten-card-review.html",
       "rakuten-card-shindan.html"
     ]
@@ -116,8 +124,9 @@
   },
   {
     "key": "smbc-nl",
-    "name": "三井住友カード（NL）",
+    "name": "メインカード ＋ 三井住友カード(NL)",
     "articles": [
+      "card-combo-smbc-nl-shindan.html",
       "smbc-nl-shindan.html",
       "touch-norisha-10-5.html"
     ]
