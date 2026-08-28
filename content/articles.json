@@ -13,11 +13,11 @@
       "ポイ活",
       "会員ランク"
     ],
-    "overview": "ポイントインカムは、累計獲得ポイントに応じてランクが上がり、一度上がったランクは基本的に下がらない「ランク制度」が最大の特徴です。上位ランクで対象広告にボーナスが付く仕組み、友達紹介コードのステージ制度、トロフィー制度との違いまで、具体的にまとめました。",
+    "overview": "ポイントインカムは、ハピタス・モッピーと並んで名前が挙がるポイントサイトですが、単体で特徴を掘り下げた記事はまだありませんでした。最大の違いである会員ランク制度の仕組みと、カード発行案件で活かす使い方をまとめました。",
     "related": [
-      "point-site-card-hikaku",
-      "rakuten-card-shindan",
-      "epos-card-shindan"
+      "hapitas-shindan",
+      "moppy-shindan",
+      "point-site-card-hikaku"
     ],
     "customHtml": true
   },
@@ -35,7 +35,7 @@
       "クレジットカード",
       "還元率"
     ],
-    "overview": "「メインカード＋三井住友カード(NL)」の2枚持ちは、当サイトの複数記事で鉄板の組み合わせとして名前だけ挙がっていましたが、実際にいくら上乗せになるかをちゃんと試算した記事はありませんでした。月の使い方別のシミュレーションと、2枚持ちの管理の手間を減らす方法までまとめました。",
+    "overview": "「メインカード＋三井住友カード(NL)」の2枚持ちは、当サイトの複数記事で「鉄板の組み合わせ」として名前だけ挙がっていましたが、実際にいくら上乗せになるかをちゃんと試算した記事はありませんでした。月の使い方別のシミュレーションと、2枚持ちの管理の手間を減らす方法までまとめました。",
     "related": [
       "rakuten-card-shindan",
       "smbc-nl-shindan",
@@ -82,11 +82,10 @@
     ],
     "overview": "楽天カード・dカード・エポスカードなど、当サイトで紹介しているカードは公式サイトから直接申し込むより、ポイントサイト経由の方が上乗せがあることがあります。ただし1件あたりの獲得ポイントは案件ごとに毎日のように変わるため、本記事では具体的な金額を掲載していません。仕組みの理解と、申し込み直前に自分で比較する手順をまとめました。",
     "related": [
+      "hapitas-shindan",
+      "moppy-shindan",
       "credit-card-erabikata-shindan",
-      "rakuten-card-shindan",
-      "epos-card-shindan",
-      "jcb-card-w-shindan",
-      "pointoinkamu-shindan"
+      "rakuten-card-shindan"
     ],
     "customHtml": true
   },
@@ -487,7 +486,7 @@
     "category": "チャージルート",
     "title": "IDAREカードは「使うほど」ではなく「置いておくほど」得なプリペイドカード｜具体的にいくら貯まるか計算した",
     "publishedDate": "2026-08-20",
-    "updatedDate": "2026-08-27",
+    "updatedDate": "2026-08-26",
     "tags": [
       "IDARE",
       "イデア",
@@ -695,6 +694,70 @@
       "epos-card-shindan",
       "rakuten-card-shindan",
       "smbc-nl-shindan"
+    ],
+    "customHtml": true
+  },
+  {
+    "slug": "aupay-market-shindan",
+    "category": "キャンペーン",
+    "title": "au PAYマーケットはauユーザーじゃなくても得か？「超BIGお買い物ラリー」で還元率が上がる仕組み",
+    "publishedDate": "2026-08-28",
+    "updatedDate": "2026-08-28",
+    "tags": [
+      "au PAYマーケット",
+      "Pontaポイント",
+      "Pontaパス",
+      "買い回り",
+      "ネットショッピング"
+    ],
+    "overview": "au PAYマーケットは「auユーザー専用」だと誤解されがちですが、実際は無料の会員登録だけで誰でも使えるネット通販モールです。複数店舗で買うほど還元率が上がる「超BIGお買い物ラリー」の具体的な仕組みと、Pontaパス会員だとどう変わるかまでまとめました。",
+    "related": [
+      "point-site-card-hikaku",
+      "rakuten-card-shindan",
+      "dpoint-koukan-zouryo"
+    ],
+    "customHtml": true
+  },
+  {
+    "slug": "hapitas-shindan",
+    "category": "ポイントサイト",
+    "title": "ハピタスとは？+10秒でポイントが貯まる仕組みと、クレカ発行で1万円以上お得になる理由",
+    "publishedDate": "2026-08-28",
+    "updatedDate": "2026-08-28",
+    "tags": [
+      "ハピタス",
+      "ポイントサイト",
+      "ポイ活",
+      "会員登録",
+      "カード発行"
+    ],
+    "overview": "ハピタスは会員500万人超・提携サイト3,800以上、国内トップ水準の購買プラットフォームを運営するポイントサイトです。当サイトの複数記事から名前は挙がっていましたが、単体で仕組みを掘り下げた記事はまだありませんでした。「+10秒」でポイントが貯まる仕組み、自動検知機能「ハピタススマート」、クレカ発行で得する理由までまとめました。",
+    "related": [
+      "point-site-card-hikaku",
+      "moppy-shindan",
+      "pointoinkamu-shindan"
+    ],
+    "customHtml": true
+  },
+  {
+    "slug": "moppy-shindan",
+    "category": "ポイントサイト",
+    "title": "モッピーとハピタスはどっちがいい？1P=1円の仕組みと「同じカードでも得する」申し込み手順",
+    "publishedDate": "2026-08-28",
+    "updatedDate": "2026-08-28",
+    "tags": [
+      "モッピー",
+      "ハピタス",
+      "ポイントサイト",
+      "ポイ活",
+      "会員登録",
+      "カード発行"
+    ],
+    "overview": "モッピーは累計1,300万人以上が使う国内最大級のポイントサイトですが、「ハピタスと何が違うのか」「同じカードなのに公式サイト直接よりお得になる理由」を手順込みで説明した記事は多くありません。1P=1円の仕組みと、実際の申し込み手順、友達紹介・注意点までまとめました。",
+    "related": [
+      "hapitas-shindan",
+      "point-site-card-hikaku",
+      "pointoinkamu-shindan"
     ],
     "customHtml": true
   }
