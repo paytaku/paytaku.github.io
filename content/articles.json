@@ -825,5 +825,26 @@
       "credit-card-erabikata-shindan"
     ],
     "customHtml": true
+  },
+  {
+    "slug": "smbc-gold-nl-shindan",
+    "category": "カード解説",
+    "title": "三井住友カード ゴールド（NL）は「年間100万円」を超えなければ損｜通常NLとの分岐点とクレカ積立の罠",
+    "publishedDate": "2026-08-31",
+    "updatedDate": "2026-08-31",
+    "tags": [
+      "三井住友カード ゴールド(NL)",
+      "三井住友カード(NL)",
+      "ゴールドカード",
+      "還元率",
+      "クレカ積立"
+    ],
+    "overview": "年間100万円の利用で年会費が永年無料になる三井住友カード ゴールド（NL）ですが、多くの解説記事は「無料になる条件」だけを書いていて、「届かなかった場合にいくら損するか」「SBI証券のクレカ積立は条件にカウントされない」という2点にほとんど触れていません。通常の三井住友カード（NL）との分岐点を試算し、積立投資で条件を満たした「つもり」になる罠まで解説します。",
+    "related": [
+      "smbc-nl-shindan",
+      "card-combo-smbc-nl-shindan",
+      "credit-card-erabikata-shindan"
+    ],
+    "customHtml": true
   }
 ]
