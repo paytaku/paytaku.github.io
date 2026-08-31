@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-31T09:56:51.930Z",
+  "generatedAt": "2026-08-31T09:58:49.181Z",
   "brokenLinks": [],
   "unmonetizedLinks": [
     {
@@ -49,12 +49,6 @@
       "key": "custom-1787211123687",
       "href": "https://h.accesstrade.net/sp/cc?rk=01004q8200ox3w",
       "kind": "未登録だがそれらしいURLが直書きされている（本物か要確認）"
-    },
-    {
-      "file": "smbc-gold-nl-shindan.html",
-      "key": "smbc-gold-nl",
-      "href": "#",
-      "kind": "未登録・href=#（完全にダミー）"
     }
   ],
   "staleContent": []
