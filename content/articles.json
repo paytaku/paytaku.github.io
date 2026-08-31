@@ -39,8 +39,7 @@
     "related": [
       "rakuten-card-shindan",
       "smbc-nl-shindan",
-      "jcb-card-w-shindan",
-      "smbc-gold-nl-shindan"
+      "jcb-card-w-shindan"
     ],
     "customHtml": true
   },
@@ -694,7 +693,7 @@
     "related": [
       "epos-card-shindan",
       "rakuten-card-shindan",
-      "smbc-gold-nl-shindan"
+      "smbc-nl-shindan"
     ],
     "customHtml": true
   },
@@ -823,6 +822,28 @@
       "smbc-nl-shindan",
       "card-combo-smbc-nl-shindan",
       "credit-card-erabikata-shindan"
+    ],
+    "customHtml": true
+  },
+  {
+    "slug": "bank-furikomi-pointkatsu-checklist",
+    "category": "チャージルート",
+    "title": "銀行の「振込ポイ活」まとめ｜楽天銀行ハッピープログラムから住信SBI改称まで、毎月やることチェックリスト",
+    "publishedDate": "2026-08-31",
+    "updatedDate": "2026-08-31",
+    "tags": [
+      "銀行ポイ活",
+      "楽天銀行",
+      "ハッピープログラム",
+      "住信SBIネット銀行",
+      "ドコモSMTBネット銀行",
+      "V NEOBANK"
+    ],
+    "overview": "「毎月○件振り込むと○ポイント」という銀行の優遇プログラムは、覚えていれば地味に積み上がる一方、忘れると翌月分は取り戻せません。楽天銀行ハッピープログラムの仕組みと、住信SBIネット銀行がドコモSMTBネット銀行に改称した現状（V NEOBANKの改悪含む）を整理し、毎月やったかどうかをその場でチェックできるリストにしました。",
+    "related": [
+      "kateene-bank-debit-shindan",
+      "idare-card-katsuyo",
+      "aupay-seikyusho-charge-route"
     ],
     "customHtml": true
   }

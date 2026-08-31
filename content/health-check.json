@@ -1,7 +1,19 @@
 {
-  "generatedAt": "2026-08-31T09:02:19.786Z",
+  "generatedAt": "2026-08-31T09:04:54.052Z",
   "brokenLinks": [],
   "unmonetizedLinks": [
+    {
+      "file": "ana-pay-rakuten-edy-cash-route.html",
+      "key": "daiichi-neobank-debit-premium",
+      "href": "#",
+      "kind": "未登録・href=#（完全にダミー）"
+    },
+    {
+      "file": "aupay-seikyusho-max-route.html",
+      "key": "au-pay-gold-card",
+      "href": "#",
+      "kind": "未登録・href=#（完全にダミー）"
+    },
     {
       "file": "dcard-goldu-shindan.html",
       "key": "dcard-goldu",
@@ -29,6 +41,18 @@
     {
       "file": "idare-card-katsuyo.html",
       "key": "idare",
+      "href": "#",
+      "kind": "未登録・href=#（完全にダミー）"
+    },
+    {
+      "file": "kateene-bank-debit-shindan.html",
+      "key": "kateene-bank-debit",
+      "href": "#",
+      "kind": "未登録・href=#（完全にダミー）"
+    },
+    {
+      "file": "kateene-bank-debit-shindan.html",
+      "key": "daiichi-neobank-debit-premium",
       "href": "#",
       "kind": "未登録・href=#（完全にダミー）"
     },
