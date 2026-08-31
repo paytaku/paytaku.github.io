@@ -91,6 +91,7 @@ h1{font-size:20px;font-weight:900;margin:0 0 4px;}
   <div class="section-head">
     <h2>サムネイル未設定の記事</h2>
     <span class="section-count warn" id="countMissing">-</span>
+    <button class="btn" id="copyAllMissingBtn" data-label="📋 タイトルを全部まとめてコピー" style="margin-left:auto;">📋 タイトルを全部まとめてコピー</button>
   </div>
   <div id="listMissing"><div class="loading">読み込み中…</div></div>
 
@@ -372,6 +373,15 @@ h1{font-size:20px;font-weight:900;margin:0 0 4px;}
         return (b.article.updatedDate||b.article.publishedDate||'').localeCompare(a.article.updatedDate||a.article.publishedDate||'');
       });
       missing.forEach(function(x){ listMissing.appendChild(buildRow(x.article, x.thumbUrl)); });
+    }
+
+    var copyAllBtn = document.getElementById('copyAllMissingBtn');
+    if(copyAllBtn){
+      copyAllBtn.style.display = missing.length ? '' : 'none';
+      copyAllBtn.onclick = function(){
+        var text = missing.map(function(x){ return x.article.title; }).join('\n');
+        copyToClipboard(text, copyAllBtn);
+      };
     }
 
     if(!done.length){

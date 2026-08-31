@@ -72,6 +72,26 @@ h1{font-size:20px;font-weight:900;margin:0 0 4px;}
 .via-row.show{display:block;}
 .via-hint{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.5;}
 
+/* カードの折りたたみ */
+.card-toggle-btn{background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;padding:2px 4px;line-height:1;flex-shrink:0;transition:transform .15s;}
+.card-toggle-btn:hover{color:var(--text);}
+.card-toggle-btn.collapsed{transform:rotate(-90deg);}
+.card-body{overflow:hidden;}
+.card-body.collapsed{display:none;}
+
+/* 一括インポート */
+.bulk-import{background:var(--surface);border:1px solid var(--primary);border-radius:var(--radius);padding:16px;margin-bottom:16px;}
+.bulk-import summary{cursor:pointer;font-size:13.5px;font-weight:800;color:var(--primary);list-style:none;}
+.bulk-import summary::-webkit-details-marker{display:none;}
+.bulk-import summary::before{content:"▸ ";}
+.bulk-import[open] summary::before{content:"▾ ";}
+.bulk-import-body{margin-top:12px;}
+.bulk-import-hint{font-size:11.5px;color:var(--muted);line-height:1.7;margin-bottom:8px;}
+.bulk-import textarea{width:100%;min-height:140px;padding:10px 12px;background:var(--surface2);border:1px solid var(--line);border-radius:8px;color:var(--text);font-family:monospace;font-size:12px;resize:vertical;}
+.bookmarklet-box{background:var(--surface2);border:1px dashed var(--primary);border-radius:10px;padding:12px 14px;margin-bottom:14px;}
+.bookmarklet-link{display:inline-block;padding:9px 16px;border-radius:8px;background:var(--primary);color:#fff;font-family:inherit;font-size:13px;font-weight:800;text-decoration:none;cursor:grab;}
+.bookmarklet-link:hover{opacity:.85;}
+
 /* バナー */
 .sep{border:none;border-top:1px solid var(--line);margin:14px 0;}
 .banner-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
@@ -220,6 +240,33 @@ h1{font-size:20px;font-weight:900;margin:0 0 4px;}
       <input type="file" id="linkFileInput" accept=".json" style="display:none">
       <span id="loadStatus" style="font-size:12px;color:var(--muted);"></span>
     </div>
+    <details class="bulk-import" id="bulkImportBox">
+      <summary>🚀 バナーをまとめて貼り付けて追加（非カード案件などをまとめて登録したいとき）</summary>
+      <div class="bulk-import-body">
+        <div class="bookmarklet-box">
+          <p class="bulk-import-hint" style="margin-bottom:8px;">
+            <strong>結局アフィリエイトサイト側で1個ずつコピーするのが面倒…という場合はこちら。</strong><br>
+            下のリンクをブックマークバーにドラッグして登録してください。A8.net・もしもアフィリエイト等の<strong>バナー一覧ページ（ログインした状態）</strong>を開いてこのブックマークをクリックすると、
+            ページ上にある画像バナー＋リンクをまとめて自動収集し、クリップボードにコピーします。このページに戻って下の欄に貼り付ければ完了です（このページに戻ってきてご自身でコピー・貼り付けする手間は必要ですが、1件ずつコードを探して選択する手間は無くなります）。
+          </p>
+          <a href="#" id="bannerBookmarklet" class="bookmarklet-link" onclick="alert('このリンクはクリックではなく、ブックマークバーへドラッグして登録してください。'); return false;">📌 ペイ択：バナー収集</a>
+          <p class="bulk-import-hint" style="margin-top:8px;">
+            ※ページ上の画像リンクをすべて拾うため、ロゴなど無関係な画像も混ざることがあります。解析後に不要なカードは削除してください。<br>
+            ※ログインが必要なページはこのブックマークレットがそのブラウザ・そのタブで動くので開けますが、当サイトの管理画面やサーバーが直接そのページを取得しに行くことはありません（できません）。
+          </p>
+        </div>
+        <p class="bulk-import-hint">
+          複数のバナーコードを、1件ごとに<strong>空行で区切って</strong>貼り付けてください。各ブロックの1行目に案件名（例：松井証券）を書いておくと、その名前で新しいカードが自動作成されます（名前の行が無い場合は「新しい案件」として仮登録するので、あとで名前を直してください）。<br>
+          既存カードと同じ名前を書いた場合は、新規カードを作らずそのカードにバナーを追加します。
+        </p>
+        <textarea id="bulkImportArea" placeholder="松井証券
+&lt;a href=&quot;https://...&quot;&gt;&lt;img src=&quot;https://...&quot;&gt;&lt;/a&gt;
+
+PayPayカード
+&lt;a href=&quot;https://...&quot;&gt;&lt;img src=&quot;https://...&quot;&gt;&lt;/a&gt;"></textarea>
+        <button class="btn btn-primary" id="bulkImportBtn" style="margin-top:8px;">▶ まとめて解析して追加</button>
+      </div>
+    </details>
     <div id="cardList"></div>
     <button class="btn-add" id="addCardBtn" style="margin-bottom:16px;"><span>＋</span> カードを追加（松井証券・PayPayカードなど）</button>
     <div class="preview-block">
@@ -295,7 +342,7 @@ var ASP_LIST = ['トラフィックゲート','A8.net','afb','バリューコマ
 var linkState   = {}; // key -> {type,url,via,banners:[],isPointSite}
 var rewardState = {}; // key -> {asp,reward,rewardNote,memo}
 CARDS.forEach(function(c){
-  linkState[c.key]   = {type:'direct',url:'',via:'',code:'',banners:[],isPointSite:!!c.isPointSite,category:c.category||''};
+  linkState[c.key]   = {type:'direct',url:'',via:'',code:'',dealUrl:'',banners:[],isPointSite:!!c.isPointSite,category:c.category||''};
   rewardState[c.key] = {asp:'',aspOther:'',reward:'',rewardNote:'',memo:''};
 });
 /* 案件ジャンル（category）の選択肢。
@@ -312,6 +359,7 @@ var LS = {
   get: function(k){ try{ return JSON.parse(localStorage.getItem(k)); }catch(e){ return null; } },
   set: function(k,v){ localStorage.setItem(k, JSON.stringify(v)); }
 };
+var CARD_COLLAPSE_KEY = 'paytaku-admin-collapsed'; // カードごとの開閉状態（key→true/false）
 function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
 function setStatus(msg,type,dur){
   var el=document.getElementById('statusBar');
@@ -383,6 +431,7 @@ function buildLinksJson(){
       var entry={type:s.type,url:s.url||''};
       if(s.type==='point'&&s.via) entry.via=s.via;
       if(s.type==='point'&&s.code) entry.code=s.code;
+      if(s.type==='point'&&s.dealUrl) entry.dealUrl=s.dealUrl;
       if(s.isPointSite) entry.isPointSite=true;
       if(s.category) entry.category=s.category;
       links[card.key]=entry;
@@ -468,14 +517,20 @@ function buildLinkCard(card){
   var el=document.createElement('div');
   el.className='card'; el.id='card-'+key;
   var isCustom=!CARDS.find(function(c){ return c.key===card.key&&!c.custom; });
+  var collapsedMap = LS.get(CARD_COLLAPSE_KEY) || {};
+  // 明示的に開閉した記録が無ければ、既にURL設定済みのカードは初期状態で畳んでおく
+  // （登録済みのカードがずらっと展開されたままだと縦に長くなり、探しにくいため）。
+  var isCollapsed = (key in collapsedMap) ? collapsedMap[key] : !!s.url;
   el.innerHTML=
     '<div class="card-top">'
+      +'<button class="card-toggle-btn'+(isCollapsed?' collapsed':'')+'" data-key="'+key+'" title="開閉">▾</button>'
       +'<span class="card-name">'+esc(card.name)+'</span>'
       +'<span class="card-key">'+esc(key)+'</span>'
       +'<span class="badge type-badge '+(s.type==='point'?'point':'direct')+'" id="typebadge-'+key+'">'+(s.type==='point'?'🎯 ポイントサイト経由':'🔗 直アフィリエイト')+'</span>'
       +'<span class="badge '+(s.url?'set':'unset')+'" id="badge-'+key+'">'+(s.url?'設定済み':'未設定')+'</span>'
       +(card.custom?'<button class="card-del-btn" data-del-key="'+key+'" title="削除">削除</button>':'')
     +'</div>'
+    +'<div class="card-body'+(isCollapsed?' collapsed':'')+'" id="cardbody-'+key+'">'
     +'<label class="is-point-site-row">'
       +'<input type="checkbox" id="ispoint-'+key+'"'+(s.isPointSite?' checked':'')+'>'
       +'このサービス自体がポイントサイトである（他のカードの「経由」プルダウンにも表示する）'
@@ -499,12 +554,14 @@ function buildLinkCard(card){
         +'<option value="__add_new__">＋ 新しいポイントサイトを追加...</option>'
       +'</select></div>'
       +'<div class="field"><label>紹介コード（任意・招待コード等があれば）</label><input type="text" id="code-'+key+'" placeholder="例：ABC1234" value="'+esc(s.code||'')+'"></div>'
-      +'<p class="via-hint">ポイントサイト経由は「紹介リンク・紹介コード・バナー」の3点セットで出せます。コードを入れると、サイト上のボタン付近に自動で表示されます。バナーは下のフォームから登録してください。</p>'
+      +'<div class="field"><label>案件ページの直リンク（任意・ポイントサイト内の、このカードの申し込みページURL）</label><input type="url" id="dealurl-'+key+'" placeholder="https://... （空欄ならポイントサイトのトップ登録リンクのみ案内）" value="'+esc(s.dealUrl||'')+'"></div>'
+      +'<p class="via-hint">ポイントサイト経由は「紹介リンク・紹介コード・バナー」の3点セットで出せます。コードを入れると、サイト上のボタン付近に自動で表示されます。バナーは下のフォームから登録してください。「案件ページの直リンク」を入れておくと、読者が①ポイントサイトに登録→②このカードの申し込みページへ直接進む、という2段階の導線を案内できます（空欄でも動作しますが、案内が「登録だけ」で終わってしまいます）。</p>'
     +'</div>'
     +'<div class="sep"></div>'
     +'<div class="banner-head"><span class="banner-head-label">バナー（任意・複数登録可）</span></div>'
     +'<div class="banner-list" id="blist-'+key+'">'+s.banners.map(function(b,i){ return buildBannerHtml(key,i,b,s.banners.length); }).join('')+'</div>'
-    +'<button class="btn-add" id="badd-'+key+'"><span>＋</span> バナーを追加</button>';
+    +'<button class="btn-add" id="badd-'+key+'"><span>＋</span> バナーを追加</button>'
+    +'</div>';
   document.getElementById('cardList').appendChild(el);
   bindLinkCard(card);
 }
@@ -554,7 +611,18 @@ function bindLinkCard(card){
   }
   bi('url-'+key,'url');
   bi('code-'+key,'code');
+  bi('dealurl-'+key,'dealUrl');
   bindViaSelect(key);
+  document.querySelector('.card-toggle-btn[data-key="'+key+'"]')?.addEventListener('click',function(){
+    var body=document.getElementById('cardbody-'+key);
+    var btn=document.querySelector('.card-toggle-btn[data-key="'+key+'"]');
+    var nowCollapsed = !body.classList.contains('collapsed');
+    body.classList.toggle('collapsed', nowCollapsed);
+    btn.classList.toggle('collapsed', nowCollapsed);
+    var map = LS.get(CARD_COLLAPSE_KEY) || {};
+    map[key] = nowCollapsed;
+    LS.set(CARD_COLLAPSE_KEY, map);
+  });
   document.getElementById('ispoint-'+key).addEventListener('change',function(e){
     s.isPointSite = e.target.checked;
     refreshAllViaSelects(); // このカードが経由先の選択肢として増減するので、全カードのプルダウンを更新
@@ -788,7 +856,7 @@ function loadCustomCards(){
   saved.forEach(function(c){
     if(!CARDS.find(function(x){ return x.key===c.key; })){
       CARDS.push({key:c.key,name:c.name,custom:true});
-      linkState[c.key]  ={type:'direct',url:'',via:'',code:'',banners:[],isPointSite:false,category:''};
+      linkState[c.key]  ={type:'direct',url:'',via:'',code:'',dealUrl:'',banners:[],isPointSite:false,category:''};
       rewardState[c.key]={asp:'',aspOther:'',reward:'',rewardNote:'',memo:''};
     }
   });
@@ -950,7 +1018,7 @@ document.getElementById('addCardConfirm').addEventListener('click',function(){
   }
   var card={key:key,name:name,custom:true};
   CARDS.push(card);
-  linkState[key]  ={type:'direct',url:'',via:'',code:'',banners:[],isPointSite:false,category:''};
+  linkState[key]  ={type:'direct',url:'',via:'',code:'',dealUrl:'',banners:[],isPointSite:false,category:''};
   rewardState[key]={asp:'',aspOther:'',reward:'',rewardNote:'',memo:''};
   buildLinkCard(card);
   buildRewardCard(card);
@@ -961,6 +1029,73 @@ document.getElementById('addCardConfirm').addEventListener('click',function(){
   setTimeout(function(){ var el=document.getElementById('card-'+key); if(el) el.scrollIntoView({behavior:'smooth',block:'center'}); },100);
 });
 
+/* ===== バナーの一括取り込み ===== */
+// 複数のバナーコードを空行区切りで貼り付け、まとめてカード化する。
+// 各ブロックの先頭にある「タグで始まらない行」を案件名として使う（無ければ「新しい案件」の仮名）。
+// 既に同名のカードがあれば、新規カードを作らずそのカードにバナーを追加する。
+function parseBulkBanners(text){
+  var blocks = text.split(/\n\s*\n+/).map(function(b){ return b.trim(); }).filter(Boolean);
+  return blocks.map(function(block){
+    var hrefMatch = block.match(/href\s*=\s*"([^"]+)"/) || block.match(/href\s*=\s*'([^']+)'/);
+    var imgMatch  = block.match(/<img[^>]*\ssrc\s*=\s*"([^"]+)"/) || block.match(/<img[^>]*\ssrc\s*=\s*'([^']+)'/);
+    var altMatch  = block.match(/<img[^>]*\salt\s*=\s*"([^"]*)"/);
+    var nameLine = block.split('\n').map(function(l){ return l.trim(); })
+      .find(function(l){ return l && l.indexOf('<') !== 0; });
+    var name = (nameLine || (altMatch && altMatch[1]) || '').trim();
+    return {
+      name: name,
+      href: hrefMatch ? hrefMatch[1] : '',
+      img:  imgMatch  ? imgMatch[1]  : ''
+    };
+  }).filter(function(x){ return x.href || x.img; });
+}
+document.getElementById('bulkImportBtn').addEventListener('click',function(){
+  var area = document.getElementById('bulkImportArea');
+  var items = parseBulkBanners(area.value);
+  if(!items.length){
+    alert('href（リンク先）または src（画像）を含むバナーコードが見つかりませんでした。1件ごとに空行で区切って貼り付けてください。');
+    return;
+  }
+  var normalize = function(s){ return (s||'').replace(/[\s・\-ー（）()]/g,'').toLowerCase(); };
+  var addedCount=0, mergedCount=0, unnamedCount=0, lastKey=null;
+  items.forEach(function(item, i){
+    var hasName = !!item.name;
+    var name = item.name || ('新しい案件' + (i+1));
+    var normName = normalize(name);
+    var existing = hasName ? CARDS.find(function(c){ return normalize(c.name) === normName; }) : null;
+    if(existing){
+      linkState[existing.key].banners.push({title:'', href:item.href, img:item.img});
+      var oldEl = document.getElementById('card-'+existing.key);
+      if(oldEl) oldEl.parentNode.removeChild(oldEl);
+      buildLinkCard(existing);
+      mergedCount++;
+      lastKey = existing.key;
+    } else {
+      var base = toKey(name) || ('shinanken-' + Date.now().toString(36));
+      var key = base, n = 1;
+      while(CARDS.find(function(c){ return c.key===key; })){ key = base + '-' + (++n); }
+      var card = {key:key, name:name, custom:true};
+      CARDS.push(card);
+      linkState[key]  ={type:'direct',url:'',via:'',code:'',dealUrl:'',banners:[{title:'', href:item.href, img:item.img}],isPointSite:false,category:''};
+      rewardState[key]={asp:'',aspOther:'',reward:'',rewardNote:'',memo:''};
+      buildLinkCard(card);
+      buildRewardCard(card);
+      addedCount++;
+      lastKey = key;
+      if(!hasName) unnamedCount++;
+    }
+  });
+  saveCustomCards();
+  updatePreview();
+  area.value = '';
+  var msg = '✓ ' + items.length + '件のバナーを解析：新規カード' + addedCount + '件、既存カードに追加' + mergedCount + '件。';
+  if(unnamedCount) msg += '（うち' + unnamedCount + '件は名前を判定できず「新しい案件」の仮名です。カード名を修正してください）';
+  setStatus(msg, 'ok', 10000);
+  if(lastKey){
+    setTimeout(function(){ var el=document.getElementById('card-'+lastKey); if(el) el.scrollIntoView({behavior:'smooth',block:'center'}); },100);
+  }
+});
+
 /* ===== affiliates.jsonの内容をUIに反映する共通関数 ===== */
 function applyLinksJson(data){
   var links=data.links||{}, banners=data.banners||{};
@@ -969,7 +1104,7 @@ function applyLinksJson(data){
     if(!CARDS.find(function(c){ return c.key===key; })){
       var card={key:key,name:key,custom:true};
       CARDS.push(card);
-      linkState[key]  ={type:'direct',url:'',via:'',code:'',banners:[],isPointSite:false,category:''};
+      linkState[key]  ={type:'direct',url:'',via:'',code:'',dealUrl:'',banners:[],isPointSite:false,category:''};
       rewardState[key]={asp:'',aspOther:'',reward:'',rewardNote:'',memo:''};
       saveCustomCards();
     }
@@ -982,6 +1117,7 @@ function applyLinksJson(data){
       linkState[card.key].url =typeof l==='string'?l:(l.url||'');
       linkState[card.key].via =typeof l==='string'?'':(l.via||'');
       linkState[card.key].code =typeof l==='string'?'':(l.code||'');
+      linkState[card.key].dealUrl =typeof l==='string'?'':(l.dealUrl||'');
       linkState[card.key].isPointSite = typeof l==='string'?false:!!l.isPointSite;
       linkState[card.key].category = typeof l==='string'?'':(l.category||'');
     }
@@ -1059,7 +1195,7 @@ function loadArticleAffKeys(){
         if(CARDS.find(function(c){ return c.key === item.key; })) return; // 既にある
         var card = { key: item.key, name: item.name, custom: true, fromArticle: true };
         CARDS.push(card);
-        linkState[item.key]   = {type:'direct',url:'',via:'',code:'',banners:[],isPointSite:false,category:''};
+        linkState[item.key]   = {type:'direct',url:'',via:'',code:'',dealUrl:'',banners:[],isPointSite:false,category:''};
         rewardState[item.key] = {asp:'',aspOther:'',reward:'',rewardNote:'',memo:''};
         added.push(card);
       });
@@ -1113,6 +1249,48 @@ document.getElementById('linkFileInput').addEventListener('change',function(e){
   };
   reader.readAsText(file); e.target.value='';
 });
+
+/* ===== バナー収集ブックマークレット =====
+   アフィリエイトサイト（A8.net・もしもアフィリエイト等）のバナー一覧ページで実行すると、
+   そのページ上の「画像＋リンク」の組をすべて自動収集してクリップボードにコピーする。
+   ブラウザのブックマークとして保存され、そのタブ・その人のログインセッションの中で
+   動くだけなので、当サイト側がログインが必要なページを代わりに取得しに行くようなことはない
+   （それはできないし、しない）。 */
+(function setupBannerBookmarklet(){
+  var code = "(function(){"
+    + "function label(a){"
+    + "var img=a.querySelector('img');"
+    + "if(img&&img.alt&&img.alt.trim())return img.alt.trim();"
+    + "var el=a;"
+    + "for(var hop=0;hop<6&&el;hop++){"
+    + "var prev=el.previousElementSibling;"
+    + "while(prev){"
+    + "var t=(prev.innerText||prev.textContent||'').trim();"
+    + "if(t&&t.length<=40&&/^(h[1-6]|strong|b|td|th|dt|p|span|div)$/i.test(prev.tagName))return t.split(String.fromCharCode(10))[0];"
+    + "prev=prev.previousElementSibling;"
+    + "}"
+    + "el=el.parentElement;"
+    + "}"
+    + "return '';"
+    + "}"
+    + "var anchors=Array.prototype.slice.call(document.querySelectorAll('a'));"
+    + "var seen={},blocks=[];"
+    + "anchors.forEach(function(a){"
+    + "var img=a.querySelector('img');if(!img)return;"
+    + "var href=a.href,src=img.src;if(!href||!src)return;"
+    + "var key=href+'|'+src;if(seen[key])return;seen[key]=true;"
+    + "var name=label(a);"
+    + "blocks.push((name?name+String.fromCharCode(10):'')+'<a href=\\\"'+href+'\\\"><img src=\\\"'+src+'\\\" alt=\\\"'+(img.alt||'')+'\\\"></a>');"
+    + "});"
+    + "if(!blocks.length){alert('バナー（画像＋リンク）が見つかりませんでした。');return;}"
+    + "var text=blocks.join(String.fromCharCode(10)+String.fromCharCode(10));"
+    + "function done(){alert(blocks.length+'件のバナーをコピーしました。ペイ択の「バナーをまとめて貼り付けて追加」に貼り付けてください。');}"
+    + "function fallback(){var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');}catch(e){}document.body.removeChild(ta);done();}"
+    + "if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(done).catch(fallback);}else{fallback();}"
+    + "})();";
+  var link = document.getElementById('bannerBookmarklet');
+  if(link) link.setAttribute('href', 'javascript:' + encodeURIComponent(code));
+})();
 
 init();
 </script>
