@@ -47,6 +47,11 @@
     "cosmo-the-card-opus": {
       "type": "direct",
       "url": "#"
+    },
+    "hifumi": {
+      "type": "direct",
+      "url": "https://px.a8.net/svt/ejp?a8mat=4BA41D+G0X1YQ+4C2C+BXYE9",
+      "category": "other"
     }
   },
   "names": {
@@ -71,7 +76,8 @@
     "daiichi-neobank-debit-premium": "ANA Pay→楽天Edy→楽天キャッシュ→楽天ペイ 2026年8月版",
     "idare": "IDARE（イデア）",
     "kateene-bank-debit": "カテエネBANKデビット 2026年8月版",
-    "lawson-ponta-plus": "ローソンPontaプラス"
+    "lawson-ponta-plus": "ローソンPontaプラス",
+    "hifumi": "投資信託ひふみ"
   },
   "banners": {
     "rakuten-card": [
@@ -179,6 +185,12 @@
       {
         "href": "https://px.a8.net/svt/ejp?a8mat=4BA41D+AY4Z8Y+5XGQ+5Z6WX",
         "img": "https://www23.a8.net/svt/bgt?aid=260812273662&wid=001&eno=01&mid=s00000027665001004000&mc=1"
+      }
+    ],
+    "hifumi": [
+      {
+        "href": "https://px.a8.net/svt/ejp?a8mat=4BA41D+G0X1YQ+4C2C+BXYE9",
+        "img": "https://www25.a8.net/svt/bgt?aid=260812273969&wid=001&eno=01&mid=s00000020226002006000&mc=1"
       }
     ]
   }
