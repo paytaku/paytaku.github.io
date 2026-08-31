@@ -4873,12 +4873,33 @@ let STORES = loadStoresFromCache();
 const ROUTES_STORAGE_KEY = "kangenchou_routes_v1";
 const ROUTES_JSON_PATH = "routes.json"; // 同じフォルダに置く想定
 
+// 2026-08-31: 「ユーザー提供の路線図画像」を出典とする注記は、運営者が個別に裏取りした結果
+// 不正確だったため、コード側（buildRoutesFromConnectors）では既に付与しないよう修正済み。
+// ただし、修正前に一度でもこの端末のlocalStorageにキャッシュされたルートデータや、
+// 過去にGitHubへpushされたroutes.jsonには、この文言が「データとして」そのまま残ってしまっている。
+// コードを直すだけでは消えないため、読み込んだルートデータからこの文言を機械的に取り除く。
+const STALE_ROUTE_MAP_CITATION_RE = /［情報源：ユーザー提供の路線図画像「キャッシュレスお得路線図[^］]*］\s*/g;
+let staleRouteCitationFoundOnLoad = false; // 起動時に古い出典表記を検出・除去したかどうか
+function stripStaleRouteCitations(routes){
+  let changed = false;
+  (routes || []).forEach(r => {
+    if(r && typeof r.note === "string" && STALE_ROUTE_MAP_CITATION_RE.test(r.note)){
+      r.note = r.note.replace(STALE_ROUTE_MAP_CITATION_RE, "").trim();
+      changed = true;
+    }
+  });
+  return changed;
+}
+
 function loadRoutesFromCache(){
   try{
     const raw = localStorage.getItem(ROUTES_STORAGE_KEY);
     if(raw){
       const parsed = JSON.parse(raw);
-      if(Array.isArray(parsed)) return parsed;
+      if(Array.isArray(parsed)){
+        if(stripStaleRouteCitations(parsed)) staleRouteCitationFoundOnLoad = true;
+        return parsed;
+      }
     }
   } catch(e){
     console.warn("チャージルートの読み込みに失敗、初期データを使用します", e);
@@ -4895,6 +4916,16 @@ function saveRoutesToCache(){
 }
 
 let CHARGE_ROUTES = loadRoutesFromCache();
+if(staleRouteCitationFoundOnLoad){
+  // この端末に残っていた「路線図画像」出典の古いキャッシュを除去できたので、
+  // 同じ内容でキャッシュを書き戻し、GitHub連携があればそちらにも反映しておく。
+  // persistRoutes は refreshWalletOptions 等、この時点ではまだ初期化されていない
+  // 後方のconst/letを参照するため、スクリプト全体の初期化が終わってから呼び出す。
+  setTimeout(()=>{
+    saveRoutesToCache();
+    if(typeof persistRoutes === "function") persistRoutes();
+  }, 0);
+}
 let editMode = false;
 let syncPending = false; // 直近の保存がGitHubへのpushに失敗し、再送待ちかどうか
 let routesSyncPending = false; // ルートデータ版
@@ -4954,10 +4985,12 @@ async function refreshRoutesFromGithubPages(){
       // 未送信のローカル編集がある間は、リモートで上書きしない
       return;
     }
+    if(stripStaleRouteCitations(data)) staleRouteCitationFoundOnLoad = true;
     CHARGE_ROUTES = data;
     saveRoutesToCache();
     refreshWalletOptions();
     renderRoutes();
+    if(staleRouteCitationFoundOnLoad) persistRoutes(); // 除去した内容をGitHub側にも反映しておく
   } catch(e){
     console.info("routes.json の取得をスキップしました", e.message);
   }
