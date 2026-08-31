@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-31T10:18:20.332Z",
+  "generatedAt": "2026-08-31T10:33:25.140Z",
   "brokenLinks": [],
   "unmonetizedLinks": [
     {
@@ -17,8 +17,8 @@
     {
       "file": "card-combo-smbc-nl-shindan.html",
       "key": "smbc-nl",
-      "href": "https://ad2.trafficgate.net/t/r/519/1396/smbc-nl",
-      "kind": "未登録だがそれらしいURLが直書きされている（本物か要確認）"
+      "href": "#",
+      "kind": "未登録・href=#（完全にダミー）"
     },
     {
       "file": "dcard-goldu-shindan.html",
@@ -29,26 +29,26 @@
     {
       "file": "dcard-series-shindan.html",
       "key": "dcard-gold",
-      "href": "https://ad2.trafficgate.net/t/r/519/1396/dcard-gold",
-      "kind": "未登録だがそれらしいURLが直書きされている（本物か要確認）"
+      "href": "#",
+      "kind": "未登録・href=#（完全にダミー）"
     },
     {
       "file": "dcard-series-shindan.html",
       "key": "dcard-goldu",
-      "href": "https://ad2.trafficgate.net/t/r/519/1396/dcard-goldu",
-      "kind": "未登録だがそれらしいURLが直書きされている（本物か要確認）"
+      "href": "#",
+      "kind": "未登録・href=#（完全にダミー）"
     },
     {
       "file": "dcard-series-shindan.html",
       "key": "dcard-platinum",
-      "href": "https://ad2.trafficgate.net/t/r/519/1396/dcard-platinum",
-      "kind": "未登録だがそれらしいURLが直書きされている（本物か要確認）"
+      "href": "#",
+      "kind": "未登録・href=#（完全にダミー）"
     },
     {
       "file": "jcb-card-w-shindan.html",
       "key": "jcb-card-w",
-      "href": "https://ad2.trafficgate.net/t/r/519/1396/jcb-card-w",
-      "kind": "未登録だがそれらしいURLが直書きされている（本物か要確認）"
+      "href": "#",
+      "kind": "未登録・href=#（完全にダミー）"
     },
     {
       "file": "lawson-ponta-plus-shindan.html",
@@ -59,8 +59,8 @@
     {
       "file": "smbc-nl-shindan.html",
       "key": "smbc-nl",
-      "href": "https://ad2.trafficgate.net/t/r/519/1396/smbc-nl",
-      "kind": "未登録だがそれらしいURLが直書きされている（本物か要確認）"
+      "href": "#",
+      "kind": "未登録・href=#（完全にダミー）"
     }
   ],
   "staleContent": []
