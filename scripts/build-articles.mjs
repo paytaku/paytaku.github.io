@@ -641,6 +641,39 @@ render('すべて');
 }
 
 
+function escHtml(s){
+  return String(s == null ? "" : s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+// 「お店から探す」の中身を、ビルド時に静的HTMLとして書き出す。
+// JavaScriptを実行しないクローラー（AI Overviewなど多くのAI検索・要約エンジンを含む）にも
+// 実際の店舗・カード・還元率の情報が読めるようにするための、いわゆる簡易プリレンダリング。
+// クライアント側の renderStores() は起動時に #storeList の中身をまるごと作り直すため、
+// ここで埋め込んだ静的HTMLは、JSが動く環境では一瞬で本来のインタラクティブな一覧に置き換わる
+// （＝人間のユーザー体験は変えず、クローラー・低速回線・JS無効環境向けの土台を用意するだけ）。
+function renderStoresStaticHtml(stores){
+  const byCategory = new Map();
+  stores.forEach(s => {
+    if(!byCategory.has(s.category)) byCategory.set(s.category, []);
+    byCategory.get(s.category).push(s);
+  });
+  let html = "";
+  byCategory.forEach((list, category) => {
+    html += `<div class="store-category-label">${escHtml(category)}</div>\n`;
+    list.forEach(store => {
+      const cardsHtml = (store.cards || []).map(c =>
+        `<li><strong>${escHtml(c.name)}</strong>：${escHtml(c.rate)}${c.method ? "（" + escHtml(c.method) + "）" : ""}</li>`
+      ).join("");
+      html += `<div class="store-card collapsed" data-static="1">`
+        + `<div class="store-head"><div class="store-head-mid"><div class="store-name">${escHtml(store.name)}</div>`
+        + `<div class="store-sub">${escHtml(store.category)}</div></div></div>`
+        + `<ul class="store-static-cards">${cardsHtml}</ul>`
+        + `</div>\n`;
+    });
+  });
+  return html;
+}
+
 function main(){
   const articles = readArticles();
   const bySlug = new Map(articles.map(a => [a.slug, a]));
@@ -670,6 +703,31 @@ function main(){
   // sitemap.xml も記事一覧から自動生成する（記事を追加したら検索エンジンに拾われるように）
   writeFileSync(join(ROOT, "sitemap.xml"), sitemapXml(articles), "utf-8");
   console.log(`generated: sitemap.xml`);
+
+  // index.html の「お店から探す」欄に、店舗データを静的HTMLとして埋め込む
+  // （JSを実行しないクローラー・AI検索エンジン対策。詳細は renderStoresStaticHtml 参照）
+  try{
+    const storesPath = join(ROOT, "stores.json");
+    if(existsSync(storesPath)){
+      const stores = JSON.parse(readFileSync(storesPath, "utf-8"));
+      const staticHtml = renderStoresStaticHtml(stores);
+      const indexPath = join(ROOT, "index.html");
+      let indexHtml = readFileSync(indexPath, "utf-8");
+      const startMarker = "<!-- STATIC_STORES_START -->";
+      const endMarker = "<!-- STATIC_STORES_END -->";
+      const startIdx = indexHtml.indexOf(startMarker);
+      const endIdx = indexHtml.indexOf(endMarker);
+      if(startIdx === -1 || endIdx === -1){
+        console.log("skipped: index.html に STATIC_STORES マーカーが見つかりません（未対応バージョンの可能性）");
+      } else {
+        indexHtml = indexHtml.slice(0, startIdx + startMarker.length) + "\n" + staticHtml + indexHtml.slice(endIdx);
+        writeFileSync(indexPath, indexHtml, "utf-8");
+        console.log(`generated: index.html の店舗一覧を静的プリレンダリング（${stores.length}件）`);
+      }
+    }
+  } catch(e){
+    console.log("警告: 店舗一覧の静的プリレンダリングに失敗しました:", e.message);
+  }
 
   console.log(`\n合計 ${articles.length} 件の記事を生成しました。`);
 
