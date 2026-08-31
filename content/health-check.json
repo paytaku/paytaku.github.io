@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-31T06:54:20.455Z",
+  "generatedAt": "2026-08-31T07:51:28.145Z",
   "brokenLinks": [],
   "unmonetizedLinks": [
     {
@@ -33,6 +33,12 @@
       "kind": "未登録・href=#（完全にダミー）"
     },
     {
+      "file": "jcb-card-w-shindan.html",
+      "key": "jcb-card-w",
+      "href": "https://ad2.trafficgate.net/t/r/519/1396/jcb-card-w",
+      "kind": "未登録だがそれらしいURLが直書きされている（本物か要確認）"
+    },
+    {
       "file": "lawson-ponta-plus-shindan.html",
       "key": "lawson-ponta-plus",
       "href": "#",
@@ -49,6 +55,12 @@
       "key": "smbc-gold-nl",
       "href": "#",
       "kind": "未登録・href=#（完全にダミー）"
+    },
+    {
+      "file": "touch-norisha-10-5.html",
+      "key": "jcb-card-w",
+      "href": "https://ad2.trafficgate.net/t/r/519/1396/jcb-card-w",
+      "kind": "未登録だがそれらしいURLが直書きされている（本物か要確認）"
     }
   ],
   "staleContent": []
