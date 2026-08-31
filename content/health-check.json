@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-31T09:43:32.555Z",
+  "generatedAt": "2026-08-31T09:56:18.099Z",
   "brokenLinks": [],
   "unmonetizedLinks": [
     {
@@ -37,12 +37,6 @@
       "key": "dcard-platinum",
       "href": "https://ad2.trafficgate.net/t/r/519/1396/dcard-platinum",
       "kind": "未登録だがそれらしいURLが直書きされている（本物か要確認）"
-    },
-    {
-      "file": "idare-card-katsuyo.html",
-      "key": "idare",
-      "href": "#",
-      "kind": "未登録・href=#（完全にダミー）"
     },
     {
       "file": "kateene-bank-debit-shindan.html",
