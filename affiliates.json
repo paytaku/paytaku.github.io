@@ -22,6 +22,10 @@
       "url": "https://px.a8.net/svt/ejp?a8mat=4BA41D+FG2VSI+54O2+62U35",
       "category": "other"
     },
+    "odakyu-op": {
+      "type": "direct",
+      "url": "https://h.accesstrade.net/sp/cc?rk=01004q8800ox3w"
+    },
     "hapitas-signup": {
       "type": "point",
       "url": "https://hapitas.jp/appinvite?i=25513097&route=text",
@@ -128,6 +132,16 @@
         "img": "https://www29.a8.net/svt/bgt?aid=260812273934&wid=001&eno=01&mid=s00000023933001021000&mc=1"
       }
     ],
+    "odakyu-op": [
+      {
+        "href": "https://h.accesstrade.net/sp/cc?rk=0100kw0d00ox3w",
+        "img": "https://h.accesstrade.net/sp/rr?rk=0100kw0d00ox3w"
+      },
+      {
+        "href": "https://h.accesstrade.net/sp/cc?rk=01004q8800ox3w",
+        "img": "https://h.accesstrade.net/sp/rr?rk=01004q8800ox3w"
+      }
+    ],
     "hapitas-signup": [
       {
         "href": "https://hapitas.jp/register/?i=25513097",
@@ -142,6 +156,14 @@
       {
         "href": "https://h.accesstrade.net/sp/cc?rk=01004q8200ox3w",
         "img": "https://h.accesstrade.net/sp/rr?rk=01004q8200ox3w"
+      },
+      {
+        "href": "https://h.accesstrade.net/sp/cc?rk=0100kw0d00ox3w",
+        "img": "https://h.accesstrade.net/sp/rr?rk=0100kw0d00ox3w"
+      },
+      {
+        "href": "https://h.accesstrade.net/sp/cc?rk=01004q8800ox3w",
+        "img": "https://h.accesstrade.net/sp/rr?rk=01004q8800ox3w"
       }
     ],
     "cosmo-the-card-opus": [
