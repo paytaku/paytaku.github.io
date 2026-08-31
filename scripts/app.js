@@ -1237,6 +1237,7 @@ const DEFAULT_ROUTES_MANUAL = [
     },
     note: "通常はポイントがつかない税金・公共料金でも、チャージ段階の1.5%を確保できるのが要点。V NEOBANKデビットで直接払うと税金は対象外（0.3%）になるため、au PAYを挟む意味があります。【注意】請求書払い自体にはPontaポイントが付きません。バーコードのない納付書は対象外。【重要】2026年11月1日からV NEOBANKのチャージポイントが0%になります。代替はカテエネBANKデビット（月末残高200万円で2.0%）が有力です。［確認日: 2026-08-12／出典: 住信SBIネット銀行公式発表・au PAY公式］",
     url: "https://aupay.wallet.auone.jp/",
+    articleUrl: "articles/aupay-seikyusho-charge-route.html",
     shutdownWarn: "⚠️ 2026年10月31日で終了予定。2026年11月1日からV NEOBANKのチャージポイントが0%になります。",
     caution: "au PAYへのチャージ上限は月5万円。2026年11月1日からV NEOBANKのチャージが対象外になります。バーコードのない納付書は対象外。",
     starters: {
@@ -1716,7 +1717,6 @@ const ROUTE_CONNECTORS = [
     starterNote: "V NEOBANKデビット（住信SBI・年会費無料・審査なし・1.5%）。⚠️ 2026年11月1日からチャージポイントが0%になる予定のため、11月以降は同じ表の「カテエネBANKデビット」に切り替えてください。",
     shutdownWarn: "⚠️ 2026年10月31日で終了予定。2026年11月1日からV NEOBANKのチャージポイントが0%になります。",
     caution: "V NEOBANKデビットは2026年11月1日からチャージ還元が対象外になる予定。",
-    routeLabel: "クレカなしルート",
     prep: ["住信SBIネット銀行でV NEOBANK口座を開設し、デビットを発行する"]
   },
   {
@@ -1729,7 +1729,6 @@ const ROUTE_CONNECTORS = [
     ],
     starterNote: "カテエネBANKデビット（住信SBIネット銀行・中部電力契約不要・月末残高200万円で2.0%）。V NEOBANKデビットの11月以降の代替としても使え、合計還元率もこちらの方が高くなります。",
     caution: "月末残高200万円を維持できないとカテエネポイントの還元率が下がる可能性がある。",
-    routeLabel: "クレカなしルート",
     prep: ["カテエネBANKの口座を開設し、デビットカードを発行する"]
   },
   {
@@ -2241,11 +2240,13 @@ function buildRoutesFromConnectors(connectors, segments){
     });
     const flowList = [...chainFlow, ...seg.howtoFlow];
 
-    const defaultCitation = "［情報源：ユーザー提供の路線図画像「キャッシュレスお得路線図 2026/8月版」／確認日: 2026-08-25・要最新確認］";
+    // 2026-08-31: 「ユーザー提供の路線図画像」を出典とする一律の注記は、
+    // 運営者が個別に裏取りした結果、内容が不正確だったことが判明したため廃止した。
+    // 個別に信頼できる出典（c.citation）が設定されているコネクタだけ、その出典を表示する。
     const noteParts = [
       c.note,
       seg.balanceBonus ? `［${seg.balanceBonus}］` : null,
-      c.citation || defaultCitation
+      c.citation || null
     ].filter(Boolean);
 
     const cautionParts = [c.caution, seg.caution].filter(Boolean);
@@ -2296,6 +2297,13 @@ DEFAULT_ROUTES_GENERATED.forEach(r => {
   }
   if(r.name.includes("スマホプリペイド")){
     if(!r.articleUrl) r.articleUrl = "articles/smaho-prepaid-toha.html";
+  }
+  // ANA Pay→楽天Edy→楽天キャッシュ→楽天ペイの流れは起点カードが何であっても
+  // 同じ仕組み・同じ2026年8月改悪の影響を受けるため、起点カード違いの自動生成ルート全てに
+  // 同じ解説記事を紐付ける（手書きの汎用ルート「ANA Pay → 楽天Edy → 楽天キャッシュ → 楽天ペイ」と同じ記事）。
+  // ※自動生成ルート名は「楽天Pay」表記（seg.stepsの表記そのまま）になるため、両表記とも見る。
+  if(r.name.includes("楽天Edy") && r.name.includes("楽天キャッシュ") && (r.name.includes("楽天Pay") || r.name.includes("楽天ペイ"))){
+    if(!r.articleUrl) r.articleUrl = "articles/ana-pay-rakuten-edy-cash-route.html";
   }
 });
 
@@ -5387,6 +5395,7 @@ function buildStoreCardEl(store, distanceMeters){
         <button class="icon-btn delete-card-btn" title="削除">🗑</button>
       </div>
       <div class="card-option-method">${escapeHtml(c.method || "")}</div>
+      ${(c.image && isSafeHttpUrl(c.image)) ? `<img src="${escapeAttr(c.image)}" alt="${escapeAttr(c.name)}" class="card-option-image" loading="lazy">` : ""}
       ${c.shutdownWarn ? `<div class="route-shutdown-warn" style="margin:4px 0 2px;"><b>⚠️ 終了予定</b>　${escapeHtml(c.shutdownWarn.replace('⚠️ ', '').replace(/^終了予定。/, ''))}</div>` : ""}
       ${/【変動が大きい案件】/.test(c.note || "") ? `<div class="volatile-flag">📈 還元率の変動が大きい案件です。購入直前に必ず現在の値を確認してください。</div>` : ""}
       ${c.note ? noteHtml(c.note) : ""}
@@ -6314,6 +6323,10 @@ function renderCampaigns(){
         <span class="campaign-store">${escapeHtml(store.name)}</span>
         ${expiryBadgeHtml(card)}
         <span class="campaign-rate">${escapeHtml(card.rate)}</span>
+        ${editMode ? `
+          <button class="icon-btn edit-campaign-btn" title="このキャンペーンを編集" style="margin-left:auto;">✎</button>
+          <button class="icon-btn delete-campaign-btn" title="このキャンペーンを削除">🗑</button>
+        ` : ""}
       </div>
       <div class="campaign-cardname">${escapeHtml(card.name)}　／　${escapeHtml(card.method || "")}</div>
       <div class="campaign-date-row">
@@ -6321,11 +6334,17 @@ function renderCampaigns(){
         ${checkedMeta || ""}
       </div>
       ${card.note ? noteHtml(card.note, {className: "campaign-note"}) : ""}
+      ${(card.image && isSafeHttpUrl(card.image)) ? `<img src="${escapeAttr(card.image)}" alt="${escapeAttr(card.name)}" class="campaign-card-image" loading="lazy">` : ""}
       <div class="link-row">
+        ${(card.articleUrl && isSafeHttpUrl(card.articleUrl)) ? `<a class="src-link" href="${escapeAttr(card.articleUrl)}">詳しくはこちら →</a>` : ""}
         ${(card.url && isSafeHttpUrl(card.url)) ? `<a class="src-link campaign-link" href="${escapeAttr(card.url)}" target="_blank" rel="noopener noreferrer">キャンペーンを見る ↗</a>` : ""}
         ${(affiliateFor(card.name) && isSafeHttpUrl(affiliateFor(card.name))) ? `<a class="src-link apply-link" href="${escapeAttr(affiliateFor(card.name))}" target="_blank" rel="sponsored noopener noreferrer">申し込み ↗</a>` : ""}
       </div>
     `;
+    if(editMode){
+      el.querySelector(".edit-campaign-btn")?.addEventListener("click", ()=> openCardModal(store, card));
+      el.querySelector(".delete-campaign-btn")?.addEventListener("click", ()=> deleteCard(store, card));
+    }
     list.appendChild(el);
   });
 }
@@ -7210,7 +7229,20 @@ function isDescriptiveStep(s){
   return /^お店で|支払い$|決済$|で支払う$|で利用$/.test(s);
 }
 
+// 「持っているカード」画面（オンボーディング・walletBtn）専用の除外リスト。
+// チャージルートの経由地・ギフト券（バニラVISAなど、都度買って使うもので「持っている」ものではない）や、
+// ブランド違いだけの重複表記（三井住友カードは既に「三井住友カード / Olive」等で選べるため二重）は、
+// 「持っているカード」の選択肢としては不自然・紛らわしいので表示だけ除外する。
+// （店舗にカードを追加するときの入力補助 WALLET_OPTIONS には、経由ルートの表記も含めて
+// 　引き続きすべて残す。そちらは経由ルート自体を「対応決済」として登録したい場面があるため。）
+const WALLET_DISPLAY_EXCLUDE = new Set([
+  "IDARE", "ワンバンク", "nanaco", "スマホプリペイド", "バニラVISA（Visa eギフト）",
+  "JAL Pay", "ANA Pay", "楽天Edy", "楽天キャッシュ", "モバイルSuica", "Kyash", "バンドルカード",
+  "Mastercardの三井住友カード",
+]);
+
 let WALLET_OPTIONS = [...WALLET_OPTIONS_BASE];
+let WALLET_OPTIONS_DISPLAY = WALLET_OPTIONS.filter(o => !WALLET_DISPLAY_EXCLUDE.has(o));
 
 // 初回オンボーディングで最初に見せる「よく使われるカード」の厳選リスト。
 // ここに無いものが消えるわけではなく、オンボーディング画面の「もっと見る」や、
@@ -7246,6 +7278,7 @@ function refreshWalletOptions(){
     });
   });
   WALLET_OPTIONS = [...WALLET_OPTIONS_BASE, ...extra];
+  WALLET_OPTIONS_DISPLAY = WALLET_OPTIONS.filter(o => !WALLET_DISPLAY_EXCLUDE.has(o));
 }
 // 初回読み込み時点のCHARGE_ROUTESで一覧を組み立てる
 // （CHARGE_ROUTES自体はこれより前の行ですでに読み込み済み）。
@@ -7516,7 +7549,7 @@ document.getElementById("walletBtn").addEventListener("click", ()=>{
     <div class="modal-title">持っているカード・決済</div>
     <p class="ai-hint" style="margin:-8px 0 14px;">選ぶと、その決済だけに絞って比較します。何も選ばなければ全部表示します。</p>
     <div class="wallet-grid">
-      ${WALLET_OPTIONS.map(o => `<button class="wallet-opt${cur.has(o) ? " on" : ""}" data-opt="${o}">${o}</button>`).join("")}
+      ${WALLET_OPTIONS_DISPLAY.map(o => `<button class="wallet-opt${cur.has(o) ? " on" : ""}" data-opt="${o}">${o}</button>`).join("")}
     </div>
     <div class="modal-actions">
       <button class="modal-btn cancel" id="walletClearBtn">すべて解除</button>
@@ -7589,8 +7622,8 @@ function showOnboarding(){
 
   // 最初は「よく使われるカード」だけを表示し、選ぶ気が失せない枚数に絞る。
   // 全カードから選びたい人のために「もっと見る」で残りを追加表示する。
-  const featured = WALLET_OPTIONS_FEATURED.filter(o => WALLET_OPTIONS.includes(o));
-  const rest = WALLET_OPTIONS.filter(o => !featured.includes(o));
+  const featured = WALLET_OPTIONS_FEATURED.filter(o => WALLET_OPTIONS_DISPLAY.includes(o));
+  const rest = WALLET_OPTIONS_DISPLAY.filter(o => !featured.includes(o));
 
   grid.innerHTML = featured.map(optBtn).join("");
   grid.querySelectorAll(".wallet-opt").forEach(bindOpt);
@@ -8714,6 +8747,8 @@ function openCardModal(store, card){
       { key: "method", label: "対象の支払い方法", value: card ? card.method : "" },
       { key: "expires", label: "終了日（期間限定の場合のみ。例：2026-08-31／常設なら空欄）", value: card ? card.expires : "" },
       { key: "url", label: "公式ページのURL（任意）", value: card ? card.url : "" },
+      { key: "articleUrl", label: "くわしい記事へのリンク（任意・自分の記事へ「詳しくはこちら」ボタンを出す）", value: card ? card.articleUrl : "" },
+      { key: "image", label: "画像URL（任意・キャンペーンバナーなどを貼りたい場合）", value: card ? card.image : "" },
       { key: "note", label: "補足・注意点（任意）", type: "textarea", value: card ? card.note : "" },
     ],
     (vals)=>{
@@ -8723,7 +8758,8 @@ function openCardModal(store, card){
       vals.name = cardName;
       if(isNew){
         store.cards.push({ name: vals.name, rate: vals.rate, method: vals.method, note: vals.note,
-                           expires: vals.expires || undefined, url: vals.url || undefined });
+                           expires: vals.expires || undefined, url: vals.url || undefined,
+                           articleUrl: vals.articleUrl || undefined, image: vals.image || undefined });
       } else {
         card.name = vals.name;
         card.rate = vals.rate;
@@ -8733,6 +8769,10 @@ function openCardModal(store, card){
         else delete card.expires;
         if(vals.url) card.url = vals.url;
         else delete card.url;
+        if(vals.articleUrl) card.articleUrl = vals.articleUrl;
+        else delete card.articleUrl;
+        if(vals.image) card.image = vals.image;
+        else delete card.image;
       }
       persistStores();
       renderStores();
@@ -8835,6 +8875,7 @@ document.getElementById("editModeBtn").addEventListener("click", async ()=>{
   renderPicks();
   renderRoutes();
   renderHealthCheckBanner();
+  renderGithubConnectionBanner();
 });
 
 document.getElementById("addStoreBtn").addEventListener("click", ()=> openStoreModal(null));
@@ -8938,6 +8979,20 @@ function persistRoutes(){
 }
 
 // ---- GitHub連携の設定モーダル ----
+
+// 紹介リンク管理（admin/affiliates.html）には「✓ GitHub接続済み」の常時バナーがあるが、
+// こちら（ホーム画面の編集モード）にはこれまで無く、編集して保存が成功するまで
+// 「ちゃんと繋がっているか」を確認する手段が無かった。編集モードに入るたびに
+// 接続設定の有無を表示しておくことで、実際に編集する前に確認できるようにする。
+function renderGithubConnectionBanner(){
+  if(!editMode) return;
+  const cfg = loadGithubConfig();
+  if(cfg && cfg.username && cfg.repo && cfg.token){
+    setSyncStatus(`✓ GitHub連携済み（${cfg.username}/${cfg.repo}）。編集を保存すると自動でここに反映結果が表示されます。`, "ok");
+  } else {
+    setSyncStatus("⚠️ GitHub未接続です。このままだと編集内容はこの端末（ブラウザ）にしか保存されず、他の人には反映されません。「🔗 GitHub連携」から設定してください。", "");
+  }
+}
 
 document.getElementById("githubSettingsBtn").addEventListener("click", ()=>{
   const cfg = loadGithubConfig() || {};
