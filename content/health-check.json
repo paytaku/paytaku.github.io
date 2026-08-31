@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-31T04:09:00.061Z",
+  "generatedAt": "2026-08-31T04:12:15.763Z",
   "brokenLinks": [],
   "unmonetizedLinks": [
     {
@@ -15,9 +15,21 @@
       "kind": "未登録・href=#（完全にダミー）"
     },
     {
+      "file": "dcard-goldu-shindan.html",
+      "key": "dcard-goldu",
+      "href": "#",
+      "kind": "未登録・href=#（完全にダミー）"
+    },
+    {
       "file": "dcard-series-shindan.html",
       "key": "dcard-gold",
       "href": "https://ad2.trafficgate.net/t/r/519/1396/dcard-gold",
+      "kind": "未登録だがそれらしいURLが直書きされている（本物か要確認）"
+    },
+    {
+      "file": "dcard-series-shindan.html",
+      "key": "dcard-goldu",
+      "href": "https://ad2.trafficgate.net/t/r/519/1396/dcard-goldu",
       "kind": "未登録だがそれらしいURLが直書きされている（本物か要確認）"
     },
     {
