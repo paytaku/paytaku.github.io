@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<!--ARTICLE_META
+{
+  "slug": "bank-furikomi-pointkatsu-checklist",
+  "category": "チャージルート",
+  "title": "銀行振込ポイ活チェックリスト｜1件いくらで何ポイント？主要銀行の条件まとめ",
+  "publishedDate": "2026-08-31",
+  "updatedDate": "2026-08-31",
+  "tags": ["銀行ポイ活", "楽天銀行", "ハッピープログラム", "住信SBIネット銀行", "ドコモSMTBネット銀行", "V NEOBANK"],
+  "overview": "「毎月○件振り込むと○ポイント」という銀行の優遇プログラムは、覚えていれば地味に積み上がる一方、忘れると翌月分は取り戻せません。楽天銀行ハッピープログラムの仕組みと、住信SBIネット銀行がドコモSMTBネット銀行に改称した現状（V NEOBANKの改悪含む）を整理し、毎月やったかどうかをその場でチェックできるリストにしました。",
+  "related": ["kateene-bank-debit-shindan", "idare-card-katsuyo", "aupay-seikyusho-charge-route"]
+}
+ARTICLE_META-->
+<html lang="ja" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>銀行振込ポイ活チェックリスト｜1件いくらで何ポイント？主要銀行の条件まとめ | ペイ択（Paytaku）</title>
+<meta name="description" content="第一生命NEOBANK・V NEOBANK・三井住友銀行Olive・スルガ銀行など、主要銀行の「1件いくらで何ポイント・月何件まで」を一覧化。ルートは気にせず、銀行ごとの条件だけをチェックできるリスト付きです。">
+<link rel="canonical" href="https://paytaku.github.io/articles/bank-furikomi-pointkatsu-checklist.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="銀行振込ポイ活チェックリスト｜1件いくらで何ポイント？主要銀行の条件まとめ | ペイ択（Paytaku）">
+<meta property="og:description" content="第一生命NEOBANK・V NEOBANK・三井住友銀行Olive・スルガ銀行など、主要銀行の「1件いくらで何ポイント・月何件まで」を一覧化。ルートは気にせず、銀行ごとの条件だけをチェックできるリスト付きです。">
+<meta property="og:url" content="https://paytaku.github.io/articles/bank-furikomi-pointkatsu-checklist.html">
+<meta property="og:site_name" content="ペイ択（Paytaku）">
+<meta name="twitter:card" content="summary">
+<link rel="stylesheet" href="../assets/articles.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "銀行振込ポイ活チェックリスト｜1件いくらで何ポイント？主要銀行の条件まとめ",
+  "description": "第一生命NEOBANK・V NEOBANK・三井住友銀行Olive・スルガ銀行など、主要銀行の「1件いくらで何ポイント・月何件まで」を一覧化。ルートは気にせず、銀行ごとの条件だけをチェックできるリスト付きです。",
+  "datePublished": "2026-08-31",
+  "dateModified": "2026-08-31",
+  "author": { "@type": "Organization", "name": "ペイ択（Paytaku）" },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ペイ択（Paytaku）",
+    "logo": { "@type": "ImageObject", "url": "https://paytaku.github.io/assets/logo.png" }
+  },
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "https://paytaku.github.io/articles/bank-furikomi-pointkatsu-checklist.html" }
+}
+</script>
+<style>
+  /* 銀行絞り込みチップ */
+  .fk-filter-bar{ display:flex; flex-wrap:wrap; gap:7px; margin: 14px 0 18px; }
+  .fk-filter-chip{
+    padding: 8px 13px; border: 1px solid var(--line); border-radius: 999px;
+    background: var(--surface); color: var(--muted); font-family: inherit;
+    font-size: 12px; font-weight: 700; cursor: pointer; transition: all .15s ease;
+  }
+  .fk-filter-chip:hover{ border-color: var(--foil-2, #4F46E5); color: var(--text); }
+  .fk-filter-chip.active{ background: var(--foil-2, #4F46E5); border-color: var(--foil-2, #4F46E5); color: #fff; }
+
+  /* 銀行カード */
+  .fk-bank-card{
+    border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 14px 16px;
+    margin-bottom: 14px; background: var(--surface);
+  }
+  .fk-bank-card-head{
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    flex-wrap: wrap; margin-bottom: 10px;
+  }
+  .fk-bank-name{ font-size: 14px; font-weight: 800; color: var(--text); }
+  .fk-official-link{
+    font-size: 12px; font-weight: 700; color: var(--foil-2, #4F46E5); text-decoration: none;
+    white-space: nowrap;
+  }
+  .fk-official-link:hover{ text-decoration: underline; }
+  .fk-bank-table{ width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .fk-bank-table th, .fk-bank-table td{
+    padding: 7px 8px; border-bottom: 1px solid var(--line); text-align: left; color: var(--text);
+  }
+  .fk-bank-table th{ font-size: 11px; color: var(--muted); font-weight: 700; }
+  .fk-bank-table tr:last-child td{ border-bottom: none; }
+  .fk-entry-note{ font-size: 11.5px; color: var(--muted); line-height: 1.7; margin: 10px 0 0; }
+
+  /* このページだけで使う月次チェックリストの見た目 */
+  .fk-checklist{ display:flex; flex-direction:column; gap:10px; }
+  .fk-item{
+    display:flex; align-items:flex-start; gap:12px;
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius-sm);
+    padding:12px 14px;
+  }
+  .fk-item.done{ border-color: var(--good, #10B981); }
+  .fk-check{
+    flex-shrink:0; width:22px; height:22px; margin-top:1px; cursor:pointer; accent-color: var(--foil-2, #4F46E5);
+  }
+  .fk-body{ flex:1; min-width:0; }
+  .fk-bank{ font-size:13.5px; font-weight:800; color:var(--text); margin-bottom:2px; }
+  .fk-action{ font-size:12.5px; color:var(--text); line-height:1.6; }
+  .fk-note{ font-size:11px; color:var(--muted); margin-top:4px; line-height:1.6; }
+  .fk-header{
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+    margin-bottom:12px;
+  }
+  .fk-month{ font-size:12.5px; font-weight:800; color:var(--muted); }
+  .fk-progress{ font-size:12px; font-weight:700; color: var(--foil-2, #4F46E5); }
+  .fk-reset-btn{
+    background:none; border:1px solid var(--line); border-radius:7px; padding:5px 10px;
+    font-size:11px; color:var(--muted); cursor:pointer; font-family:inherit;
+  }
+  .fk-reset-btn:hover{ border-color: var(--foil-2, #4F46E5); color: var(--foil-2, #4F46E5); }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="site-header-inner">
+    <a class="site-logo" href="../index.html" aria-label="ペイ択トップへ"><img src="../assets/logo.png" alt="ペイ択 -PayTaku-" width="132" height="63"></a>
+    <span class="site-header-tagline">還元率比較・お得情報</span>
+    <button class="theme-toggle" id="themeToggle" aria-label="ダークモード切替" title="ダークモード切替">🌙</button>
+  </div>
+</header>
+<script>
+(function(){
+  var STORAGE_KEY = 'paytaku-theme';
+  var prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+  var DEFAULT = prefersLight ? 'light' : 'dark';
+  var saved = localStorage.getItem(STORAGE_KEY) || DEFAULT;
+  document.documentElement.setAttribute('data-theme', saved);
+  window.addEventListener('DOMContentLoaded', function(){
+    var btn = document.getElementById('themeToggle');
+    if(!btn) return;
+    btn.textContent = saved === 'dark' ? '☀️' : '🌙';
+    btn.addEventListener('click', function(){
+      var cur = document.documentElement.getAttribute('data-theme');
+      var next = cur === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem(STORAGE_KEY, next);
+      btn.textContent = next === 'dark' ? '☀️' : '🌙';
+    });
+  });
+})();
+</script>
+
+<div class="lp-page card-shindan-page">
+  <div class="lp-wrap">
+    <a href="../index.html" class="lp-back">← ペイ択トップに戻る</a>
+    <nav class="lp-breadcrumb">
+      <a href="../index.html">ホーム</a> ＞ <a href="./index.html">チャージルート</a> ＞ 銀行振込ポイ活チェックリスト…
+    </nav>
+
+<img class="lp-thumb" id="lpThumb" alt="bank-furikomi-pointkatsu-checklist" loading="lazy">
+<script>
+(function(){
+  function initThumbnail(){
+    var img=document.getElementById('lpThumb'); if(!img)return;
+    var slug=location.pathname.split('/').pop().replace(/\.html$/,'');
+    function tryLocal(i){
+      var exts=['png','jpg','jpeg','webp']; if(i>=exts.length)return;
+      var test=new Image(); test.onload=function(){img.src=test.src;img.style.display='block';}; test.onerror=function(){tryLocal(i+1);};
+      test.src='../assets/thumbnails/'+slug+'.'+exts[i];
+    }
+    fetch('../content/articles.json',{cache:'no-cache'}).then(function(r){return r.ok?r.json():null;}).then(function(list){var e=Array.isArray(list)?list.find(function(a){return a.slug===slug;}):null;if(e&&e.thumbnail){img.src=e.thumbnail;img.style.display='block';}else{tryLocal(0);}}).catch(function(){tryLocal(0);});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initThumbnail);else initThumbnail();
+})();
+</script>
+
+    <div class="lp-hero">
+      <div class="lp-badge">チャージルート</div>
+      <h1 class="lp-title">銀行振込ポイ活チェックリスト｜1件いくらで何ポイント？主要銀行の条件まとめ</h1>
+      <p class="lp-tagline">「毎月○件振り込むと○ポイント」系の優遇プログラムは、条件さえ知っていれば地味に積み上がります。ここではお金の流れる順番（ルート）は考えず、銀行ごとに「1件あたりいくらで何ポイント」「月に何件まで」だけを一覧にしました。</p>
+    </div>
+    <div class="lp-byline" style="margin-bottom:20px;">更新日：2026-08-31　|　ペイ択編集部</div>
+
+    <nav class="lp-toc">
+      <div class="lp-toc-title">この記事の流れ</div>
+      <ol>
+        <li><a href="#conc">結論：ルートより先に「1件あたりの単価」を知る</a></li>
+        <li><a href="#table">銀行別・振込ポイ活の条件一覧</a></li>
+        <li><a href="#sbi">住信SBIネット銀行→ドコモSMTBネット銀行の現状／SBI新生銀行との違い</a></li>
+        <li><a href="#chuii">注意点</a></li>
+        <li><a href="#checklist">今月やることチェックリスト</a></li>
+      </ol>
+    </nav>
+
+    <section class="lp-section" id="conc">
+      <h2 class="lp-section-title">結論：ルートより先に「1件あたりの単価」を知る</h2>
+      <p class="lp-body-text">
+        「銀行ぐるぐる」と呼ばれる、複数の銀行の間でお金を回してポイントを稼ぐやり方は、SNSなどで複雑な「送金ルート図」として紹介されがちです。ですが、ルートを組む前にまず必要なのは、銀行ごとの「1件あたりいくら振り込むと何ポイントもらえるか」「月に何件まで有効か」という単価と上限の把握です。
+        これさえ押さえておけば、無理に全部のルートを真似しなくても、自分が実際に発生させる振込・引き落としだけを「ポイントが付く形」に置き換えるだけで十分な場合もあります。
+      </p>
+      <p class="lp-body-text">
+        この記事では、送金の順番（ルート）にはあえて触れず、各銀行を単体で見たときの条件だけを整理しています。
+      </p>
+    </section>
+
+    <section class="lp-section" id="table">
+      <h2 class="lp-section-title">銀行別・振込ポイ活の条件一覧</h2>
+      <p class="lp-body-text">
+        「被仕向送金（被振込）」は、他の銀行からその口座に振り込んでもらう・自分の別口座から振り込むことで発生します。金額・件数の条件は各行の公式ページをもとにしていますが、変更が多い分野なので実行前に必ず最新情報を確認してください（各カードの「キャンペーン詳細」リンクから、そのプログラムの説明ページに直接飛べます）。見たい銀行だけに絞り込むこともできます。
+      </p>
+      <div class="fk-filter-bar" id="fkFilterBar">
+        <button type="button" class="fk-filter-chip active" data-filter="all">すべて</button>
+        <button type="button" class="fk-filter-chip" data-filter="daiichi-neobank">第一生命NEOBANK</button>
+        <button type="button" class="fk-filter-chip" data-filter="v-neobank">V NEOBANK</button>
+        <button type="button" class="fk-filter-chip" data-filter="rakuten">楽天銀行</button>
+        <button type="button" class="fk-filter-chip" data-filter="rakuten-daiichi">楽天銀行第一生命支店</button>
+        <button type="button" class="fk-filter-chip" data-filter="smbc-olive">三井住友銀行Olive</button>
+        <button type="button" class="fk-filter-chip" data-filter="suruga">スルガ銀行</button>
+        <button type="button" class="fk-filter-chip" data-filter="aujibun">auじぶん銀行</button>
+        <button type="button" class="fk-filter-chip" data-filter="sbi-shinsei">SBI新生銀行</button>
+      </div>
+
+      <div class="fk-bank-card" data-bank="daiichi-neobank">
+        <div class="fk-bank-card-head">
+          <span class="fk-bank-name">ドコモSMTBネット銀行 第一生命NEOBANK支店</span>
+          <a href="https://www.netbk.co.jp/contents/lineup/pointprogram-daiichilife/point/" target="_blank" rel="noopener noreferrer nofollow" class="fk-official-link">キャンペーン詳細 ↗</a>
+        </div>
+        <table class="fk-bank-table">
+          <tr><th>条件</th><th>1件あたり</th><th>月間の上限</th></tr>
+          <tr><td>他行からの被仕向送金（1件1万円以上・三井住友信託銀行からの振込は対象外）</td><td>20pt</td><td>25件まで（合計500pt）</td></tr>
+          <tr><td>口座振替（引き落とし・当社商品/サービス以外への出金のみ対象）</td><td>30pt</td><td>10件まで（合計300pt）</td></tr>
+          <tr><td>給与・年金受取の設定</td><td>-</td><td>200pt（設定のみ）</td></tr>
+        </table>
+      </div>
+
+      <div class="fk-bank-card" data-bank="v-neobank">
+        <div class="fk-bank-card-head">
+          <span class="fk-bank-name">ドコモSMTBネット銀行 V NEOBANK支店</span>
+          <a href="https://tneobank.tsite.jp/merit/" target="_blank" rel="noopener noreferrer nofollow" class="fk-official-link">キャンペーン詳細 ↗</a>
+        </div>
+        <table class="fk-bank-table">
+          <tr><th>条件</th><th>1件あたり</th><th>月間の上限</th></tr>
+          <tr><td>他行からの被仕向送金（1件1万円以上）</td><td>20pt</td><td>25件まで（合計500pt）</td></tr>
+          <tr><td>口座振替（引き落とし）</td><td>5pt</td><td>上限なし</td></tr>
+        </table>
+      </div>
+
+      <div class="fk-bank-card" data-bank="rakuten">
+        <div class="fk-bank-card-head">
+          <span class="fk-bank-name">楽天銀行（現金プレゼントプログラム）</span>
+          <a href="https://www.rakuten-bank.co.jp/campaign/settlement-program.html" target="_blank" rel="noopener noreferrer nofollow" class="fk-official-link">キャンペーン詳細 ↗</a>
+        </div>
+        <table class="fk-bank-table">
+          <tr><th>条件</th><th>1件あたり</th><th>月間の上限</th></tr>
+          <tr><td>3,000円以上の被仕向送金</td><td>10pt</td><td>5件まで（50pt）＋5件達成で+100pt（合計150pt）</td></tr>
+        </table>
+        <p class="fk-entry-note">📌 毎月エントリーが必要です。公式ページの「このプログラムにエントリー」ボタンから、または楽天銀行アプリ・サイトにログイン後の画面からエントリーできます。</p>
+      </div>
+
+      <div class="fk-bank-card" data-bank="rakuten-daiichi">
+        <div class="fk-bank-card-head">
+          <span class="fk-bank-name">楽天銀行 第一生命支店（現金プレゼントプログラム）</span>
+          <a href="https://www.rakuten-bank.co.jp/dai-ichi-lifebranch/" target="_blank" rel="noopener noreferrer nofollow" class="fk-official-link">キャンペーン詳細 ↗</a>
+        </div>
+        <table class="fk-bank-table">
+          <tr><th>条件</th><th>1件あたり</th><th>月間の上限</th></tr>
+          <tr><td>3,000円以上の被仕向送金</td><td>10pt</td><td>5件まで（50pt）＋5件達成で+100pt（合計150pt）</td></tr>
+        </table>
+        <p class="fk-entry-note">📌 楽天銀行本体とは別に、毎月エントリーが必要です。楽天銀行第一生命支店にログイン後の画面＞「商品・サービス」＞「キャンペーン等」からエントリーできます。</p>
+      </div>
+
+      <div class="fk-bank-card" data-bank="smbc-olive">
+        <div class="fk-bank-card-head">
+          <span class="fk-bank-name">三井住友銀行 Olive</span>
+          <a href="https://www.smbc.co.jp/kojin/olive-account/guide/privilege/" target="_blank" rel="noopener noreferrer nofollow" class="fk-official-link">キャンペーン詳細 ↗</a>
+        </div>
+        <table class="fk-bank-table">
+          <tr><th>条件</th><th>1件あたり</th><th>月間の上限</th></tr>
+          <tr><td>給与・賞与受取（3万円以上の入金）</td><td>-</td><td>200pt（選べる特典として毎月選択が必要）</td></tr>
+        </table>
+        <p class="fk-entry-note">📌 「きちんと振込」（手数料無料の定額自動振込）を使うと、同一口座2回まで・口座数に上限なしで、他の被仕向送金プログラムを持つ銀行へまとめて自動振込を設定できます。</p>
+      </div>
+
+      <div class="fk-bank-card" data-bank="suruga">
+        <div class="fk-bank-card-head">
+          <span class="fk-bank-name">スルガ銀行 Gポイントクラブ</span>
+          <a href="https://www.surugabank.co.jp/gpoint/product/account.html" target="_blank" rel="noopener noreferrer nofollow" class="fk-official-link">キャンペーン詳細 ↗</a>
+        </div>
+        <table class="fk-bank-table">
+          <tr><th>条件</th><th>1件あたり</th><th>月間の上限</th></tr>
+          <tr><td>口座振替（引き落とし）</td><td>-</td><td>10件で75pt（2025年4月に上限縮小済み）</td></tr>
+        </table>
+        <p class="fk-entry-note">⚠️ 「他行宛振込手数料が月10回無料」になる「スルガSTARプログラム」もありますが、これは手数料が浮くだけでお金・ポイントがもらえるわけではないため、この記事では割愛しています。実際にお金がもらえるのは、上の口座振替（Gポイント）だけです。</p>
+      </div>
+
+      <div class="fk-bank-card" data-bank="aujibun">
+        <div class="fk-bank-card-head">
+          <span class="fk-bank-name">au じぶん銀行（じぶんプラス・プレミアム時）</span>
+          <a href="https://www.jibunbank.co.jp/customer_stage/" target="_blank" rel="noopener noreferrer nofollow" class="fk-official-link">キャンペーン詳細 ↗</a>
+        </div>
+        <table class="fk-bank-table">
+          <tr><th>条件</th><th>1件あたり</th><th>月間の上限</th></tr>
+          <tr><td>定額自動入金</td><td>-</td><td>15pt/月</td></tr>
+          <tr><td>口座振替（引き落とし）</td><td>-</td><td>15pt/月</td></tr>
+          <tr><td>PayPayチャージ</td><td>-</td><td>150pt/月</td></tr>
+        </table>
+      </div>
+
+      <div class="fk-bank-card" data-bank="sbi-shinsei">
+        <div class="fk-bank-card-head">
+          <span class="fk-bank-name">SBI新生銀行（キャッシュプレゼントプログラム・ダイヤモンドステージ）</span>
+          <a href="https://www.sbishinseibank.co.jp/service/cashpresent/" target="_blank" rel="noopener noreferrer nofollow" class="fk-official-link">キャンペーン詳細 ↗</a>
+        </div>
+        <table class="fk-bank-table">
+          <tr><th>条件</th><th>1件あたり</th><th>月間の上限</th></tr>
+          <tr><td>他行からの振込入金（1件1万円以上）</td><td>20円</td><td>5件まで（100円）</td></tr>
+          <tr><td>口座振替（引き落とし）</td><td>10円</td><td>月1回以上の実行で定額（2件以上でも同額）</td></tr>
+        </table>
+        <p class="fk-entry-note">📌 毎月エントリーが必要です。公式ページ、またはSBI新生銀行アプリからエントリーできます（ステージが低いともらえる金額も下がります）。</p>
+      </div>
+
+      <div class="lp-risk-note" id="fkNoResultsNote" style="display:none;">
+        選んだ条件に当てはまる銀行はありません。「すべて」を押すと全部の銀行が表示されます。
+      </div>
+    </section>
+
+    <section class="lp-section" id="sbi">
+      <h2 class="lp-section-title">住信SBIネット銀行→ドコモSMTBネット銀行の現状／SBI新生銀行との違い</h2>
+      <p class="lp-body-text">
+        住信SBIネット銀行は2026年8月3日に「ドコモSMTBネット銀行」へ改称しました。上の表の第一生命NEOBANK支店・V NEOBANK支店は、いずれもこのドコモSMTBネット銀行の中の「支店」です。
+        なお、看板だった「V NEOBANKデビット」自体のチャージ還元（決済カードとしての還元）は2026年11月1日に終了予定で、これは今回の被仕向送金ポイントとは別の話です。詳しくは当サイトのカテエネBANKデビットの記事をご覧ください。
+      </p>
+      <p class="lp-body-text">
+        なお、上の表にある「SBI新生銀行」は、この住信SBI（現・ドコモSMTB）とは別の銀行です（同じ「SBI」グループですが別会社・別サービス）。名前が紛らわしいので、混同しないようご注意ください。
+      </p>
+      <div class="lp-risk-note">
+        ⚠️ SBI新生銀行は2023年10月に、旧「ポイントプログラム」を終了し「キャッシュプレゼントプログラム」に切り替えています。振込入金・口座振替でポイントではなく現金がもらえる仕組みが現在も続いており、上の表の金額はいずれも最上位の「ダイヤモンドステージ」時のものです。ステージが低いともらえる金額も少なくなるほか、毎月のエントリーが必要です。
+        ［確認日: 2026-08-31／出典: SBI新生銀行公式「キャッシュプレゼントプログラム」ページ］
+      </div>
+      <div class="lp-disclosure">
+        各銀行のプログラムは条件・還元率ともに変更が頻繁な分野です。この記事に載せた内容は確認時点のものであり、実行前には必ず各行の公式ページで最新の条件を確認してください。
+      </div>
+    </section>
+
+    <section class="lp-section" id="chuii">
+      <h2 class="lp-section-title">注意点</h2>
+      <ul class="lp-body-list">
+        <li>「件数」がカウントされる取引と、対象外の取引（無料になった取引、系列会社間の取引など）は銀行によって異なります。思ったほど件数が積み上がらないこともあります。</li>
+        <li>意図的に資金移動を繰り返す「銀行ぐるぐる」は、実需を伴わない場合、口座の利用制限などのリスクを指摘する銀行もあります。無理のない範囲にとどめてください。</li>
+        <li>判定期間・切り替えタイミングは銀行ごとに異なります（例：楽天銀行は前月26日〜当月25日で判定、翌月1日から適用）。「今月分」の締め日を把握しておくと、月末に慌てずに済みます。</li>
+      </ul>
+    </section>
+
+    <section class="lp-section" id="checklist">
+      <h2 class="lp-section-title">今月やることチェックリスト</h2>
+      <p class="lp-body-text">
+        以下は「今月、この銀行の分をやったか」をその場でチェックしておける簡易ツールです。チェック内容はこの端末のブラウザだけに保存され、月が変わると自動でリセットされます（他の端末とは共有されません）。
+      </p>
+      <div id="fkChecklistApp"></div>
+    </section>
+
+    <div class="lp-disclosure">
+      本ページの情報は掲載時点のものです。各銀行の還元率・条件・キャンペーン内容は変更される場合があるため、実行前に必ず公式サイトでご確認ください。本サイトはアフィリエイト広告を含みます。［確認日: 2026-08-31］
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  // ---- 銀行の絞り込みチップ ----
+  var bar = document.getElementById('fkFilterBar');
+  if(!bar) return;
+  var cards = document.querySelectorAll('.fk-bank-card');
+  var noResults = document.getElementById('fkNoResultsNote');
+  bar.querySelectorAll('.fk-filter-chip').forEach(function(chip){
+    chip.addEventListener('click', function(){
+      bar.querySelectorAll('.fk-filter-chip').forEach(function(c){ c.classList.remove('active'); });
+      chip.classList.add('active');
+      var filter = chip.getAttribute('data-filter');
+      var visibleCount = 0;
+      cards.forEach(function(card){
+        var show = (filter === 'all') || (card.getAttribute('data-bank') === filter);
+        card.style.display = show ? '' : 'none';
+        if(show) visibleCount++;
+      });
+      if(noResults) noResults.style.display = visibleCount === 0 ? '' : 'none';
+    });
+  });
+})();
+</script>
+
+<script>
+(function(){
+  // ---- 今月やることチェックリスト ----
+  // 月替わりで自動リセットされるよう、保存キーに「年-月」を含めている。
+  var ITEMS = [
+    { id: 'daiichi-hifurikomi', bank: '第一生命NEOBANK支店', action: '他行からの被仕向送金（1件1万円以上）を25件行ったか確認する',
+      note: '20pt/件、月25件まで（合計500pt）。三井住友信託銀行からの振込は対象外。' },
+    { id: 'v-neobank-hifurikomi', bank: 'V NEOBANK支店', action: '他行からの被仕向送金（1件1万円以上）を25件行ったか確認する',
+      note: '20pt/件、月25件まで（合計500pt）。' },
+    { id: 'rakuten-genkin', bank: '楽天銀行（現金プレゼントプログラム）', action: '今月分のエントリーを済ませ、3,000円以上の被仕向送金を5件行ったか確認する',
+      note: '10pt/件、5件で50pt＋達成ボーナス100pt（合計150pt）。毎月エントリーが必要。' },
+    { id: 'rakuten-daiichi-genkin', bank: '楽天銀行 第一生命支店（現金プレゼントプログラム）', action: '今月分のエントリーを済ませ、3,000円以上の被仕向送金を5件行ったか確認する',
+      note: '楽天銀行本体とは別枠・別エントリーで、同じく10pt/件・5件で150pt。' },
+    { id: 'sbi-shinsei-furikomi', bank: 'SBI新生銀行（キャッシュプレゼントプログラム）', action: '今月分のエントリーを済ませ、他行からの振込入金（1件1万円以上）を5件行ったか確認する',
+      note: 'ダイヤモンドステージで1件20円・5件で100円。ステージが低いと金額は下がる。' }
+  ];
+
+  var root = document.getElementById('fkChecklistApp');
+  if(!root) return;
+
+  function monthKey(){
+    var d = new Date();
+    return d.getFullYear() + '-' + (d.getMonth() + 1);
+  }
+  function storageKey(){ return 'paytaku_furikomi_checklist_' + monthKey(); }
+
+  function loadChecked(){
+    try{
+      var raw = localStorage.getItem(storageKey());
+      return raw ? JSON.parse(raw) : {};
+    } catch(e){ return {}; }
+  }
+  function saveChecked(state){
+    try{ localStorage.setItem(storageKey(), JSON.stringify(state)); } catch(e){}
+  }
+
+  function monthLabel(){
+    var d = new Date();
+    return d.getFullYear() + '年' + (d.getMonth() + 1) + '月分';
+  }
+
+  function render(){
+    var state = loadChecked();
+    var doneCount = ITEMS.filter(function(it){ return !!state[it.id]; }).length;
+
+    var html = '<div class="fk-header">'
+      + '<span class="fk-month">' + monthLabel() + '</span>'
+      + '<span class="fk-progress">' + doneCount + ' / ' + ITEMS.length + ' 件チェック済み</span>'
+      + '<button type="button" class="fk-reset-btn" id="fkResetBtn">今月分をリセット</button>'
+      + '</div>'
+      + '<div class="fk-checklist">'
+      + ITEMS.map(function(it){
+          var checked = !!state[it.id];
+          return '<label class="fk-item' + (checked ? ' done' : '') + '">'
+            + '<input type="checkbox" class="fk-check" data-id="' + it.id + '"' + (checked ? ' checked' : '') + '>'
+            + '<span class="fk-body">'
+              + '<span class="fk-bank">' + it.bank + '</span>'
+              + '<span class="fk-action">' + it.action + '</span>'
+              + (it.note ? '<span class="fk-note">' + it.note + '</span>' : '')
+            + '</span>'
+          + '</label>';
+        }).join('')
+      + '</div>';
+
+    root.innerHTML = html;
+
+    root.querySelectorAll('.fk-check').forEach(function(cb){
+      cb.addEventListener('change', function(){
+        var s = loadChecked();
+        s[cb.getAttribute('data-id')] = cb.checked;
+        saveChecked(s);
+        render();
+      });
+    });
+    var resetBtn = document.getElementById('fkResetBtn');
+    if(resetBtn){
+      resetBtn.addEventListener('click', function(){
+        if(!confirm('今月分のチェックをすべて外します。よろしいですか？')) return;
+        saveChecked({});
+        render();
+      });
+    }
+  }
+  render();
+})();
+</script>
+<script src="../assets/affiliates.js"></script>
+</body>
+</html>
