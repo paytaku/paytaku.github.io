@@ -9,17 +9,9 @@
       "type": "direct",
       "url": "https://ad2.trafficgate.net/t/r/385/1396/318860_398517"
     },
-    "jcb-card-w": {
-      "type": "direct",
-      "url": "https://ad2.trafficgate.net/t/r/519/1396/jcb-card-w"
-    },
     "epos-card": {
       "type": "direct",
-      "url": "https://admane.jp/ad/p/r?_site=1841&_article=658&_link=2922&_image=3165&_ns=1"
-    },
-    "smbc-nl": {
-      "type": "direct",
-      "url": "https://ad2.trafficgate.net/t/r/519/1396/smbc-nl"
+      "url": "https://h.accesstrade.net/sp/cc?rk=0100i7hh00ox3w"
     },
     "dmm-kabu": {
       "type": "direct",
@@ -29,6 +21,10 @@
       "type": "direct",
       "url": "https://px.a8.net/svt/ejp?a8mat=4BA41D+FG2VSI+54O2+62U35",
       "category": "other"
+    },
+    "odakyu-op": {
+      "type": "direct",
+      "url": "https://h.accesstrade.net/sp/cc?rk=01004q8800ox3w"
     },
     "hapitas-signup": {
       "type": "point",
@@ -48,9 +44,31 @@
       "code": "rbf882486752",
       "isPointSite": true
     },
+    "custom-1787211123687": {
+      "type": "direct",
+      "url": "https://h.accesstrade.net/sp/cc?rk=01004q8200ox3w"
+    },
     "cosmo-the-card-opus": {
       "type": "direct",
-      "url": "#"
+      "url": "https://px.a8.net/svt/ejp?a8mat=4BA41D+AY4Z8Y+5XGQ+5YZ75"
+    },
+    "hifumi": {
+      "type": "direct",
+      "url": "https://px.a8.net/svt/ejp?a8mat=4BA41D+G0X1YQ+4C2C+BXYE9",
+      "category": "other"
+    },
+    "chobiricchi": {
+      "type": "point",
+      "url": "https://www.chobirich.com/cm/ad/?p=8225208671&i=5089387",
+      "via": "ちょびリッチ",
+      "code": "qdQB49",
+      "isPointSite": true
+    },
+    "gen": {
+      "type": "point",
+      "url": "https://www.gendama.jp/invite/?frid=7549902&ref=90000-url",
+      "code": "CF3AakdC",
+      "isPointSite": true
     }
   },
   "names": {
@@ -75,7 +93,11 @@
     "daiichi-neobank-debit-premium": "ANA Pay→楽天Edy→楽天キャッシュ→楽天ペイ 2026年8月版",
     "idare": "IDARE（イデア）",
     "kateene-bank-debit": "カテエネBANKデビット 2026年8月版",
-    "lawson-ponta-plus": "ローソンPontaプラス"
+    "lawson-ponta-plus": "ローソンPontaプラス",
+    "hifumi": "投資信託ひふみ",
+    "chobiricchi": "ちょびリッチ",
+    "gen": "げん玉",
+    "smbc-gold-nl": "三井住友カード ゴールド（NL）"
   },
   "banners": {
     "rakuten-card": [
@@ -136,6 +158,16 @@
         "img": "https://www29.a8.net/svt/bgt?aid=260812273934&wid=001&eno=01&mid=s00000023933001021000&mc=1"
       }
     ],
+    "odakyu-op": [
+      {
+        "href": "https://h.accesstrade.net/sp/cc?rk=0100kw0d00ox3w",
+        "img": "https://h.accesstrade.net/sp/rr?rk=0100kw0d00ox3w"
+      },
+      {
+        "href": "https://h.accesstrade.net/sp/cc?rk=01004q8800ox3w",
+        "img": "https://h.accesstrade.net/sp/rr?rk=01004q8800ox3w"
+      }
+    ],
     "hapitas-signup": [
       {
         "href": "https://hapitas.jp/register/?i=25513097",
@@ -144,8 +176,68 @@
     ],
     "custom-1787211123687": [
       {
+        "title": "ゴールド券面",
         "href": "https://h.accesstrade.net/sp/cc?rk=01004q8100ox3w",
         "img": "https://h.accesstrade.net/sp/rr?rk=01004q8100ox3w"
+      },
+      {
+        "title": "券面",
+        "href": "https://h.accesstrade.net/sp/cc?rk=01004q8200ox3w",
+        "img": "https://h.accesstrade.net/sp/rr?rk=01004q8200ox3w"
+      },
+      {
+        "title": "ポイント訴求",
+        "href": "https://h.accesstrade.net/sp/cc?rk=0100kw0d00ox3w",
+        "img": "https://h.accesstrade.net/sp/rr?rk=0100kw0d00ox3w"
+      },
+      {
+        "title": "年会費無料",
+        "href": "https://h.accesstrade.net/sp/cc?rk=01004q8800ox3w",
+        "img": "https://h.accesstrade.net/sp/rr?rk=01004q8800ox3w"
+      }
+    ],
+    "kosumo-za-kaado-oopasu": [
+      {
+        "href": "https://px.a8.net/svt/ejp?a8mat=4BA41D+AY4Z8Y+5XGQ+5YJRM",
+        "img": "https://www18.a8.net/0.gif?a8mat=4BA41D+AY4Z8Y+5XGQ+5YJRM"
+      },
+      {
+        "title": "キャッシュバック",
+        "href": "https://px.a8.net/svt/ejp?a8mat=4BA41D+AY4Z8Y+5XGQ+5YZ75",
+        "img": "https://www22.a8.net/svt/bgt?aid=260812273662&wid=001&eno=01&mid=s00000027665001003000&mc=1"
+      },
+      {
+        "title": "キャッシュバック横長",
+        "href": "https://px.a8.net/svt/ejp?a8mat=4BA41D+AY4Z8Y+5XGQ+5Z6WX",
+        "img": "https://www23.a8.net/svt/bgt?aid=260812273662&wid=001&eno=01&mid=s00000027665001004000&mc=1"
+      }
+    ],
+    "cosmo-the-card-opus": [
+      {
+        "href": "https://px.a8.net/svt/ejp?a8mat=4BA41D+AY4Z8Y+5XGQ+5YJRM",
+        "img": "https://www18.a8.net/0.gif?a8mat=4BA41D+AY4Z8Y+5XGQ+5YJRM"
+      },
+      {
+        "title": "バナー",
+        "href": "https://px.a8.net/svt/ejp?a8mat=4BA41D+AY4Z8Y+5XGQ+5YZ75",
+        "img": "https://www22.a8.net/svt/bgt?aid=260812273662&wid=001&eno=01&mid=s00000027665001003000&mc=1"
+      },
+      {
+        "title": "バナー横長",
+        "href": "https://px.a8.net/svt/ejp?a8mat=4BA41D+AY4Z8Y+5XGQ+5Z6WX",
+        "img": "https://www23.a8.net/svt/bgt?aid=260812273662&wid=001&eno=01&mid=s00000027665001004000&mc=1"
+      }
+    ],
+    "hifumi": [
+      {
+        "href": "https://px.a8.net/svt/ejp?a8mat=4BA41D+G0X1YQ+4C2C+BXYE9",
+        "img": "https://www25.a8.net/svt/bgt?aid=260812273969&wid=001&eno=01&mid=s00000020226002006000&mc=1"
+      }
+    ],
+    "chobiricchi": [
+      {
+        "href": "https://www.chobirich.com/cm/ad/?p=8224856827&i=5089387&utm_source=referral_banner&utm_medium=banner&utm_campaign=introduction&utm_content=hukugyo_300_250",
+        "img": "https://www.cdn.chobirich.com/lp/introduction/hukugyo_300_250.png"
       }
     ]
   }
