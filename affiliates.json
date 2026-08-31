@@ -45,7 +45,7 @@
       "isPointSite": true
     },
     "cosmo-the-card-opus": {
-      "type": "direct",
+      "type": "point",
       "url": "#"
     },
     "hifumi": {
@@ -58,6 +58,12 @@
       "url": "https://www.chobirich.com/cm/ad/?p=8225208671&i=5089387",
       "via": "ちょびリッチ",
       "code": "qdQB49",
+      "isPointSite": true
+    },
+    "gen": {
+      "type": "point",
+      "url": "https://www.gendama.jp/invite/?frid=7549902&ref=90000-url",
+      "code": "CF3AakdC",
       "isPointSite": true
     }
   },
@@ -85,7 +91,8 @@
     "kateene-bank-debit": "カテエネBANKデビット 2026年8月版",
     "lawson-ponta-plus": "ローソンPontaプラス",
     "hifumi": "投資信託ひふみ",
-    "chobiricchi": "ちょびリッチ"
+    "chobiricchi": "ちょびリッチ",
+    "gen": "げん玉"
   },
   "banners": {
     "rakuten-card": [
