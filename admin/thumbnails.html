@@ -252,6 +252,23 @@ h1{font-size:20px;font-weight:900;margin:0 0 4px;}
     return path;
   }
 
+  // X（Twitter）などにそのまま貼れる投稿文の下書きを組み立てる。
+  // タイトル・要約・URL・ハッシュタグの機械的な組み合わせなので、投稿前に
+  // 一言くらいは自分の言葉に直してから使うのがおすすめ（そのままでも投稿はできる）。
+  function buildSnsText(article){
+    var url = 'https://paytaku.github.io/articles/' + article.slug + '.html';
+    var hook = (article.overview || '').split(/(?<=[。！？])/)[0] || '';
+    if(hook.length > 60) hook = hook.slice(0, 58) + '…';
+    var tags = (article.tags || []).slice(0, 3).map(function(t){
+      return '#' + t.replace(/[\s　#]/g, '');
+    }).join(' ');
+    var lines = [article.title];
+    if(hook) lines.push(hook);
+    lines.push(url);
+    if(tags) lines.push(tags);
+    return lines.join('\n\n');
+  }
+
   function buildRow(article, thumbUrl){
     var row = document.createElement('div');
     row.className = 'article-row';
@@ -269,6 +286,7 @@ h1{font-size:20px;font-weight:900;margin:0 0 4px;}
         +'<div class="article-actions">'
           +'<button class="btn primary" data-copy="title" data-label="📋 タイトルをコピー">📋 タイトルをコピー</button>'
           +'<button class="btn" data-copy="url" data-label="🔗 記事URLをコピー">🔗 記事URLをコピー</button>'
+          +'<button class="btn" data-copy="sns" data-label="🐦 SNS投稿文をコピー">🐦 SNS投稿文をコピー</button>'
           +'<a class="btn" href="'+url+'" target="_blank" rel="noopener">記事を開く ↗</a>'
           +'<button class="btn upload-btn" data-label="⬆️ 画像をアップロード">⬆️ 画像をアップロード'
             +'<input type="file" accept="image/png,image/jpeg,image/webp" data-slug="'+esc(article.slug)+'">'
@@ -284,9 +302,11 @@ h1{font-size:20px;font-weight:900;margin:0 0 4px;}
     }
     row.querySelectorAll('[data-copy]').forEach(function(btn){
       btn.addEventListener('click', function(){
-        var text = btn.getAttribute('data-copy') === 'title'
-          ? article.title
-          : 'https://paytaku.github.io/articles/' + article.slug + '.html';
+        var kind = btn.getAttribute('data-copy');
+        var text;
+        if(kind === 'title') text = article.title;
+        else if(kind === 'url') text = 'https://paytaku.github.io/articles/' + article.slug + '.html';
+        else text = buildSnsText(article);
         copyToClipboard(text, btn);
       });
     });
