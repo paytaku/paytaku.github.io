@@ -309,14 +309,17 @@
     font-size: 12.5px;
     font-weight: 600;
     cursor: pointer;
-    transition: all .15s ease;
+    transition: background-color .15s ease, border-color .15s ease, color .15s ease;
   }
+  /* 選択・未選択でボタン幅が変わらないよう、チェックマークの分の幅は常に確保しておき、
+     見た目だけをvisibilityで切り替える（タップのたびに他のボタンが動いて押しにくくなるのを防ぐ）。 */
+  .wallet-opt::before{ content: "✓ "; visibility: hidden; }
   .wallet-opt.on{
     background: var(--surface-2);
     border-color: var(--foil-2);
     color: var(--text);
   }
-  .wallet-opt.on::before{ content: "✓ "; color: var(--foil-2); }
+  .wallet-opt.on::before{ visibility: visible; color: var(--foil-2); }
 
   /* ===== favorites & upgrade hint ===== */
   .fav-btn{
@@ -887,6 +890,15 @@
     margin-bottom: 8px;
   }
   .aff-point-promo-link:hover{ text-decoration: underline; }
+  .aff-point-promo-steps{
+    margin: 0 0 8px;
+    padding-left: 18px;
+    font-size: 11.5px;
+    line-height: 1.7;
+    color: var(--muted);
+  }
+  .aff-point-promo-link{ display: block; }
+  .aff-point-promo-deal{ color: var(--foil-2); }
   .aff-point-promo-banner{ display: block; }
   .aff-point-promo-banner img{
     display: block;
@@ -3231,6 +3243,8 @@
   }
   .card-option.is-winner .card-option-rate{ font-size: 15px; }
   .card-option-method{ font-size: 11px; color: var(--muted); margin-bottom: 4px; line-height: 1.6; }
+  .card-option-image{ display: block; width: 100%; max-width: 320px; border-radius: 8px; margin: 6px 0; }
+  .campaign-card-image{ display: block; width: 100%; border-radius: 8px; margin: 8px 0; }
   .card-option-note{
     padding: 6px 10px;
     border-left: 2px solid var(--primary);
@@ -3496,7 +3510,7 @@
     border-color: var(--primary);
     color: var(--text);
   }
-  .wallet-opt.on::before{ color: var(--primary); }
+  .wallet-opt.on::before{ visibility: visible; color: var(--primary); }
   
   /* Update chip active state */
   .chip.active{

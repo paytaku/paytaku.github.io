@@ -153,6 +153,19 @@
     return '<select class="ae-slot-select">' + opts + '</select>';
   }
 
+  // バナー枠用：そのキーに複数バナーが登録されているときだけ「どのバナーを出すか」を選べるようにする。
+  // 未選択（自動）なら、他の同キー枠との自動配分（均等な間隔での振り分け）に任せる。
+  function bannerIdxSelectHtml(key, currentIdx){
+    var arr = affBanners[key];
+    var list = Array.isArray(arr) ? arr : (arr ? [arr] : []);
+    if(list.length <= 1) return '';
+    var opts = '<option value="">自動（おまかせ）</option>' + list.map(function(b, i){
+      var label = 'バナー' + (i + 1) + (b && b.title ? '：' + b.title : '');
+      return '<option value="' + i + '"' + (String(currentIdx) === String(i) ? ' selected' : '') + '>' + esc(label) + '</option>';
+    }).join('');
+    return '<select class="ae-banner-idx-select">' + opts + '</select>';
+  }
+
   function collectAssignableSlots(root){
     var out = [];
     root.querySelectorAll('[data-aff]').forEach(function(el){
@@ -162,7 +175,8 @@
       out.push({ el: el, attr: 'data-aff-hero', key: el.getAttribute('data-aff-hero'), label: 'ヒーローカード' });
     });
     root.querySelectorAll('[data-aff-banner-slot]').forEach(function(el){
-      out.push({ el: el, attr: 'data-aff-banner-slot', key: el.getAttribute('data-aff-banner-slot'), label: 'バナー枠' });
+      out.push({ el: el, attr: 'data-aff-banner-slot', key: el.getAttribute('data-aff-banner-slot'), label: 'バナー枠',
+        bannerIdx: el.getAttribute('data-aff-banner-idx') });
     });
     return out;
   }
@@ -176,9 +190,11 @@
       return;
     }
     var html = slots.map(function(slot, i){
+      var idxSelectHtml = slot.attr === 'data-aff-banner-slot' ? bannerIdxSelectHtml(slot.key, slot.bannerIdx) : '';
       return '<div class="ae-slot" data-idx="' + i + '">'
         + '<div class="ae-slot-label">' + esc(slot.label) + '</div>'
         + affSelectHtml(slot.key)
+        + idxSelectHtml
         + '<button type="button" class="ae-del-btn" data-idx="' + i + '" title="この要素ごと削除">🗑</button>'
         + '</div>';
     }).join('');
@@ -200,11 +216,22 @@
         if(!newKey){ slot.el.remove(); }
         else {
           slot.el.setAttribute(slot.attr, newKey);
-          livePreviewUpdate(slot, newKey);
+          slot.el.removeAttribute('data-aff-banner-idx'); // カードを変えたら固定指定はリセット（別カードの番号が残るのを防ぐ）
+          livePreviewUpdate(slot, newKey, null);
         }
         markDirty();
         renderSlotList();
       });
+      var idxSelect = row.querySelector('.ae-banner-idx-select');
+      if(idxSelect){
+        idxSelect.addEventListener('change', function(e){
+          var v = e.target.value;
+          if(v === ''){ slot.el.removeAttribute('data-aff-banner-idx'); }
+          else { slot.el.setAttribute('data-aff-banner-idx', v); }
+          livePreviewUpdate(slot, slot.key, v === '' ? null : Number(v));
+          markDirty();
+        });
+      }
       row.querySelector('.ae-del-btn').addEventListener('click', function(){
         slot.el.remove();
         markDirty();
@@ -222,7 +249,7 @@
   }
 
   // 割り当て変更を、可能な範囲でその場でも見た目に反映する（保存前のプレビュー用）
-  function livePreviewUpdate(slot, newKey){
+  function livePreviewUpdate(slot, newKey, bannerIdx){
     var link = affLinks[newKey];
     var url = link ? (typeof link === 'string' ? link : link.url) : null;
     if(slot.attr === 'data-aff' && url && slot.el.tagName === 'A'){
@@ -237,8 +264,11 @@
       if(nameEl) nameEl.textContent = affNames[newKey] || newKey;
     }
     if(slot.attr === 'data-aff-banner-slot'){
-      var banner2 = affBanners[newKey];
-      var b2 = Array.isArray(banner2) ? banner2[0] : banner2;
+      var banner2list = affBanners[newKey];
+      var banner2arr = Array.isArray(banner2list) ? banner2list : (banner2list ? [banner2list] : []);
+      // 固定指定（bannerIdx）があればそれを、無ければ1枚目をプレビューに使う。
+      // 実際の自動配分（複数枠での均等な振り分け）は保存後、記事側のaffiliates.jsが行う。
+      var b2 = (bannerIdx != null && banner2arr[bannerIdx]) ? banner2arr[bannerIdx] : banner2arr[0];
       if(b2 && b2.img && b2.href){
         slot.el.innerHTML = '<div class="lp-banner-label">📣 PR</div>'
           + '<a href="' + escAttr(b2.href) + '" target="_blank" rel="sponsored noopener nofollow">'
@@ -481,11 +511,13 @@
     + '.ae-tab-label{padding:8px 14px 0;font-size:11px;color:var(--dim,#64748B);line-height:1.6;}'
     + '.ae-body{overflow-y:auto;padding:10px 14px;flex:1;}'
     + '.ae-loading,.ae-empty{color:var(--dim,#64748B);font-size:12.5px;padding:10px 0;}'
-    + '.ae-slot{display:flex;align-items:center;gap:6px;padding:8px 0;border-bottom:1px solid var(--line,#334155);}'
+    + '.ae-slot{display:flex;align-items:center;gap:6px;padding:8px 0;border-bottom:1px solid var(--line,#334155);flex-wrap:wrap;}'
     + '.ae-slot:last-child{border-bottom:none;}'
     + '.ae-slot-label{flex:0 0 90px;font-size:11px;font-weight:700;color:var(--text,#F1F5F9);line-height:1.4;}'
     + '.ae-slot-select{flex:1;padding:6px 6px;border-radius:8px;border:1px solid var(--line,#334155);'
     + 'background:var(--surface2,#273449);color:var(--text,#F1F5F9);font-size:11.5px;font-family:inherit;min-width:0;}'
+    + '.ae-banner-idx-select{flex:1 1 100%;margin-left:96px;padding:5px 6px;border-radius:8px;border:1px solid var(--line,#334155);'
+    + 'background:var(--surface2,#273449);color:var(--muted,#94A3B8);font-size:11px;font-family:inherit;min-width:0;}'
     + '.ae-del-btn{flex:0 0 auto;background:none;border:none;font-size:14px;cursor:pointer;padding:4px;}'
     + '.ae-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;border-top:1px solid var(--line,#334155);}'
     + '.ae-pending-count{font-size:11px;color:var(--dim,#64748B);}'

@@ -827,6 +827,15 @@ body{
   margin-bottom: 8px;
 }
 .aff-point-promo-link:hover{ text-decoration: underline; }
+.aff-point-promo-steps{
+  margin: 0 0 8px;
+  padding-left: 18px;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--muted);
+}
+.aff-point-promo-link{ display: block; }
+.aff-point-promo-deal{ color: #C026D3; }
 .aff-point-promo-banner{ display: block; }
 .aff-point-promo-banner img{
   display: block;

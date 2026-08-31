@@ -112,14 +112,33 @@
           var psUrl = psEntry && psEntry.url && psEntry.url !== '#' ? psEntry.url : null;
           var psBannerArr = psKey ? banners[psKey] : null;
           var psBanner = psBannerArr ? (Array.isArray(psBannerArr) ? psBannerArr[0] : psBannerArr) : null;
+          var dealUrl = entry && entry.dealUrl && isSafeHttpUrl(entry.dealUrl) ? entry.dealUrl : null;
 
           var promo = hasPromo ? existingPromo : document.createElement('div');
           promo.className = 'aff-point-promo';
-          var html = '<p class="aff-point-promo-text">💡 直接申し込むより<b>' + via + '経由の方がお得</b>です。'
-            + 'カードの成果ポイントに加えて、' + via + 'の新規登録ポイントも別途受け取れます。</p>';
-          if(psUrl){
-            html += '<a class="aff-point-promo-link" href="' + psUrl + '" target="_blank" rel="sponsored noopener nofollow">'
-              + '→ ' + via + 'に登録する（未登録の方）</a>';
+          var html;
+          if(dealUrl){
+            /* 案件ページへの直リンクがある場合：①登録→②このカードの申し込みページへ、の2段階を案内する。
+               登録だけして終わってしまい、肝心のカード申し込みまでたどり着けない、という動線切れを防ぐ。 */
+            html = '<p class="aff-point-promo-text">💡 直接申し込むより<b>' + via + '経由の方がお得</b>です。'
+              + 'カードの成果ポイントに加えて、' + via + 'の新規登録ポイントも別途受け取れます。</p>'
+              + '<ol class="aff-point-promo-steps">'
+              + (psUrl ? '<li>' + via + 'に登録する（未登録の方）</li>' : '')
+              + '<li>' + via + '内でこのカードの案件ページに進み、申し込む</li>'
+              + '</ol>';
+            if(psUrl){
+              html += '<a class="aff-point-promo-link" href="' + psUrl + '" target="_blank" rel="sponsored noopener nofollow">'
+                + '① ' + via + 'に登録する（未登録の方）</a>';
+            }
+            html += '<a class="aff-point-promo-link aff-point-promo-deal" href="' + dealUrl + '" target="_blank" rel="sponsored noopener nofollow">'
+              + '② ' + via + '内でこのカードに申し込む →</a>';
+          } else {
+            html = '<p class="aff-point-promo-text">💡 直接申し込むより<b>' + via + '経由の方がお得</b>です。'
+              + 'カードの成果ポイントに加えて、' + via + 'の新規登録ポイントも別途受け取れます。</p>';
+            if(psUrl){
+              html += '<a class="aff-point-promo-link" href="' + psUrl + '" target="_blank" rel="sponsored noopener nofollow">'
+                + '→ ' + via + 'に登録する（未登録の方）</a>';
+            }
           }
           if(psBanner && psBanner.img && psBanner.href){
             html += '<a class="aff-point-promo-banner" href="' + psBanner.href + '" target="_blank" rel="sponsored noopener nofollow">'
@@ -332,13 +351,45 @@
         var key = el.getAttribute('data-aff-banner-slot');
         (slotGroups[key] = slotGroups[key] || []).push(el);
       });
+      // スロット1個分のバナー表示HTMLを組み立てて置き換える共通処理。
+      // 手動固定（pin）・自動配分どちらの経路からも使う。
+      function renderBannerBox(slotEl, key, b){
+        var box = document.createElement('div');
+        box.className = 'lp-banner-box';
+        // 記事の編集モード（article-editor.js）が後からこの枠を見つけて差し替えられるよう、
+        // 置き換え後の要素にも元の data-aff-banner-slot 属性を残しておく。
+        box.setAttribute('data-aff-banner-slot', key);
+        box.innerHTML = '<div class="lp-banner-label">📣 PR</div>'
+          + '<a href="' + b.href + '" target="_blank" rel="sponsored noopener nofollow"'
+          + (b.title ? ' title="' + b.title.replace(/"/g,'&quot;') + '"' : '') + '>'
+          + '<img src="' + b.img + '" alt="' + (b.title || names[key] || key).replace(/"/g,'&quot;') + '" class="lp-banner-img" loading="lazy"></a>';
+        slotEl.replaceWith(box);
+      }
       Object.keys(slotGroups).forEach(function(key){
         var slots = slotGroups[key];
-        var arr   = banners[key];
-        var valid = (arr || []).filter(function(b){ return b && b.img && b.href && isSafeHttpUrl(b.href) && isSafeHttpUrl(b.img); });
-        if(!valid.length){ slots.forEach(function(s){ s.style.display = 'none'; }); return; }
+        var arr     = banners[key];
+        var rawList = Array.isArray(arr) ? arr : (arr ? [arr] : []);
+        var valid = rawList.filter(function(b){ return b && b.img && b.href && isSafeHttpUrl(b.href) && isSafeHttpUrl(b.img); });
 
-        var n = slots.length, m = valid.length;
+        // 編集モードで「このバナーに固定」を指定したスロット（data-aff-banner-idx）は、
+        // 自動配分の対象から外し、指定した1枚をそのまま表示する（複数バナーの中から
+        // 記事に合うものを選びたい場合に使う）。指定が無効（範囲外・未登録）な場合は
+        // 通常の自動配分スロットとして扱う。
+        var pinned = [];
+        var autoSlots = [];
+        slots.forEach(function(slotEl){
+          var idxAttr = slotEl.getAttribute('data-aff-banner-idx');
+          var pinnedIdx = idxAttr !== null && idxAttr !== '' ? parseInt(idxAttr, 10) : NaN;
+          var b = !isNaN(pinnedIdx) ? rawList[pinnedIdx] : null;
+          var bOk = b && b.img && b.href && isSafeHttpUrl(b.href) && isSafeHttpUrl(b.img);
+          if(bOk){ pinned.push({ el: slotEl, banner: b }); }
+          else{ autoSlots.push(slotEl); }
+        });
+        pinned.forEach(function(p){ renderBannerBox(p.el, key, p.banner); });
+
+        if(!valid.length){ autoSlots.forEach(function(s){ s.style.display = 'none'; }); return; }
+
+        var n = autoSlots.length, m = valid.length;
         var chosen = new Array(n).fill(-1); // スロットindex -> バナーindex（-1は非表示）
         if(m <= n){
           // m枚を n個の枠に均等な間隔で割り当てる（例：2枚を9枠なら 0番目と8番目、のように離す）
@@ -353,20 +404,10 @@
           }
         }
 
-        slots.forEach(function(slotEl, idx){
+        autoSlots.forEach(function(slotEl, idx){
           var bIdx = chosen[idx];
           if(bIdx === -1 || bIdx == null){ slotEl.style.display = 'none'; return; }
-          var b = valid[bIdx];
-          var box = document.createElement('div');
-          box.className = 'lp-banner-box';
-          // 記事の編集モード（article-editor.js）が後からこの枠を見つけて差し替えられるよう、
-          // 置き換え後の要素にも元の data-aff-banner-slot 属性を残しておく。
-          box.setAttribute('data-aff-banner-slot', key);
-          box.innerHTML = '<div class="lp-banner-label">📣 PR</div>'
-            + '<a href="' + b.href + '" target="_blank" rel="sponsored noopener nofollow"'
-            + (b.title ? ' title="' + b.title.replace(/"/g,'&quot;') + '"' : '') + '>'
-            + '<img src="' + b.img + '" alt="' + (b.title || names[key] || key).replace(/"/g,'&quot;') + '" class="lp-banner-img" loading="lazy"></a>';
-          slotEl.replaceWith(box);
+          renderBannerBox(slotEl, key, valid[bIdx]);
         });
       });
 
