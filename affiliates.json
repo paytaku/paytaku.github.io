@@ -13,10 +13,6 @@
       "type": "direct",
       "url": "https://h.accesstrade.net/sp/cc?rk=0100i7hh00ox3w"
     },
-    "smbc-nl": {
-      "type": "direct",
-      "url": "https://ad2.trafficgate.net/t/r/519/1396/smbc-nl"
-    },
     "dmm-kabu": {
       "type": "direct",
       "url": "https://h.accesstrade.net/sp/cc?rk=0100mjw400ox3w"
