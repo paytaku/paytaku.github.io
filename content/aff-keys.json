@@ -31,8 +31,7 @@
     "key": "daiichi-neobank-debit-premium",
     "name": "ANA Pay→楽天Edy→楽天キャッシュ→楽天ペイ 2026年8月版",
     "articles": [
-      "ana-pay-rakuten-edy-cash-route.html",
-      "kateene-bank-debit-shindan.html"
+      "ana-pay-rakuten-edy-cash-route.html"
     ]
   },
   {
@@ -80,32 +79,21 @@
       "aupay-seikyusho-max-route.html",
       "cosmo-the-card-opus-shindan.html",
       "hapitas-shindan.html",
+      "idare-card-katsuyo.html",
+      "kateene-bank-debit-shindan.html",
       "lawson-ponta-plus-shindan.html",
       "odakyu-point-card-shindan.html",
       "point-site-card-hikaku.html",
-      "smbc-nl-shindan.html"
-    ]
-  },
-  {
-    "key": "idare",
-    "name": "IDARE（イデア）",
-    "articles": [
-      "idare-card-katsuyo.html"
+      "smbc-gold-nl-shindan.html",
+      "smbc-nl-shindan.html",
+      "touch-norisha-10-5.html"
     ]
   },
   {
     "key": "jcb-card-w",
     "name": "jcb-card-w",
     "articles": [
-      "jcb-card-w-shindan.html",
-      "touch-norisha-10-5.html"
-    ]
-  },
-  {
-    "key": "kateene-bank-debit",
-    "name": "カテエネBANKデビット 2026年8月版",
-    "articles": [
-      "kateene-bank-debit-shindan.html"
+      "jcb-card-w-shindan.html"
     ]
   },
   {
@@ -146,19 +134,11 @@
     ]
   },
   {
-    "key": "smbc-gold-nl",
-    "name": "三井住友カード ゴールド（NL）",
-    "articles": [
-      "smbc-gold-nl-shindan.html"
-    ]
-  },
-  {
     "key": "smbc-nl",
     "name": "メインカード ＋ 三井住友カード(NL)",
     "articles": [
       "card-combo-smbc-nl-shindan.html",
-      "smbc-nl-shindan.html",
-      "touch-norisha-10-5.html"
+      "smbc-nl-shindan.html"
     ]
   }
 ]
