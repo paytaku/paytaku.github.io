@@ -52,6 +52,13 @@
       "type": "direct",
       "url": "https://px.a8.net/svt/ejp?a8mat=4BA41D+G0X1YQ+4C2C+BXYE9",
       "category": "other"
+    },
+    "chobiricchi": {
+      "type": "point",
+      "url": "https://www.chobirich.com/cm/ad/?p=8225208671&i=5089387",
+      "via": "ちょびリッチ",
+      "code": "qdQB49",
+      "isPointSite": true
     }
   },
   "names": {
@@ -77,7 +84,8 @@
     "idare": "IDARE（イデア）",
     "kateene-bank-debit": "カテエネBANKデビット 2026年8月版",
     "lawson-ponta-plus": "ローソンPontaプラス",
-    "hifumi": "投資信託ひふみ"
+    "hifumi": "投資信託ひふみ",
+    "chobiricchi": "ちょびリッチ"
   },
   "banners": {
     "rakuten-card": [
@@ -191,6 +199,12 @@
       {
         "href": "https://px.a8.net/svt/ejp?a8mat=4BA41D+G0X1YQ+4C2C+BXYE9",
         "img": "https://www25.a8.net/svt/bgt?aid=260812273969&wid=001&eno=01&mid=s00000020226002006000&mc=1"
+      }
+    ],
+    "chobiricchi": [
+      {
+        "href": "https://www.chobirich.com/cm/ad/?p=8224856827&i=5089387&utm_source=referral_banner&utm_medium=banner&utm_campaign=introduction&utm_content=hukugyo_300_250",
+        "img": "https://www.cdn.chobirich.com/lp/introduction/hukugyo_300_250.png"
       }
     ]
   }
