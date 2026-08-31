@@ -1,7 +1,10 @@
 name: build-articles
 
-# content/articles.json や articles/*.html、affiliates.json を変更してmainにpushすると、
+# content/articles.json や articles/*.html、affiliates.json、assets/thumbnails配下の画像を変更してmainにpushすると、
 # 記事一覧（articles/index.html）とsitemap.xmlを自動生成してコミットし直す。
+# （2026-08-31追記：サムネイル画像だけをadmin/thumbnails.htmlからアップロードした場合も、
+# 　記事一覧側のサムネイル表示に反映されるよう、assets/thumbnails/** もトリガー対象に追加した。
+# 　これが無いと、画像自体はコミットされるのに articles/index.html の表示が古いまま残ってしまう。）
 # あわせて、内部リンク切れ・未収益化のアフィリエイトリンク・確認日の鮮度もチェックし、
 # 結果を content/health-check.json としてコミットする。
 # このJSONはサイトの編集モードから読み込まれ、GitHub Actionsの画面を見なくても
@@ -15,6 +18,7 @@ on:
       - "articles/**"
       - "scripts/**"
       - "affiliates.json"
+      - "assets/thumbnails/**"
   workflow_dispatch: {}
   schedule:
     # 毎週月曜9:00(UTC, 日本時間18:00)に、記事を編集していなくても定期チェックだけ走らせる。
