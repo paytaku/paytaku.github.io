@@ -146,6 +146,13 @@
     ]
   },
   {
+    "key": "smbc-gold-nl",
+    "name": "三井住友カード ゴールド（NL）",
+    "articles": [
+      "smbc-gold-nl-shindan.html"
+    ]
+  },
+  {
     "key": "smbc-nl",
     "name": "メインカード ＋ 三井住友カード(NL)",
     "articles": [
