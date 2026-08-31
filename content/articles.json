@@ -760,5 +760,48 @@
       "pointoinkamu-shindan"
     ],
     "customHtml": true
+  },
+  {
+    "slug": "dcard-goldu-shindan",
+    "category": "カード解説",
+    "title": "dカード GOLD Uは「30歳になった瞬間」が一番危ない｜実質無料の条件と自動切替の罠",
+    "publishedDate": "2026-08-31",
+    "updatedDate": "2026-08-31",
+    "tags": [
+      "dカード GOLD U",
+      "dカード GOLD",
+      "学生クレカ",
+      "年会費無料",
+      "ドコモ"
+    ],
+    "overview": "dカード GOLD Uは29歳以下限定で年会費3,300円（条件達成で実質無料）のゴールドカードですが、多くの解説記事は「持っている間」の話に終始し、「30歳になった瞬間に何が起きるか」まで書いていません。実質無料の3条件のどれを狙うべきか、自動切替の仕組み、2026年の公共料金還元率改定まで、持ち続ける前提でまとめました。",
+    "related": [
+      "dcard-docomo-bank-monex-shindan",
+      "dcard-series-shindan",
+      "credit-card-erabikata-shindan"
+    ],
+    "customHtml": true
+  },
+  {
+    "slug": "dcard-docomo-bank-monex-shindan",
+    "category": "カード解説",
+    "title": "dカードが9月から最大4.5%還元に｜多くの記事が書いていない「2年目の罠」",
+    "publishedDate": "2026-08-31",
+    "updatedDate": "2026-08-31",
+    "tags": [
+      "dカード",
+      "dカード GOLD",
+      "dカード PLATINUM",
+      "ドコモの銀行",
+      "マネックス証券",
+      "還元率"
+    ],
+    "overview": "2026年9月から、dカードの引落口座を「ドコモの銀行」に設定し、マネックス証券と連携すると還元率が最大4.5%まで上がる新しい仕組みが始まります。多くの解説記事は「初年度は全ランク共通で最大4.5%」までしか書いていませんが、実は2年目以降はカードのランクごとに上限が0.25%・1%・2%と大きく変わります。条件・上限・見落としやすい注意点までまとめました。",
+    "related": [
+      "dcard-series-shindan",
+      "dcard-goldu-shindan",
+      "credit-card-erabikata-shindan"
+    ],
+    "customHtml": true
   }
 ]
