@@ -950,11 +950,11 @@ function checkInternalLinks(articles){
 // 個別クロール可能な静的ページとして書き出したもの。
 // ここに追加しておけば、記事を追加するたびのsitemap再生成でも消えずに残る。
 const STATIC_PAGES = [
-  { path: "pages/kabu-koza.html", pri: "0.5", freq: "monthly" },
-  { path: "pages/nettsuuhan.html", pri: "0.5", freq: "monthly" },
-  { path: "pages/odakyu-point.html", pri: "0.5", freq: "monthly" },
-  { path: "pages/about.html", pri: "0.3", freq: "yearly" },
-  { path: "pages/privacy.html", pri: "0.3", freq: "yearly" },
+  { path: "articles/kabu-koza.html", pri: "0.5", freq: "monthly" },
+  { path: "articles/nettsuuhan.html", pri: "0.5", freq: "monthly" },
+  { path: "articles/odakyu-point.html", pri: "0.5", freq: "monthly" },
+  { path: "articles/about.html", pri: "0.3", freq: "yearly" },
+  { path: "articles/privacy.html", pri: "0.3", freq: "yearly" },
 ];
 
 function sitemapXml(articles){

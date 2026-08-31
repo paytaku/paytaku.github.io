@@ -5285,6 +5285,64 @@ function buildAdCardEl(slot){
   return card;
 }
 
+// ---- お店アイコンの色分け ----
+// ロゴ画像は権利上そのまま使えないため、各社の「色」だけを使って見分けやすくする。
+// 有名チェーンは個別の色を、それ以外はカテゴリ単位の色をフォールバックとして使う。
+// （色そのものは商標ではないため、アイコンの背景色・線の色として使う分には問題ない。）
+const STORE_BRAND_COLORS = {
+  // コンビニ
+  "セブン-イレブン": "#EE7B1A", "ローソン": "#0051A2", "ファミリーマート": "#00A040",
+  "ミニストップ": "#0068B7", "ポプラ": "#1F8A45", "セイコーマート": "#005BAC", "NewDays": "#00913A",
+  // ファストフード
+  "マクドナルド": "#DA291C", "ケンタッキーフライドチキン": "#C8102E", "モスバーガー": "#00963F",
+  "ロッテリア": "#EE7203", "ドミノ・ピザ": "#0064B1", "ピザハットオンライン": "#E4002B",
+  "フレッシュネスバーガー": "#B5651D", "ゼッテリア": "#D4145A",
+  // 牛丼・定食
+  "すき家": "#F39800", "吉野家": "#E85298", "松屋": "#E60012", "松のや／マイカリー食堂": "#C7000B", "夢庵": "#5C8A3A",
+  // ファミレス
+  "ガスト（すかいらーくグループ）": "#F5A200", "サイゼリヤ": "#00A650", "バーミヤン": "#E2231A",
+  "ジョナサン": "#4CA33E", "ココス": "#F08300", "しゃぶ葉": "#D4213D", "デニーズ": "#FFC72C",
+  // 回転寿司
+  "スシロー": "#E2001B", "くら寿司": "#E8548C", "はま寿司": "#0075C2", "かっぱ寿司": "#00A0DE",
+  // カフェ
+  "スターバックス": "#00704A", "スターバックス（店頭）": "#00704A", "ドトールコーヒー": "#B3242A",
+  "コメダ珈琲店": "#7B4B2A", "サンマルクカフェ": "#5C3A21", "カフェ・ベローチェ": "#C8161D",
+  "エクセルシオール カフェ": "#00A19B", "カフェ・ド・クリエ": "#8C6239", "上島珈琲店": "#6F4E37", "珈琲館": "#5B4636",
+  // スーパー・ドラッグストア・百貨店など全国区のもの
+  "イオン": "#E4007F", "イトーヨーカドー": "#D71920", "成城石井": "#1B4D3E",
+  "マツモトキヨシ／ココカラファイン": "#FFD400", "ウエルシア": "#0075C2", "ドラッグストア（ウエルシア等）": "#0075C2",
+  "西武百貨店": "#231F20", "髙島屋": "#8A6D3B", "そごう": "#8A6D3B",
+  // ネット通販
+  "Amazon": "#FF9900", "楽天市場": "#BF0000", "Yahoo!ショッピング": "#FF0033", "ユニクロ オンラインストア": "#FF0000",
+  "App Store / Apple": "#555555", "Google Play": "#34A853", "SHEIN": "#000000", "Qoo10": "#EF3E42",
+  // ホームセンター・家電
+  "ビックカメラ／ビックドラッグ": "#E60012", "コジマ": "#0068B7", "ジョーシン": "#E60021", "ソフマップ": "#F39800",
+  // ファッション
+  "洋服の青山": "#00285E", "AOKI": "#002F87", "OWNDAYS／オンデーズ": "#000000",
+  // エンタメ
+  "Hulu": "#3DBB3D", "U-NEXT": "#000A66", "ディズニープラス": "#113CCF",
+  "ユニバーサル・スタジオ・ジャパン": "#003DA5", "ナガシマリゾート": "#0072BC",
+  // 交通
+  "JR（在来線・新幹線）": "#00913A",
+};
+// カテゴリ単位のフォールバック色（STORE_BRAND_COLORSに無いお店はここから決まる）
+const CATEGORY_ICON_COLORS = {
+  "コンビニ": "#F97316", "ファストフード": "#EF4444", "牛丼・定食": "#D97706", "ファミレス": "#F59E0B",
+  "回転寿司": "#EC4899", "飲食店（その他）": "#F97316", "カフェ": "#92400E", "スーパー": "#16A34A",
+  "自販機": "#0891B2", "エンタメ": "#7C3AED", "トラベル": "#0EA5E9", "ホームセンター": "#4B5563",
+  "ファッション": "#1E3A8A", "ネット通販": "#DC2626", "交通": "#059669", "ドラッグストア": "#2563EB",
+  "その他": "#6366F1",
+};
+function storeIconColor(store){
+  return STORE_BRAND_COLORS[store.name] || CATEGORY_ICON_COLORS[store.category] || "#6366F1";
+}
+// hex(#RRGGBB) → rgba文字列（アイコン背景の薄いタイル色に使う）
+function hexToRgba(hex, alpha){
+  const h = hex.replace("#", "");
+  const r = parseInt(h.substring(0,2), 16), g = parseInt(h.substring(2,4), 16), b = parseInt(h.substring(4,6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
 function buildStoreCardEl(store, distanceMeters){
   const shown = combinedCards(store);
   const sorted = [...shown].sort((a,b) => rateValue(b) - rateValue(a));
@@ -5315,6 +5373,7 @@ function buildStoreCardEl(store, distanceMeters){
   };
   const catPath = CAT_PATHS[store.category] || CAT_PATHS["その他"];
   const catIconSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${catPath}</svg>`;
+  const iconColor = storeIconColor(store);
 
   const distText = (typeof distanceMeters === "number")
     ? (distanceMeters < 1000 ? Math.round(distanceMeters)+"m" : (distanceMeters/1000).toFixed(1)+"km")
@@ -5333,7 +5392,7 @@ function buildStoreCardEl(store, distanceMeters){
   const head = document.createElement("div");
   head.className = "store-head";
   head.innerHTML = `
-    <div class="store-head-icon">${catIconSvg}</div>
+    <div class="store-head-icon" style="background:${hexToRgba(iconColor, 0.14)}; color:${escapeAttr(iconColor)};">${catIconSvg}</div>
     <div class="store-head-mid">
       <div class="store-name">${escapeHtml(store.name)}${verifyBadgeHtml("store:" + store.name)}</div>
       <div class="store-sub">${escapeHtml(store.category)}${distText ? ` <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg> ${distText}` : ` · ${sorted.length}件のカード`}</div>
