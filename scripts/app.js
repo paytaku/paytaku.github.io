@@ -112,7 +112,11 @@ function affiliateForKey(key){
   const links = (affiliates && affiliates.links) || {};
   const entry = links[key];
   if(!entry) return null;
-  return typeof entry === "string" ? entry : (entry.url || null);
+  const url = typeof entry === "string" ? entry : (entry.url || null);
+  // 「#」などのダミーURLは、実質「未設定」と同じ扱いにする。
+  // isSafeHttpUrl単体だと「#」は現在ページのURLとして解決されてしまい弾けないため、明示的に除外している。
+  if(!url || url === "#" || !isSafeHttpUrl(url)) return null;
+  return url;
 }
 
 // カード名（複数可）から該当するアフィリリンクを引く。affiliates.json の links は
@@ -138,7 +142,7 @@ function affiliateFor(candidateNames){
     Object.keys(links).forEach(slug => {
       const entry = links[slug];
       const url = entry && (typeof entry === "string" ? entry : entry.url);
-      if(!url) return;
+      if(!url || url === "#" || !isSafeHttpUrl(url)) return;
       const name = names[slug] || AFFILIATE_SLUG_FALLBACK_NAMES[slug] || slug;
       const matches = cardName.includes(name) || name.includes(cardName) || cardName.includes(name.split("（")[0]) || name.includes(shortName);
       if(matches && name.length > bestLen){
@@ -288,18 +292,109 @@ const DEFAULT_PICKS = [
     "url": "https://paypay.ne.jp/event/"
   },
   {
-    "slug": "dpoint-koukan-zouryo",
-    "name": "dポイント交換 最大15%増量キャンペーン",
-    "rate": "もれなく8% ＋ 抽選7%",
-    "period": "8/1〜8/31",
-    "expires": "2026-08-31",
+    "slug": "jal-pay-applepay-100",
+    "name": "JAL Pay Apple Payで最大100%ポイントバック",
+    "rate": "利用額の最大100%還元（9月・10月それぞれ最大500pt、2ヶ月合計1,000pt）",
+    "period": "9/1〜10/31",
+    "expires": "2026-10-31",
     "how": [
-      "キャンペーンページからエントリーする（交換後でも期間内ならOKだが早めに）",
-      "対象の他社ポイント（Pontaポイント、ポイントサイトのポイントなど）をdポイントへ交換する",
-      "交換した合計額に対して8%が期間限定ポイントで付与される"
+      "キャンペーンページから事前にエントリーする（期間中1回でOK、毎月のエントリーは不要）",
+      "JAL PayをApple Payに設定する（QUICPay決済・Mastercardのタッチ決済／オンライン決済）",
+      "Apple Pay経由でJAL Payを使って支払う"
     ],
-    "note": "買い物をしなくても、持っているポイントを交換するだけで増えるのが特徴。ポイントサイトを使っている人には交換の絶好機。【注意】元の交換レートが100%でないポイントは目減りするため要確認（例：永久不滅ポイントはdポイントへ90%＝1P→4.5Pなので直接交換は不利。他社ポイントを経由すればほぼ100%で交換できる）。付与されるのは期間限定ポイントなので、使い道を決めてから交換すること。なお2026年夏は例年より増量レートが低めという評価もある。［確認日: 2026-08-09／出典: dポイント公式・比較メディア複数］",
-    "url": "https://dpoint.docomo.ne.jp/campaign/index.html"
+    "note": "9月・10月それぞれ最大500 JAL Payポイント、2ヶ月合計で最大1,000ポイント還元。カード実物での決済やコード決済は対象外、必ずApple Pay経由で使うこと。［確認日: 2026-09-01／出典: JALペイメント・ポート公式発表］",
+    "url": "https://www.jal.co.jp/jp/ja/jmb/jalpay/pay/campaign/2609-applepay/"
+  },
+  {
+    "slug": "airwallet-qr-15",
+    "name": "エアウォレット QR決済で15%還元",
+    "rate": "15%還元（上限500円分）",
+    "period": "9/1〜9/30",
+    "expires": "2026-09-30",
+    "how": [
+      "キャンペーンページからエントリーする",
+      "リクルートID連携を済ませる",
+      "エアウォレットアプリまたは三菱UFJ銀行アプリのCOIN+のQRコード／バーコードで対象店舗にて支払う"
+    ],
+    "note": "還元上限は500円分（支払額換算で3,333円）。ローソン・無印良品・ダイコクドラッグ・ビバホーム・オオゼキなどが対象（一部対象外店舗あり、公式サイトに一覧あり）。特典は2026年11月上旬頃に加算予定。［確認日: 2026-09-01／出典: リクルートID・ポイント公式サイト］",
+    "url": "https://point.recruit.co.jp/recruitid/doc/campaign/aw/airwallet202609_value/15khr/"
+  },
+  {
+    "slug": "famipay-45th-20",
+    "name": "ファミペイ「ファミマとコラボ祭」対象商品20%還元",
+    "rate": "20%還元（進呈上限100円相当）",
+    "period": "9/1〜9/14",
+    "expires": "2026-09-14",
+    "how": [
+      "ファミペイを提示する",
+      "「ファミマとコラボ祭」対象商品（コラボパン・おむすび等18種類）を購入する"
+    ],
+    "note": "ファミマ45周年記念の対象商品限定キャンペーン。進呈上限は期間限定ファミマポイント100円相当。小数点以下切り捨て。［確認日: 2026-09-01／出典: ファミリーマート公式］",
+    "url": "https://famipay.famidigi.jp/cp/cp227/260901/"
+  },
+  {
+    "slug": "smbc-touch-norisha-regional-20",
+    "name": "三井住友カード スマホのタッチ決済乗車で最大20%還元（地域限定上乗せ）",
+    "rate": "初回利用は最大20%、利用経験ありは最大10%",
+    "period": "9/1〜",
+    "how": [
+      "対象の交通事業者（箱根登山電車・箱根ロープウェイ・旭川電気軌道・網走バス等）でスマホのタッチ決済を使う",
+      "初めて利用する場合と、過去に利用経験がある場合で還元率が異なる"
+    ],
+    "note": "常設の「クレカのタッチ決済で乗車 最大10.5%」とは別枠の地域限定キャンペーン。内訳は通常ポイント＋常設特典＋今回の上乗せ分。特典は2026年11月末頃までに付与予定。［確認日: 2026-09-01／出典: 三井住友カード公式］",
+    "url": "https://www.smbc-card.com/mem/cardinfo/26/cardinfo7224777.jsp"
+  },
+  {
+    "slug": "smbc-applepay-online-10000",
+    "name": "三井住友カード Apple Payのオンライン決済で最大10,000pt",
+    "rate": "抽選で最大10,000pt＋5,000円以上利用でもれなく100pt",
+    "period": "9/1〜9/30",
+    "expires": "2026-09-30",
+    "how": [
+      "キャンペーンページからエントリーする",
+      "三井住友カードを設定したApple Payでオンライン決済を利用する",
+      "5,000円以上利用するともれなく100ptが確定する（抽選の10,000ptとは別枠）"
+    ],
+    "note": "抽選部分と確定100pt部分は別条件。対象は「キャンペーンページに記載のある三井住友カード」を設定したApple Payのオンライン決済のみ。［確認日: 2026-09-01／出典: 三井住友カード公式］",
+    "url": "https://www.smbc-card.com/mem/cardinfo/26/cardinfo7224794.jsp"
+  },
+  {
+    "slug": "wester-festa-5x",
+    "name": "WESTERフェスタ！ WESTERポイントほぼ5倍",
+    "rate": "ポイントほぼ5倍（付与上限1,000pt）",
+    "period": "9/1〜9/30（エントリーは8/19〜9/30）",
+    "expires": "2026-09-30",
+    "how": [
+      "WESTER会員登録（無料）を済ませる",
+      "キャンペーンにエントリーする",
+      "対象サービス（鉄道ネット予約、店舗・施設でのアプリ提示（ルクア大阪・エキマルシェ・ホテルグランヴィア等）、旅行・ホテル等）を利用する"
+    ],
+    "note": "付与上限は1人1,000ポイント。ポイント付与は2026年11月末頃から順次実施予定。20ポイント以上ためると抽選でUSJパス等が当たる企画もあり。［確認日: 2026-09-01／出典: WESTERポータル公式・JR西日本発表］",
+    "url": "https://wester.jr-odekake.net/campaign/detail/012027082601"
+  },
+  {
+    "slug": "rakuten-card-visa-applepay-1000",
+    "name": "楽天カード Apple PayでVisaのタッチ決済 最大1,000円キャッシュバック",
+    "rate": "抽選で最大1,000円キャッシュバック",
+    "period": "実施中（要確認）",
+    "how": [
+      "Visa割にメールアドレスと楽天カードVisaのカード番号を登録する",
+      "Apple Payに設定した楽天カードVisaで、1回1,000円（税込）以上のVisaのタッチ決済を利用する"
+    ],
+    "note": "抽選制のキャッシュバックキャンペーン。当選確率や特典の詳細はVisa割ページで確認を。［確認日: 2026-09-01／出典: 楽天カード公式］",
+    "url": "https://www.rakuten-card.co.jp/campaign/spt/visa_applepay/"
+  },
+  {
+    "slug": "vandle-lawsonbank-atm-10000",
+    "name": "バンドルカード×ローソン銀行ATMチャージで抽選最大10,000円",
+    "rate": "抽選で最大10,000円",
+    "period": "9月（要確認・詳細はキャンペーンページで）",
+    "how": [
+      "ローソン銀行ATMからバンドルカードへチャージする",
+      "チャージした人の中から抽選で最大10,000円が当たる"
+    ],
+    "note": "抽選条件・上限金額の詳細はキャンペーンページを確認してください。［確認日: 2026-09-01／出典: バンドルカード公式］",
+    "url": "https://vandle.jp/campaigns/lawsonbank-atm-charge-202609/"
   }
 ];
 
@@ -5334,6 +5429,7 @@ const CATEGORY_ICON_COLORS = {
   "その他": "#6366F1",
 };
 function storeIconColor(store){
+  if(store.color && /^#[0-9A-Fa-f]{6}$/.test(store.color)) return store.color;
   return STORE_BRAND_COLORS[store.name] || CATEGORY_ICON_COLORS[store.category] || "#6366F1";
 }
 // hex(#RRGGBB) → rgba文字列（アイコン背景の薄いタイル色に使う）
@@ -6190,6 +6286,7 @@ function renderPicks(){
       </div>
       <div class="pick-period">${escapeHtml(p.period)}　${expiryBadgeHtml(p)}</div>
       <ol class="pick-steps">${p.how.map(h => `<li>${escapeHtml(h)}</li>`).join("")}</ol>
+      ${(p.image && isSafeHttpUrl(p.image)) ? `<img src="${escapeAttr(p.image)}" alt="${escapeAttr(p.name)}" class="pick-image" loading="lazy">` : ""}
       ${noteHtml(p.note)}
       ${linkRowHtml(p.url, p.name)}
     `;
@@ -6212,6 +6309,7 @@ function openPickModal(pick){
       { key: "how", label: "手順（1行に1ステップ。改行で区切る）", type: "textarea",
         value: pick ? (pick.how || []).join("\n") : "" },
       { key: "url", label: "キャンペーンページのURL", value: pick ? pick.url : "" },
+      { key: "image", label: "キャンペーン画像（任意）", type: "image", value: pick ? pick.image : "" },
       { key: "note", label: "上限・注意点", type: "textarea", value: pick ? pick.note : "" },
     ],
     (v)=>{
@@ -6219,7 +6317,8 @@ function openPickModal(pick){
         name: v.name, rate: v.rate, period: v.period,
         expires: v.expires || undefined,
         how: v.how ? v.how.split("\n").map(s=>s.trim()).filter(Boolean) : [],
-        note: v.note, url: v.url || undefined
+        note: v.note, url: v.url || undefined,
+        image: v.image || undefined
       };
       if(isNew) MONTHLY_PICKS.push(obj);
       else Object.assign(pick, obj);
@@ -7548,6 +7647,16 @@ async function runAiImport(input, statusEl, previewEl, saveBtn){
       ${r.warning ? row("⚠ 注意", r.warning) : ""}
     `;
 
+    function normalizeExpiresDate(str){
+      if(!str || str === "null") return undefined;
+      const s = String(str).trim();
+      if(/^\d{4}-\d{2}-\d{2}$/.test(s)) return s; // 既に正しい形式
+      // 「2026年8月31日」のような表記をYYYY-MM-DDへ変換する
+      const m = s.match(/^(\d{4})年(\d{1,2})月(\d{1,2})日$/);
+      if(m) return `${m[1]}-${String(m[2]).padStart(2,"0")}-${String(m[3]).padStart(2,"0")}`;
+      return s; // それでも変換できなければ元の文字列のまま返す（下で妥当性チェックする）
+    }
+
     saveBtn.style.display = "block";
     saveBtn.onclick = ()=>{
       const cat = CATEGORY_LIST.includes(r.category) ? r.category : "その他";
@@ -7556,18 +7665,33 @@ async function runAiImport(input, statusEl, previewEl, saveBtn){
         store = { name: r.store, category: cat, cards: [] };
         STORES.push(store);
       }
+      const normalizedExpires = normalizeExpiresDate(r.expires);
+      // YYYY-MM-DD形式に正規化できなかった場合、「今月のキャンペーン」タブでは
+      // 日付を読み取れず「常設」（期間指定なし）扱いになり、一覧から静かに消えてしまう。
+      // それに気づけるよう、保存前に確認を挟む。
+      if(normalizedExpires && !/^\d{4}-\d{2}-\d{2}$/.test(normalizedExpires)){
+        const proceed = confirm(
+          `終了日「${normalizedExpires}」の形式を認識できませんでした。このまま保存すると「常設」扱いになり、`
+          + `「今月のキャンペーン」タブの一覧には表示されません（エントリー忘れチェックには表示される場合があります）。\n\n`
+          + `続けて保存しますか？（キャンセルして、あとで編集モードから終了日を「2026-08-31」のような形式で入力し直すこともできます）`
+        );
+        if(!proceed) return;
+      }
       const card = {
         name: r.card, rate: r.rate, method: r.method, note: r.note,
         // 保存時点でもURLのスキームを検証しておく（http/https以外・不正な値は保存しない）。
         // 表示側のエスケープと合わせた二重の防御。
         url: isSafeHttpUrl(r.url) ? r.url : undefined,
-        expires: (r.expires && r.expires !== "null") ? r.expires : undefined
+        expires: normalizedExpires
       };
       const idx = store.cards.findIndex(c => c.name === r.card);
       if(idx >= 0) store.cards[idx] = card; else store.cards.push(card);
 
       persistStores();
       renderStores();
+      // openCardModal側と同じ理由で、キャンペーン期間ありのカードを保存したときは
+      // 「今月のキャンペーン」タブのカテゴリ絞り込みを自動でリセットする。
+      if(card.expires) campaignCategory = "all";
       renderCampaigns();
       document.getElementById("modalOverlay").style.display = "none";
     };
@@ -8631,6 +8755,31 @@ function showModal(title, fields, onSave, onDelete){
       const opts = f.options.map(o => `<option value="${escapeAttr(o)}" ${o === f.value ? "selected" : ""}>${escapeHtml(o)}</option>`).join("");
       return `<div class="modal-field"><label>${f.label}</label><select data-key="${f.key}">${opts}</select></div>`;
     }
+    if(f.type === "color"){
+      const hex = /^#[0-9A-Fa-f]{6}$/.test(f.value || "") ? f.value : "#6366F1";
+      return `<div class="modal-field modal-field-color">
+        <label>${f.label}</label>
+        <div class="modal-color-row">
+          <input type="color" class="modal-color-picker" value="${escapeAttr(hex)}">
+          <input type="text" data-key="${f.key}" class="modal-color-text" placeholder="自動（未入力）" value="${f.value ? escapeAttr(f.value) : ""}">
+          <button type="button" class="modal-color-clear">自動に戻す</button>
+        </div>
+      </div>`;
+    }
+    if(f.type === "image"){
+      return `<div class="modal-field modal-field-image">
+        <label>${f.label}</label>
+        <input type="text" data-key="${f.key}" class="modal-image-text" placeholder="https://... または下のボタンで画像を選択" value="${f.value ? escapeAttr(f.value) : ""}">
+        <div class="modal-image-upload-row">
+          <label class="modal-image-upload-btn">
+            📷 スマホから画像を選ぶ
+            <input type="file" accept="image/png,image/jpeg,image/webp" class="modal-image-file" style="display:none;">
+          </label>
+          <span class="modal-image-status"></span>
+        </div>
+        <img class="modal-image-preview" style="display:${f.value ? "block" : "none"};" src="${f.value ? escapeAttr(f.value) : ""}">
+      </div>`;
+    }
     return `<div class="modal-field"><label>${f.label}</label><input type="${f.type === "password" ? "password" : "text"}" data-key="${f.key}" value="${f.value ? escapeAttr(f.value) : ""}"></div>`;
   }).join("");
 
@@ -8645,6 +8794,46 @@ function showModal(title, fields, onSave, onDelete){
   `;
 
   overlay.style.display = "flex";
+
+  // type:"color" のフィールド：ピッカーとテキスト欄を同期し、「自動に戻す」で空欄に戻す
+  box.querySelectorAll(".modal-field-color").forEach(wrap => {
+    const picker = wrap.querySelector(".modal-color-picker");
+    const text = wrap.querySelector(".modal-color-text");
+    const clearBtn = wrap.querySelector(".modal-color-clear");
+    picker.addEventListener("input", () => { text.value = picker.value; });
+    text.addEventListener("input", () => { if(/^#[0-9A-Fa-f]{6}$/.test(text.value)) picker.value = text.value; });
+    clearBtn.addEventListener("click", () => { text.value = ""; });
+  });
+
+  // type:"image" のフィールド：スマホからの画像アップロード、またはURL直接入力の両対応
+  box.querySelectorAll(".modal-field-image").forEach(wrap => {
+    const textEl = wrap.querySelector(".modal-image-text");
+    const fileEl = wrap.querySelector(".modal-image-file");
+    const statusEl = wrap.querySelector(".modal-image-status");
+    const previewEl = wrap.querySelector(".modal-image-preview");
+    function showPreview(url){
+      if(url){ previewEl.src = url; previewEl.style.display = "block"; }
+      else { previewEl.removeAttribute("src"); previewEl.style.display = "none"; }
+    }
+    textEl.addEventListener("input", () => showPreview(textEl.value));
+    fileEl.addEventListener("change", async () => {
+      const file = fileEl.files[0];
+      if(!file) return;
+      statusEl.textContent = "アップロード中…";
+      statusEl.className = "modal-image-status busy";
+      try{
+        const path = await uploadCampaignImage(file, title);
+        textEl.value = path;
+        showPreview(path);
+        statusEl.textContent = "✓ アップロードしました（保存を押すと確定します）";
+        statusEl.className = "modal-image-status ok";
+      }catch(err){
+        statusEl.textContent = "⚠️ " + err.message;
+        statusEl.className = "modal-image-status err";
+      }
+      fileEl.value = "";
+    });
+  });
 
   const close = () => { overlay.style.display = "none"; };
 
@@ -8686,6 +8875,9 @@ function escapeAttr(str){
 // javascript: 等の危険なスキームや、AIの誤生成による不正な文字列を弾くためのチェック。
 function isSafeHttpUrl(str){
   if(!str || typeof str !== "string") return false;
+  // 「#」のようなプレースホルダー（未設定）URLは、location.hrefに対して相対解決すると
+  // 見かけ上http/httpsとして通ってしまうため、ここで明示的に弾く。
+  if(str === "#" || str.charAt(0) === "#") return false;
   try{
     const u = new URL(str, location.href);
     return u.protocol === "http:" || u.protocol === "https:";
@@ -8786,26 +8978,43 @@ function openStoreModal(store){
           return "なし";
         })() },
       { key: "acceptNote", label: "使える決済の補足（任意）", type: "textarea", value: store ? (store.acceptNote || "") : "" },
+      { key: "color", label: "アイコンの色（任意）", type: "color", value: store ? (store.color || "") : "" },
     ],
     (vals)=>{
       const ex = [];
       if(/コード決済/.test(vals.excludes)) ex.push("qr");
       if(/電子マネー/.test(vals.excludes)) ex.push("emoney");
       if(/交通系ICも|すべて/.test(vals.excludes)) ex.push("transit");
+      let color = (vals.color || "").trim();
+      if(color && !/^#[0-9A-Fa-f]{6}$/.test(color)){
+        alert("アイコンの色は「#EE7B1A」のような形式（#＋16進数6桁）で入力してください。空欄なら自動で色が付きます。");
+        return;
+      }
       if(isNew){
         const newStore = { name: vals.name, category: vals.category || "未分類", cards: [] };
         if(ex.length) newStore.excludes = ex;
         if(vals.acceptNote) newStore.acceptNote = vals.acceptNote;
+        if(color) newStore.color = color;
         STORES.push(newStore);
         persistStores();
         renderStores();
         // 新規店舗は続けてカード追加モーダルを開く
         openCardModal(newStore, null);
       } else {
+        const oldName = store.name;
         store.name = vals.name;
         store.category = vals.category || "未分類";
         if(ex.length) store.excludes = ex; else delete store.excludes;
         if(vals.acceptNote) store.acceptNote = vals.acceptNote; else delete store.acceptNote;
+        if(color) store.color = color; else delete store.color;
+        // お気に入りは店名で管理しているため、名前を変えるとこの端末のお気に入り登録が
+        // 外れてしまう（他の人の端末までは追従できない点はご了承ください）。
+        // せめて今この操作をしている本人の分だけは、そのまま引き継がれるようにする。
+        if(oldName !== vals.name && typeof favs !== "undefined" && favs.has(oldName)){
+          favs.delete(oldName);
+          favs.add(vals.name);
+          saveSet(FAV_KEY, favs);
+        }
         persistStores();
         renderStores();
       }
@@ -8840,7 +9049,7 @@ function openCardModal(store, card){
       { key: "expires", label: "終了日（期間限定の場合のみ。例：2026-08-31／常設なら空欄）", value: card ? card.expires : "" },
       { key: "url", label: "公式ページのURL（任意）", value: card ? card.url : "" },
       { key: "articleUrl", label: "くわしい記事へのリンク（任意・自分の記事へ「詳しくはこちら」ボタンを出す）", value: card ? card.articleUrl : "" },
-      { key: "image", label: "画像URL（任意・キャンペーンバナーなどを貼りたい場合）", value: card ? card.image : "" },
+      { key: "image", label: "キャンペーン画像（任意）", type: "image", value: card ? card.image : "" },
       { key: "note", label: "補足・注意点（任意）", type: "textarea", value: card ? card.note : "" },
     ],
     (vals)=>{
@@ -8848,6 +9057,15 @@ function openCardModal(store, card){
       const cardName = (vals.preset && !vals.preset.startsWith("（")) ? vals.preset : vals.name;
       if(!cardName){ alert("決済手段を選ぶか、カード名を入力してください"); return; }
       vals.name = cardName;
+      // 終了日は「YYYY-MM-DD」形式でないと日付として認識されず「常設」扱いになり、
+      // 「今月のキャンペーン」タブの一覧から静かに消えてしまう。保存前に気づけるようにする。
+      if(vals.expires && !/^\d{4}-\d{2}-\d{2}$/.test(vals.expires)){
+        const proceed = confirm(
+          `終了日「${vals.expires}」は「2026-08-31」のような形式ではありません。このまま保存すると「常設」扱いになり、`
+          + `「今月のキャンペーン」タブの一覧には表示されません。\n\n続けて保存しますか？`
+        );
+        if(!proceed) return;
+      }
       if(isNew){
         store.cards.push({ name: vals.name, rate: vals.rate, method: vals.method, note: vals.note,
                            expires: vals.expires || undefined, url: vals.url || undefined,
@@ -8868,6 +9086,10 @@ function openCardModal(store, card){
       }
       persistStores();
       renderStores();
+      // 終了日（キャンペーン期間）を設定したカードは、「今月のキャンペーン」タブの
+      // カテゴリ絞り込みが「すべて」以外のままだと、保存した直後なのに一覧から消えて
+      // 見えるという紛らわしい状態になる。それを防ぐため、絞り込みを自動でリセットする。
+      if(vals.expires) campaignCategory = "all";
       renderCampaigns();
     },
     isNew ? null : ()=> deleteCard(store, card)
@@ -8984,6 +9206,59 @@ document.getElementById("resetStoresBtn").addEventListener("click", ()=>{
 // ========== GitHub 自動同期 ==========
 
 // UTF-8文字列を安全にbase64化する（日本語を含むためbtoa単体では壊れる）
+// ファイル（スマホの写真など）をbase64文字列に変換する（GitHub Contents APIへのアップロード用）
+function fileToBase64(file){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result).split(",")[1] || "");
+    reader.onerror = () => reject(new Error("ファイルの読み込みに失敗しました"));
+    reader.readAsDataURL(file);
+  });
+}
+
+function extForImageMime(mime){
+  if(mime === "image/png") return "png";
+  if(mime === "image/jpeg" || mime === "image/jpg") return "jpg";
+  if(mime === "image/webp") return "webp";
+  return null;
+}
+
+// キャンペーンバナー等の画像を assets/campaign-images/ にアップロードし、
+// 保存後のパス（相対パス）を返す。admin/thumbnails.html のuploadThumbnailと同じ考え方。
+async function uploadCampaignImage(file, hintName){
+  const cfg = loadGithubConfig();
+  if(!cfg || !cfg.username || !cfg.repo || !cfg.token){
+    throw new Error("GitHub未接続です。先に「🔗 GitHub連携」から設定してください。");
+  }
+  const ext = extForImageMime(file.type);
+  if(!ext){
+    throw new Error("対応していない画像形式です（PNG・JPEG・WEBPのみ対応）。");
+  }
+  const branch = cfg.branch || "main";
+  const safeName = String(hintName || "campaign").replace(/[^a-zA-Z0-9ぁ-んァ-ヶ一-龠ー_-]/g, "").slice(0, 30) || "campaign";
+  const path = `assets/campaign-images/${safeName}-${Date.now()}.${ext}`;
+  const apiUrl = `https://api.github.com/repos/${cfg.username}/${cfg.repo}/contents/${path}`;
+  const b64 = await fileToBase64(file);
+  const putRes = await fetch(apiUrl, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${cfg.token}`,
+      Accept: "application/vnd.github+json",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      message: `ペイ択：キャンペーン画像を追加（${safeName}）`,
+      content: b64,
+      branch
+    })
+  });
+  if(!putRes.ok){
+    const errBody = await putRes.text();
+    throw new Error(`アップロードに失敗（HTTP ${putRes.status}）：${errBody.slice(0,150)}`);
+  }
+  return path;
+}
+
 function utf8ToBase64(str){
   return btoa(unescape(encodeURIComponent(str)));
 }
