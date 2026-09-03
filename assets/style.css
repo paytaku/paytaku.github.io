@@ -2533,6 +2533,10 @@
   }
   .icon-btn:hover{ background: var(--line); color: var(--text); }
   .edit-mode .icon-btn{ display: inline-flex; }
+  .edit-store-name-btn{
+    display: inline-flex !important; width: auto !important; padding: 3px 8px;
+    font-size: 10.5px; font-weight: 700; white-space: nowrap;
+  }
   .add-card-row{ display: none; padding: 11px 16px; }
   .edit-mode .add-card-row{ display: block; }
   .add-card-btn{
