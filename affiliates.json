@@ -34,8 +34,9 @@
       "isPointSite": true
     },
     "moppy-signup": {
-      "type": "direct",
-      "url": "#",
+      "type": "point",
+      "url": "https://pc.moppy.jp/entry/invite.php?invite=4N93A173",
+      "code": "4N93A173",
       "isPointSite": true
     },
     "pointoinkamu": {
