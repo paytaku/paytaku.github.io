@@ -6512,6 +6512,7 @@ function renderCampaigns(){
     el.innerHTML = `
       <div class="campaign-card-top">
         <span class="campaign-store">${escapeHtml(store.name)}</span>
+        ${editMode ? `<button class="icon-btn edit-store-name-btn" title="お店の名前・カテゴリを編集">✎店名</button>` : ""}
         ${expiryBadgeHtml(card)}
         <span class="campaign-rate">${escapeHtml(card.rate)}</span>
         ${editMode ? `
@@ -6535,6 +6536,7 @@ function renderCampaigns(){
     if(editMode){
       el.querySelector(".edit-campaign-btn")?.addEventListener("click", ()=> openCardModal(store, card));
       el.querySelector(".delete-campaign-btn")?.addEventListener("click", ()=> deleteCard(store, card));
+      el.querySelector(".edit-store-name-btn")?.addEventListener("click", ()=> openStoreModal(store));
     }
     list.appendChild(el);
   });
