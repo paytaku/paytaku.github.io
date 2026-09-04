@@ -9471,7 +9471,7 @@ async function uploadCampaignImage(file, hintName){
   const tokenPreview = cfg.token.length > 8
     ? `${cfg.token.slice(0,4)}…${cfg.token.slice(-4)}（${cfg.token.length}文字）`
     : `${cfg.token.length}文字`;
-  const debugInfo = `[owner=${cfg.username} / repo=${cfg.repo} / branch=${branch} / token=${tokenPreview}]`;
+  const debugInfo = `[owner=${cfg.username} / repo=${cfg.repo} / branch=${branch} / token=${tokenPreview} / auth=token形式v3]`;
 
   // pushJsonToGithub（店舗データ等の保存で実績のある関数）と全く同じ手順に揃える：
   // 1. 対象パスの現状を一度GETで確認する（新規ファイルなら404が返るのが正常）
