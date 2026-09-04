@@ -224,6 +224,7 @@ function matchesCategory(storeCategory, filterCategory){
 const DEFAULT_PICKS = [
   {
     "slug": "touch-norisha-10-5",
+    "hasArticle": true,
     "name": "クレカのタッチ決済で乗車 最大10.5%（常設）",
     "rate": "JCB 10.5%／三井住友 8%",
     "period": "常設（JCBは2027/5/15まで）",
@@ -237,6 +238,7 @@ const DEFAULT_PICKS = [
   },
   {
     "slug": "vpoint-pay-yusen-10",
+    "hasArticle": true,
     "name": "VポイントPay ポイント優先払いで10%還元",
     "rate": "10%還元",
     "period": "8/1〜8/31",
@@ -252,6 +254,7 @@ const DEFAULT_PICKS = [
   },
   {
     "slug": "vcoupon-multi-shop-500pt",
+    "hasArticle": true,
     "capYen": 500,
     "name": "Vクーポン 複数ショップ利用で最大500ポイント",
     "rate": "最大500pt上乗せ",
@@ -266,6 +269,7 @@ const DEFAULT_PICKS = [
   },
   {
     "slug": "natsu-coupon-matsuri",
+    "hasArticle": true,
     "name": "夏のクーポン祭り（Vクーポン × Vポイントアプリ）",
     "rate": "2種類のクーポンを重ね取り",
     "period": "8/1〜9/30",
@@ -280,6 +284,7 @@ const DEFAULT_PICKS = [
   },
   {
     "slug": "jichitai-campaign",
+    "hasArticle": true,
     "name": "自治体キャンペーン（地域限定の高還元）",
     "rate": "最大10〜30%還元",
     "period": "地域ごとに異なる",
@@ -6635,14 +6640,12 @@ function renderCampaignRanking(){
       return { p, v, isPercent, hasCapYen };
     })
     .sort((a,b)=> b.v - a.v)
-    .slice(0, 3);
+    .slice(0, 8);
 
-  const RANK_COLORS = ["#F59E0B","#94A3B8","#B45309"];
-  const RANK_ICONS = [
-    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>`,
-    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>`,
-    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>`,
-  ];
+  const RANK_COLORS = ["#F59E0B","#94A3B8","#B45309","#475569","#475569","#475569","#475569","#475569"];
+  const TROPHY_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>`;
+  // 4位以降はトロフィーではなく番号だけのシンプルな表示にする（3位までを「表彰台」として視覚的に区別するため）
+  const RANK_ICONS = [TROPHY_ICON, TROPHY_ICON, TROPHY_ICON, "", "", "", "", ""];
   const SVC_ICONS = [
     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7a2 2 0 0 1 2-2h13a1 1 0 0 1 1 1v3"/><path d="M3 7v10a2 2 0 0 0 2 2h14a1 1 0 0 0 1-1v-4"/><rect x="16" y="12" width="6" height="5" rx="1"/></svg>`,
     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>`,
@@ -6655,7 +6658,7 @@ function renderCampaignRanking(){
         <span style="width:16px;height:16px;display:flex;align-items:center;justify-content:center;">${RANK_ICONS[i]}</span>
         <span>${i+1}</span>
       </div>
-      <div class="cmp-rank-svc-icon">${SVC_ICONS[i]}</div>
+      <div class="cmp-rank-svc-icon">${SVC_ICONS[i % SVC_ICONS.length]}</div>
       <div class="cmp-rank-mid">
         <div class="cmp-rank-name">${escapeHtml(p.name.slice(0, 20))}${p.name.length>20?"…":""}</div>
         <div class="cmp-rank-stars">★★★★${i===0?"★":"☆"} ${(4.8-i*0.2).toFixed(1)}</div>
@@ -6670,15 +6673,20 @@ function renderCampaignRanking(){
     </div>
   `).join("");
 
-  // カード（＞マーク含む）をタップすると、articles/ 配下の静的記事ページへ遷移する。
-  // ハッシュルーティングだとクローラーから見て「別ページ」と認識されにくいため、実ファイルへ直接飛ばす。
-  // slugは管理画面から自由入力できるため、英数字・ハイフン・アンダースコアのみを許可し、
-  // パストラバーサル（../等）や別オリジンへの誘導に使われないようにする。
+  // カード（＞マーク含む）をタップしたときの遷移先。
+  // 記事ページ（articles/配下）があるものはそちらへ、無いものは公式のキャンペーンURLへ飛ばす。
+  // 以前は「記事がある前提」でslugからarticles/{slug}.htmlへ無条件に飛ばしていたため、
+  // 記事の無いキャンペーン（hasArticleが立っていないもの）をタップすると404になっていた。
   const SAFE_SLUG = /^[A-Za-z0-9_-]+$/;
   list.querySelectorAll(".cmp-rank-card").forEach(card => {
     card.addEventListener("click", () => {
       const slug = card.dataset.slug;
-      if(slug && SAFE_SLUG.test(slug)) location.href = `articles/${slug}.html`;
+      const pick = ranked.find(r => r.p.slug === slug)?.p;
+      if(pick && pick.hasArticle && slug && SAFE_SLUG.test(slug)){
+        location.href = `articles/${slug}.html`;
+      } else if(pick && pick.url && isSafeHttpUrl(pick.url)){
+        window.open(pick.url, "_blank", "noopener,noreferrer");
+      }
     });
   });
 }
