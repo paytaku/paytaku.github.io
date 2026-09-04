@@ -1,19 +1,5 @@
 [
   {
-    "slug": "touch-norisha-10-5",
-    "hasArticle": true,
-    "name": "クレカのタッチ決済で乗車 最大10.5%（常設）",
-    "rate": "JCB 10.5%／三井住友 8%",
-    "period": "常設（JCBは2027/5/15まで）",
-    "how": [
-      "【JCB（最大10.5%）】J-POINTパートナーで事前にポイントアップ登録する",
-      "JCBカード本体、またはJCBを設定したスマホを改札にかざす（カード現物でも対象）",
-      "【三井住友（最大8%）】Apple Pay / Google Payに登録し、必ずスマホをかざす（カード現物は対象外）"
-    ],
-    "note": "還元率はJCBの方が高く、JCB CARD W / W plus L / Biz ONE なら10.5%、その他のJCBオリジナルシリーズで10%。全国約190事業者で、電車・バス・フェリー・ロープウェイまで対象です。三井住友カードは最大8%ですが、対象がスマホのタッチ決済に限られます。【両者共通】JRは対象外なので、JR区間はICOCA・Suicaを使う方がおトクです。［確認日: 2026-08-09］",
-    "url": "https://j-pointpartner.jcb.co.jp/"
-  },
-  {
     "slug": "vpoint-pay-yusen-10",
     "hasArticle": true,
     "name": "VポイントPay ポイント優先払いで10%還元",
