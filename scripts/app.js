@@ -395,6 +395,34 @@ const DEFAULT_PICKS = [
     ],
     "note": "抽選条件・上限金額の詳細はキャンペーンページを確認してください。［確認日: 2026-09-01／出典: バンドルカード公式］",
     "url": "https://vandle.jp/campaigns/lawsonbank-atm-charge-202609/"
+  },
+  {
+    "slug": "famipay-yokugetsubarai-half",
+    "name": "ファミペイ翌月払い もれなく半額還元",
+    "rate": "利用金額の半額還元（初めて登録：上限3,000円相当／登録済みの方：上限100円相当）",
+    "period": "9/1〜9/30（エントリー・利用期間）",
+    "expires": "2026-09-30",
+    "how": [
+      "ファミマのアプリでキャンペーンにエントリーする（エントリーと登録・利用の順序は問われない）",
+      "「ファミペイ翌月払い」に登録する（未登録の場合）",
+      "ファミリーマートに限らず、薬局・デパート・ネット店舗などファミペイ翌月払いが使えるお店で支払う"
+    ],
+    "note": "ファミマ店舗限定ではなく、ファミペイ翌月払いが使える店・サービス全般が対象（「ファミマとコラボ祭」20%還元とは別のキャンペーンで、併用可）。契約状況に応じて還元率が上がる「ステップボーナス」も別途あり、最大30%還元になる場合も。",
+    "url": "https://famipay.famidigi.jp/cp/cp227/260901/"
+  },
+  {
+    "slug": "aeon-koukyouryoukin-1500",
+    "name": "イオンカード公共料金 はじめても、久しぶりも。1,500 WAON POINT",
+    "rate": "もれなく1,500 WAON POINT（適用条件あり）",
+    "period": "9/1〜11/30",
+    "expires": "2026-11-30",
+    "how": [
+      "対象の電気・ガス・水道会社の公共料金の支払いに、イオンマークのカードのクレジット払いを登録したことが「一度もない」、または「2025年10月請求〜2026年9月請求で登録実績がない（久しぶり）」のいずれかに該当していることを確認する",
+      "キャンペーンページから応募（ログインが必要）する",
+      "対象企業のページから公共料金の支払いにイオンマークのカードを登録・利用する（応募と登録の順序は問わない）"
+    ],
+    "note": "2026年10月請求〜2027年3月請求で対象企業の公共料金の請求があることが条件。ポイント進呈は2027年4月請求明細。複数の対象企業・カードを登録しても進呈は1,500ポイントのみ。AEON Pay請求書払いは対象外。イオンJMBカード・イオンデビットカード・イオン銀行キャッシュ＋デビットは対象外。",
+    "url": "https://www.aeon.co.jp/campaign/member/202609-22"
   }
 ];
 
@@ -2681,6 +2709,14 @@ const DEFAULT_STORES = [
         "method": "QUICPay払い",
         "note": "QUICPayでの支払いに限り2%還元。カードを直接使った通常決済では還元率が下がるので、必ずQUICPayを選ぶこと。［確認日: 2026-08-09］",
         "url": "https://www.saisoncard.co.jp/"
+      },
+      {
+        "name": "ファミペイ",
+        "rate": "20%（対象商品限定）",
+        "method": "ファミペイ提示＋対象商品購入",
+        "note": "「ファミマとコラボ祭」対象商品（コラボパン・おむすび等18種類）の購入分だけ20%還元。全品対象の還元ではない点に注意。参加条件はファミマふるさと納税への新規会員登録（期間中）。進呈上限は期間限定ファミマポイント100円相当、小数点以下切り捨て。",
+        "expires": "2026-09-14",
+        "url": "https://famipay.famidigi.jp/cp/cp239/260901/"
       }
     ]
   },
@@ -2776,6 +2812,14 @@ const DEFAULT_STORES = [
         "method": "ローソンPontaプラスでの決済",
         "note": "時間帯や利用額の条件で還元率が変動する。詳細な適用条件は公式ページで確認を推奨。［確認日: 2026-08-09］",
         "url": "https://www.lawson.co.jp/ponta/"
+      },
+      {
+        "name": "エアウォレット",
+        "rate": "15%（上限500円分）",
+        "method": "エアウォレットまたは三菱UFJ銀行アプリCOIN+のQR/バーコード決済",
+        "note": "期間限定キャンペーン。要エントリー＋リクルートID連携。還元上限は500円分（支払額換算で3,333円）。特典は2026年11月上旬頃に加算予定。一部対象外店舗あり。",
+        "expires": "2026-09-30",
+        "url": "https://point.recruit.co.jp/recruitid/doc/campaign/aw/airwallet202609_value/15khr/"
       },
       {
         "name": "三井住友カード ゴールド（NL）",
@@ -3665,6 +3709,56 @@ const DEFAULT_STORES = [
         "method": "クレジットカード決済／カード現物のタッチ決済／Apple Pay（QUICPay）が対象。スマホのタッチ決済とグローバルポイントWalletは対象外",
         "note": "オンラインストア・ネットスーパーは対象外。 7%の内訳は基本0.5%＋スペシャルポイント6.5%。スペシャルポイント対象は月5万円まで。最大20%にするには、支払口座を三菱UFJ銀行に設定してMDCアプリからエントリーが必要（アプリログイン・楽Pay登録・給与受取などの条件を積み上げる方式）。複合商業施設内の店舗は対象外の場合あり。【ブランド注意】一部店舗ではアメリカン・エキスプレスが優遇対象外のため、対象店をもれなくカバーするならVisa/Mastercard/JCBを選ぶこと。［確認日: 2026-08-09／出典: 三菱UFJニコス公式「対象店舗のご利用分が最大20％還元」］",
         "url": "https://www.cr.mufg.jp/apply/card/mucard/pup/index03.html"
+      },
+      {
+        "name": "エアウォレット",
+        "rate": "15%（上限500円分）",
+        "method": "エアウォレットまたは三菱UFJ銀行アプリCOIN+のQR/バーコード決済",
+        "note": "期間限定キャンペーン。要エントリー＋リクルートID連携。還元上限は500円分（支払額換算で3,333円）。特典は2026年11月上旬頃に加算予定。一部対象外店舗あり。",
+        "expires": "2026-09-30",
+        "url": "https://point.recruit.co.jp/recruitid/doc/campaign/aw/airwallet202609_value/15khr/"
+      }
+    ]
+  },
+  {
+    "name": "無印良品",
+    "category": "その他",
+    "cards": [
+      {
+        "name": "エアウォレット",
+        "rate": "15%（上限500円分）",
+        "method": "エアウォレットまたは三菱UFJ銀行アプリCOIN+のQR/バーコード決済",
+        "note": "期間限定キャンペーン。要エントリー＋リクルートID連携。還元上限は500円分（支払額換算で3,333円）。特典は2026年11月上旬頃に加算予定。一部対象外店舗あり。",
+        "expires": "2026-09-30",
+        "url": "https://point.recruit.co.jp/recruitid/doc/campaign/aw/airwallet202609_value/15khr/"
+      }
+    ]
+  },
+  {
+    "name": "ダイコクドラッグ",
+    "category": "ドラッグストア",
+    "cards": [
+      {
+        "name": "エアウォレット",
+        "rate": "15%（上限500円分）",
+        "method": "エアウォレットまたは三菱UFJ銀行アプリCOIN+のQR/バーコード決済",
+        "note": "期間限定キャンペーン。要エントリー＋リクルートID連携。還元上限は500円分（支払額換算で3,333円）。特典は2026年11月上旬頃に加算予定。一部対象外店舗あり。",
+        "expires": "2026-09-30",
+        "url": "https://point.recruit.co.jp/recruitid/doc/campaign/aw/airwallet202609_value/15khr/"
+      }
+    ]
+  },
+  {
+    "name": "ビバホーム",
+    "category": "ホームセンター",
+    "cards": [
+      {
+        "name": "エアウォレット",
+        "rate": "15%（上限500円分）",
+        "method": "エアウォレットまたは三菱UFJ銀行アプリCOIN+のQR/バーコード決済",
+        "note": "期間限定キャンペーン。要エントリー＋リクルートID連携。還元上限は500円分（支払額換算で3,333円）。特典は2026年11月上旬頃に加算予定。一部対象外店舗あり。",
+        "expires": "2026-09-30",
+        "url": "https://point.recruit.co.jp/recruitid/doc/campaign/aw/airwallet202609_value/15khr/"
       }
     ]
   },
@@ -6265,6 +6359,71 @@ function renderEntryChecks(){
   });
 }
 
+// ---- 実施したかチェック ----
+// エントリー忘れチェックは「エントリー自体を済ませたか」だけを見るが、
+// エントリーしても対象の支払い・購入を実際にやらなければ還元は付かない。
+// こちらは「今月分、対象の支払い・購入を実際にやったか」を別枠で管理する。
+const ACTION_DONE_KEY = "kangenchou_action_done";
+let actionDone = loadSet(ACTION_DONE_KEY) || new Set();
+
+function needsActionItems(){
+  const items = [];
+  MONTHLY_PICKS.forEach(p => {
+    if(campaignStatus(p).kind === "expired") return;
+    items.push({ key: "pick:" + p.name, label: p.name, sub: p.period || "", url: p.url });
+  });
+  STORES.forEach(s => s.cards.forEach(c => {
+    if(!c.expires) return;
+    if(campaignStatus(c).kind === "expired") return;
+    items.push({
+      key: "store:" + s.name + ":" + c.name,
+      label: s.name + "　" + c.rate,
+      sub: c.name, url: c.url
+    });
+  }));
+  return items;
+}
+
+function renderActionChecks(){
+  const list = document.getElementById("actionCheckList");
+  if(!list) return;
+  const items = needsActionItems();
+  list.innerHTML = "";
+
+  if(items.length === 0){
+    list.innerHTML = `<div class="store-empty-note">期間限定のキャンペーンはありません。</div>`;
+    return;
+  }
+
+  const remaining = items.filter(i => !actionDone.has(i.key)).length;
+  const head = document.createElement("div");
+  head.className = "entry-progress";
+  head.textContent = remaining === 0
+    ? `✅ ${items.length}件すべて実施済みです`
+    : `未実施 ${remaining}件 / 全${items.length}件`;
+  list.appendChild(head);
+
+  items.forEach(i => {
+    const done = actionDone.has(i.key);
+    const el = document.createElement("div");
+    el.className = "entry-item" + (done ? " done" : "");
+    el.innerHTML = `
+      <button class="entry-check" aria-pressed="${done}">${done ? "✓" : ""}</button>
+      <div class="entry-body">
+        <div class="entry-label">${escapeHtml(i.label)}</div>
+        <div class="entry-sub">${escapeHtml(i.sub)}</div>
+      </div>
+      ${(i.url && isSafeHttpUrl(i.url)) ? `<a class="src-link" href="${escapeAttr(i.url)}" target="_blank" rel="noopener noreferrer">開く ↗</a>` : ""}
+    `;
+    el.querySelector(".entry-check").addEventListener("click", ()=>{
+      if(actionDone.has(i.key)) actionDone.delete(i.key); else actionDone.add(i.key);
+      saveSet(ACTION_DONE_KEY, actionDone);
+      renderActionChecks();
+    });
+    list.appendChild(el);
+  });
+}
+
 function renderPicks(){
   const list = document.getElementById("picksList");
   if(!list) return;
@@ -6325,6 +6484,7 @@ function openPickModal(pick){
       persistPicks();
       renderPicks();
       renderEntryChecks();
+      renderActionChecks();
     },
     isNew ? null : ()=> deletePick(pick)
   );
@@ -6477,6 +6637,8 @@ function renderCampaignRanking(){
 function renderCampaigns(){
   renderCampaignHero();
   renderCampaignRanking();
+  renderEntryChecks();
+  renderActionChecks();
   const list = document.getElementById("campaignList");
   list.innerHTML = "";
 
@@ -7900,6 +8062,7 @@ renderTodayDeals();
 renderEC();
 renderPicks();
 renderEntryChecks();
+renderActionChecks();
 renderCampaigns();
 // 段階制（tiers）があるものは階層ごとに計算し、無ければ一律の還元率で計算する
 // クレカ積立の条件チェック状態を保存する。
