@@ -9480,7 +9480,7 @@ async function uploadCampaignImage(file, hintName){
   // 確実に動作している手順と完全に同じ形にした。
   let sha = undefined;
   const getRes = await fetch(`${apiUrl}?ref=${branch}`, {
-    headers: { Authorization: `Bearer ${cfg.token}`, Accept: "application/vnd.github+json" }
+    headers: { Authorization: `token ${cfg.token}`, Accept: "application/vnd.github.v3+json" }
   });
   if(getRes.status === 200){
     const getData = await getRes.json();
@@ -9494,8 +9494,8 @@ async function uploadCampaignImage(file, hintName){
   const putRes = await fetch(apiUrl, {
     method: "PUT",
     headers: {
-      Authorization: `Bearer ${cfg.token}`,
-      Accept: "application/vnd.github+json",
+      Authorization: `token ${cfg.token}`,
+      Accept: "application/vnd.github.v3+json",
       "Content-Type": "application/json"
     },
     body: JSON.stringify({
