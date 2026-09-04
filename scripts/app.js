@@ -6343,96 +6343,53 @@ const ENTRY_DONE_KEY = "kangenchou_entry_done";
 let entryDone = loadSet(ENTRY_DONE_KEY) || new Set();
 
 // エントリー・クーポン獲得が要りそうなものを、文言から判定して集める
-function needsEntryItems(){
+// ---- キャンペーンのチェックリスト（エントリー忘れ／実施したか） ----
+// 同じキャンペーン（例：エアウォレット15%還元）が複数のお店のカード一覧に登録されていても、
+// 実際には「1つのキャンペーン」に対するエントリー・実施の判定は1回で済む。
+// お店ごとに毎回チェック項目を作ると同じキャンペーンが何件も並んで冗長になるため、
+// カード名＋還元内容＋終了日が一致するものは1つのキャンペーンとしてまとめる。
+function campaignChecklistItems(){
+  const needsEntryRe = /エントリー|クーポンを獲得|事前に.*獲得|要エントリー/;
   const items = [];
-  const re = /エントリー|クーポンを獲得|事前に.*獲得|要エントリー/;
+  const cardGroups = new Map(); // dedupKey -> item
+
   MONTHLY_PICKS.forEach(p => {
     if(campaignStatus(p).kind === "expired") return;
     const text = (p.note || "") + (p.how || []).join("");
-    if(re.test(text)) items.push({ key: "pick:" + p.name, label: p.name, sub: p.period || "", url: p.url });
-  });
-  STORES.forEach(s => s.cards.forEach(c => {
-    if(!c.expires) return;
-    if(campaignStatus(c).kind === "expired") return;
-    const text = (c.note || "") + (c.method || "");
-    if(re.test(text)) items.push({
-      key: "store:" + s.name + ":" + c.name,
-      label: s.name + "　" + c.rate,
-      sub: c.name, url: c.url
-    });
-  }));
-  return items;
-}
-
-function renderEntryChecks(){
-  const list = document.getElementById("entryCheckList");
-  if(!list) return;
-  const items = needsEntryItems();
-  list.innerHTML = "";
-
-  if(items.length === 0){
-    list.innerHTML = `<div class="store-empty-note">エントリーが必要なキャンペーンはありません。</div>`;
-    return;
-  }
-
-  const remaining = items.filter(i => !entryDone.has(i.key)).length;
-  const head = document.createElement("div");
-  head.className = "entry-progress";
-  head.textContent = remaining === 0
-    ? `✅ ${items.length}件すべて完了しています`
-    : `未完了 ${remaining}件 / 全${items.length}件`;
-  list.appendChild(head);
-
-  items.forEach(i => {
-    const done = entryDone.has(i.key);
-    const el = document.createElement("div");
-    el.className = "entry-item" + (done ? " done" : "");
-    el.innerHTML = `
-      <button class="entry-check" aria-pressed="${done}">${done ? "✓" : ""}</button>
-      <div class="entry-body">
-        <div class="entry-label">${escapeHtml(i.label)}</div>
-        <div class="entry-sub">${escapeHtml(i.sub)}</div>
-      </div>
-      ${(i.url && isSafeHttpUrl(i.url)) ? `<a class="src-link" href="${escapeAttr(i.url)}" target="_blank" rel="noopener noreferrer">開く ↗</a>` : ""}
-    `;
-    el.querySelector(".entry-check").addEventListener("click", ()=>{
-      if(entryDone.has(i.key)) entryDone.delete(i.key); else entryDone.add(i.key);
-      saveSet(ENTRY_DONE_KEY, entryDone);
-      renderEntryChecks();
-    });
-    list.appendChild(el);
-  });
-}
-
-// ---- 実施したかチェック ----
-// エントリー忘れチェックは「エントリー自体を済ませたか」だけを見るが、
-// エントリーしても対象の支払い・購入を実際にやらなければ還元は付かない。
-// こちらは「今月分、対象の支払い・購入を実際にやったか」を別枠で管理する。
-const ACTION_DONE_KEY = "kangenchou_action_done";
-let actionDone = loadSet(ACTION_DONE_KEY) || new Set();
-
-function needsActionItems(){
-  const items = [];
-  MONTHLY_PICKS.forEach(p => {
-    if(campaignStatus(p).kind === "expired") return;
-    items.push({ key: "pick:" + p.name, label: p.name, sub: p.period || "", url: p.url });
-  });
-  STORES.forEach(s => s.cards.forEach(c => {
-    if(!c.expires) return;
-    if(campaignStatus(c).kind === "expired") return;
     items.push({
-      key: "store:" + s.name + ":" + c.name,
-      label: s.name + "　" + c.rate,
-      sub: c.name, url: c.url
+      key: "pick:" + (p.slug || p.name), label: p.name, sub: p.period || "", url: p.url,
+      needsEntry: needsEntryRe.test(text)
     });
+  });
+
+  STORES.forEach(s => s.cards.forEach(c => {
+    if(!c.expires) return;
+    if(campaignStatus(c).kind === "expired") return;
+    const dedupKey = "card:" + c.name + "|" + c.rate + "|" + c.expires;
+    const text = (c.note || "") + (c.method || "");
+    if(!cardGroups.has(dedupKey)){
+      cardGroups.set(dedupKey, {
+        key: dedupKey, label: c.name + "　" + c.rate, stores: [s.name], url: c.url,
+        needsEntry: needsEntryRe.test(text)
+      });
+    } else {
+      cardGroups.get(dedupKey).stores.push(s.name);
+    }
   }));
+  cardGroups.forEach(item => {
+    const stores = item.stores;
+    item.sub = stores.length <= 2 ? stores.join("・") : `${stores.slice(0,2).join("・")}ほか${stores.length-2}店`;
+    delete item.stores;
+    items.push(item);
+  });
+
   return items;
 }
 
-function renderActionChecks(){
-  const list = document.getElementById("actionCheckList");
+function renderCampaignChecklist(){
+  const list = document.getElementById("campaignCheckList");
   if(!list) return;
-  const items = needsActionItems();
+  const items = campaignChecklistItems();
   list.innerHTML = "";
 
   if(items.length === 0){
@@ -6440,30 +6397,47 @@ function renderActionChecks(){
     return;
   }
 
-  const remaining = items.filter(i => !actionDone.has(i.key)).length;
+  const entryTargets = items.filter(i => i.needsEntry);
+  const entryRemaining = entryTargets.filter(i => !entryDone.has(i.key)).length;
+  const actionRemaining = items.filter(i => !actionDone.has(i.key)).length;
   const head = document.createElement("div");
   head.className = "entry-progress";
-  head.textContent = remaining === 0
-    ? `✅ ${items.length}件すべて実施済みです`
-    : `未実施 ${remaining}件 / 全${items.length}件`;
+  head.innerHTML =
+    `<span>エントリー：${entryTargets.length===0 ? "対象なし" : (entryRemaining===0 ? "✅ 完了" : `未完了 ${entryRemaining}/${entryTargets.length}`)}</span>`
+    + `<span style="margin-left:14px;">実施：${actionRemaining===0 ? "✅ 完了" : `未実施 ${actionRemaining}/${items.length}`}</span>`;
   list.appendChild(head);
 
+  const colHead = document.createElement("div");
+  colHead.className = "entry-col-head";
+  colHead.innerHTML = `<span class="entry-col-head-label"></span><span class="entry-col-head-check" title="エントリー済みか">📝<br>エントリー</span><span class="entry-col-head-check" title="実施済みか">🛒<br>実施</span>`;
+  list.appendChild(colHead);
+
   items.forEach(i => {
-    const done = actionDone.has(i.key);
+    const entryChecked = entryDone.has(i.key);
+    const actionChecked = actionDone.has(i.key);
     const el = document.createElement("div");
-    el.className = "entry-item" + (done ? " done" : "");
+    el.className = "entry-item entry-item-dual";
     el.innerHTML = `
-      <button class="entry-check" aria-pressed="${done}">${done ? "✓" : ""}</button>
       <div class="entry-body">
         <div class="entry-label">${escapeHtml(i.label)}</div>
         <div class="entry-sub">${escapeHtml(i.sub)}</div>
       </div>
+      <button class="entry-check entry-check-small${i.needsEntry ? "" : " disabled"}${entryChecked ? " on" : ""}" aria-pressed="${entryChecked}" title="エントリー済み" ${i.needsEntry ? "" : "disabled"}>${entryChecked ? "✓" : ""}</button>
+      <button class="entry-check entry-check-small${actionChecked ? " on" : ""}" aria-pressed="${actionChecked}" title="実施済み">${actionChecked ? "✓" : ""}</button>
       ${(i.url && isSafeHttpUrl(i.url)) ? `<a class="src-link" href="${escapeAttr(i.url)}" target="_blank" rel="noopener noreferrer">開く ↗</a>` : ""}
     `;
-    el.querySelector(".entry-check").addEventListener("click", ()=>{
+    const btns = el.querySelectorAll(".entry-check");
+    if(i.needsEntry){
+      btns[0].addEventListener("click", ()=>{
+        if(entryDone.has(i.key)) entryDone.delete(i.key); else entryDone.add(i.key);
+        saveSet(ENTRY_DONE_KEY, entryDone);
+        renderCampaignChecklist();
+      });
+    }
+    btns[1].addEventListener("click", ()=>{
       if(actionDone.has(i.key)) actionDone.delete(i.key); else actionDone.add(i.key);
       saveSet(ACTION_DONE_KEY, actionDone);
-      renderActionChecks();
+      renderCampaignChecklist();
     });
     list.appendChild(el);
   });
@@ -6531,8 +6505,7 @@ function openPickModal(pick){
       else Object.assign(pick, obj);
       persistPicks();
       renderPicks();
-      renderEntryChecks();
-      renderActionChecks();
+      renderCampaignChecklist();
     },
     isNew ? null : ()=> deletePick(pick)
   );
@@ -6694,8 +6667,7 @@ function renderCampaignRanking(){
 function renderCampaigns(){
   renderCampaignHero();
   renderCampaignRanking();
-  renderEntryChecks();
-  renderActionChecks();
+  renderCampaignChecklist();
   const list = document.getElementById("campaignList");
   list.innerHTML = "";
 
@@ -8118,8 +8090,7 @@ document.getElementById("routeAmount")?.addEventListener("input", renderRoutes);
 renderTodayDeals();
 renderEC();
 renderPicks();
-renderEntryChecks();
-renderActionChecks();
+renderCampaignChecklist();
 renderCampaigns();
 // 段階制（tiers）があるものは階層ごとに計算し、無ければ一律の還元率で計算する
 // クレカ積立の条件チェック状態を保存する。
