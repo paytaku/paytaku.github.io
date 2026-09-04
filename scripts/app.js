@@ -6525,6 +6525,36 @@ function deletePick(pick){
 // ===== キャンペーンページ：ヒーローカルーセル & ランキング =====
 let heroIdx = 0;
 
+// おすすめキャンペーンのカードを、ドットのタップだけでなく横スワイプでも切り替えられるようにする。
+// #heroCarousel自体はrenderCampaignHero()のたびに中身（innerHTML）だけ差し替わるので、
+// 要素そのものにはこの初期化時に1回だけイベントを付ければよい。
+(function setupHeroSwipe(){
+  const wrap = document.getElementById("heroCarousel");
+  if(!wrap) return;
+  let startX = null, startY = null;
+  wrap.addEventListener("touchstart", (e)=>{
+    if(e.touches.length !== 1) return;
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+  }, { passive: true });
+  wrap.addEventListener("touchend", (e)=>{
+    if(startX === null) return;
+    const endX = e.changedTouches[0].clientX;
+    const endY = e.changedTouches[0].clientY;
+    const dx = endX - startX;
+    const dy = endY - startY;
+    startX = null; startY = null;
+    // 横方向にしっかり動いた（縦スクロールと誤認しない）場合だけスワイプとみなす
+    if(Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+    const heroes = MONTHLY_PICKS.slice(0, 4);
+    if(heroes.length <= 1) return;
+    heroIdx = dx < 0
+      ? (heroIdx + 1) % heroes.length          // 左スワイプ → 次へ
+      : (heroIdx - 1 + heroes.length) % heroes.length; // 右スワイプ → 前へ
+    renderCampaignHero();
+  }, { passive: true });
+})();
+
 function renderCampaignHero(){
   const wrap = document.getElementById("heroCarousel");
   const dots = document.getElementById("heroDots");
@@ -6569,7 +6599,7 @@ function renderCampaignHero(){
         <div class="cmp-meta-divider"></div>
         <div class="cmp-meta-item">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-          <span>${escapeHtml(h.rate || "—")}</span>
+          <span title="${escapeAttr(h.rate || "")}">${escapeHtml((h.rate || "—").slice(0, 14))}${(h.rate||"").length>14?"…":""}</span>
         </div>
       </div>
       <button class="cmp-hero-cta" data-hero-url="${escapeAttr(isSafeHttpUrl(h.url) ? h.url : "")}">
