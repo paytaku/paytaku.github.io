@@ -91,7 +91,8 @@
         "rate": "最大10〜11%",
         "method": "スマホのタッチ決済のみ（カード現物のタッチ・iD・差し込み・磁気は対象外）",
         "note": "対象店での還元率は通常の三井住友カード（NL）と同じ。ゴールドの差は、年間100万円利用で10,000ポイント付与＋翌年以降の年会費永年無料、空港ラウンジ、保険といった別枠の特典にある。［確認日: 2026-08-09］",
-        "url": "https://www.smbc-card.com/camp/seven-eleven_vpoint/index.html"
+        "url": "https://www.smbc-card.com/camp/seven-eleven_vpoint/index.html",
+        "articleUrl": "articles/smbc-seven-eleven-max-11percent.html"
       },
       {
         "name": "JCBゴールド",
@@ -2373,6 +2374,20 @@
         "method": "dカードでのクレジット決済（iD払いは対象外）",
         "note": "髙島屋各店（日本橋・新宿・玉川・横浜・大宮・柏・高崎・大阪・泉北・京都・岡山・JU米子）とタカシマヤフードメゾンおおたかの森、タカシマヤ ウオッチメゾン、エキ・タカ泉ケ丘が対象。髙島屋オンラインストア・通信販売・アウトレット各店はdポイントカードのポイント対象外。一部対象外商品あり。［確認日: 2026-08-09／出典: dカード公式・比較メディア複数］",
         "url": "https://dcard.docomo.ne.jp/std/topics/takashimaya/takashimaya16.html"
+      }
+    ]
+  },
+  {
+    "name": "ホットペッパーグルメ対象店舗",
+    "category": "飲食店（すべて）",
+    "cards": [
+      {
+        "name": "指定なし（リクルートID）",
+        "rate": "50%",
+        "method": "店内の注文QRコードからモバイルオーダーを起動してリクルートIDでログインし、1人あたり税込1,000円以上のご注文・お会計を行うこと。特定の決済手段の指定はありません。",
+        "note": "還元上限は1人あたり1,000ポイント（期間中初回1回限り）。加算は500～1,000ポイント（100ポイント未満切り捨て）。エントリーは不要。［確認日: 2026-09-04／出典: https://www.hotpepper.jp/campaign/login_cp_202609/］",
+        "url": "https://www.hotpepper.jp/campaign/login_cp_202609/",
+        "expires": "2026-09-30"
       }
     ]
   }
