@@ -44,7 +44,8 @@
       "会計時にモバイルVカードを提示し、そのうえで三井住友カードで決済する"
     ],
     "note": "提示と決済で別々のクーポンが効くため、両方セットしておくと特典が重なる。Vポイントアプリを初めて使う人／久しぶりの人には30ptがもらえるクーポンも配信中。［確認日: 2026-08-09］",
-    "url": "https://www.vpoint.net/scm1"
+    "url": "https://www.vpoint.net/scm1",
+    "image": "assets/campaign-images/優先決済を編集-1788490215723.jpg"
   },
   {
     "slug": "jichitai-campaign",
@@ -71,10 +72,11 @@
     "how": [
       "キャンペーンページから事前にエントリーする（期間中1回でOK、毎月のエントリーは不要）",
       "JAL PayをApple Payに設定する（QUICPay決済・Mastercardのタッチ決済／オンライン決済）",
-      "Apple Pay経由でJAL Payを使って支払う"
+      "Apple Pay経由でJAL Payを使って支払う(※Suica等へのチャージも可能)"
     ],
     "note": "9月・10月それぞれ最大500 JAL Payポイント、2ヶ月合計で最大1,000ポイント還元。カード実物での決済やコード決済は対象外、必ずApple Pay経由で使うこと。［確認日: 2026-09-01／出典: JALペイメント・ポート公式発表］",
-    "url": "https://www.jal.co.jp/jp/ja/jmb/jalpay/pay/campaign/2609-applepay/"
+    "url": "https://www.jal.co.jp/jp/ja/jmb/jalpay/pay/campaign/2609-applepay/",
+    "image": "assets/campaign-images/優先決済を編集-1788490293429.jpg"
   },
   {
     "slug": "airwallet-qr-15",
