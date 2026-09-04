@@ -1,6 +1,7 @@
 [
   {
     "slug": "touch-norisha-10-5",
+    "hasArticle": true,
     "name": "クレカのタッチ決済で乗車 最大10.5%（常設）",
     "rate": "JCB 10.5%／三井住友 8%",
     "period": "常設（JCBは2027/5/15まで）",
@@ -14,6 +15,7 @@
   },
   {
     "slug": "vpoint-pay-yusen-10",
+    "hasArticle": true,
     "name": "VポイントPay ポイント優先払いで10%還元",
     "rate": "10%還元",
     "period": "8/1〜8/31",
@@ -29,6 +31,7 @@
   },
   {
     "slug": "vcoupon-multi-shop-500pt",
+    "hasArticle": true,
     "capYen": 500,
     "name": "Vクーポン 複数ショップ利用で最大500ポイント",
     "rate": "最大500pt上乗せ",
@@ -43,6 +46,7 @@
   },
   {
     "slug": "natsu-coupon-matsuri",
+    "hasArticle": true,
     "name": "夏のクーポン祭り（Vクーポン × Vポイントアプリ）",
     "rate": "2種類のクーポンを重ね取り",
     "period": "8/1〜9/30",
@@ -57,6 +61,7 @@
   },
   {
     "slug": "jichitai-campaign",
+    "hasArticle": true,
     "name": "自治体キャンペーン（地域限定の高還元）",
     "rate": "最大10〜30%還元",
     "period": "地域ごとに異なる",
