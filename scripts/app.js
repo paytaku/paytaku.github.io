@@ -9466,34 +9466,51 @@ async function uploadCampaignImage(file, hintName){
   const path = `assets/campaign-images/${safeName}-${Date.now()}.${ext}`;
   const apiUrl = `https://api.github.com/repos/${cfg.username}/${cfg.repo}/contents/${path}`;
   const b64 = await fileToBase64(file);
-  const body = JSON.stringify({
-    message: `ペイ択：キャンペーン画像を追加（${safeName}）`,
-    content: b64,
-    branch
+  // 401の原因切り分け用に、実際に何を送っているかを診断情報として組み立てておく
+  // （トークンの中身は漏らさず、長さと先頭・末尾数文字だけにする）
+  const tokenPreview = cfg.token.length > 8
+    ? `${cfg.token.slice(0,4)}…${cfg.token.slice(-4)}（${cfg.token.length}文字）`
+    : `${cfg.token.length}文字`;
+  const debugInfo = `[owner=${cfg.username} / repo=${cfg.repo} / branch=${branch} / token=${tokenPreview}]`;
+
+  // pushJsonToGithub（店舗データ等の保存で実績のある関数）と全く同じ手順に揃える：
+  // 1. 対象パスの現状を一度GETで確認する（新規ファイルなら404が返るのが正常）
+  // 2. その結果に応じてPUTでコミットする
+  // 画像アップロード特有の直接PUTだけの実装で401が解消しないため、
+  // 確実に動作している手順と完全に同じ形にした。
+  let sha = undefined;
+  const getRes = await fetch(`${apiUrl}?ref=${branch}`, {
+    headers: { Authorization: `Bearer ${cfg.token}`, Accept: "application/vnd.github+json" }
   });
-  // 認証ヘッダーの形式差異（"Bearer xxx" と "token xxx"）でトークンの通り方が変わる場合があるため、
-  // 最初に失敗したら別形式で1回だけ再試行する。
-  async function tryPut(authHeader){
-    return fetch(apiUrl, {
-      method: "PUT",
-      headers: {
-        Authorization: authHeader,
-        Accept: "application/vnd.github+json",
-        "Content-Type": "application/json"
-      },
-      body
-    });
+  if(getRes.status === 200){
+    const getData = await getRes.json();
+    sha = getData.sha;
+  } else if(getRes.status === 401){
+    throw new Error(`GitHubの認証に失敗しました（GET時点）。${debugInfo} このowner/repoが正しいか、トークンが有効か確認してください。`);
+  } else if(getRes.status !== 404){
+    throw new Error(`ファイル確認に失敗（HTTP ${getRes.status}）。${debugInfo}`);
   }
-  let putRes = await tryPut(`Bearer ${cfg.token}`);
-  if(putRes.status === 401){
-    putRes = await tryPut(`token ${cfg.token}`);
-  }
+
+  const putRes = await fetch(apiUrl, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${cfg.token}`,
+      Accept: "application/vnd.github+json",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      message: `ペイ択：キャンペーン画像を追加（${safeName}）`,
+      content: b64,
+      branch,
+      ...(sha ? { sha } : {})
+    })
+  });
   if(!putRes.ok){
     const errBody = await putRes.text();
     if(putRes.status === 401){
-      throw new Error(`GitHubの認証に失敗しました（トークンが無効か期限切れの可能性があります）。「🔗 GitHub連携」でトークンを再設定してください。`);
+      throw new Error(`GitHubの認証に失敗しました（PUT時点）。${debugInfo} このowner/repoが正しいか、トークンが有効か確認してください。`);
     }
-    throw new Error(`アップロードに失敗（HTTP ${putRes.status}）：${errBody.slice(0,150)}`);
+    throw new Error(`アップロードに失敗（HTTP ${putRes.status}）：${errBody.slice(0,150)} ${debugInfo}`);
   }
   return path;
 }
