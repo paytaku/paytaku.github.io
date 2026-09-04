@@ -6341,6 +6341,8 @@ function renderCampaignChips(){
 // 対象を自動で拾い出してチェックリスト化する。チェック状態は端末に保存する。
 const ENTRY_DONE_KEY = "kangenchou_entry_done";
 let entryDone = loadSet(ENTRY_DONE_KEY) || new Set();
+const ACTION_DONE_KEY = "kangenchou_action_done";
+let actionDone = loadSet(ACTION_DONE_KEY) || new Set();
 
 // エントリー・クーポン獲得が要りそうなものを、文言から判定して集める
 // ---- キャンペーンのチェックリスト（エントリー忘れ／実施したか） ----
