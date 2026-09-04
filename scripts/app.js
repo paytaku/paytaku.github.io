@@ -252,6 +252,7 @@ const DEFAULT_PICKS = [
   },
   {
     "slug": "vcoupon-multi-shop-500pt",
+    "capYen": 500,
     "name": "Vクーポン 複数ショップ利用で最大500ポイント",
     "rate": "最大500pt上乗せ",
     "period": "8/1〜9/30",
@@ -293,6 +294,7 @@ const DEFAULT_PICKS = [
   },
   {
     "slug": "jal-pay-applepay-100",
+    "capYen": 1000,
     "name": "JAL Pay Apple Payで最大100%ポイントバック",
     "rate": "利用額の最大100%還元（9月・10月それぞれ最大500pt、2ヶ月合計1,000pt）",
     "period": "9/1〜10/31",
@@ -307,6 +309,7 @@ const DEFAULT_PICKS = [
   },
   {
     "slug": "airwallet-qr-15",
+    "capYen": 500,
     "name": "エアウォレット QR決済で15%還元",
     "rate": "15%還元（上限500円分）",
     "period": "9/1〜9/30",
@@ -321,6 +324,7 @@ const DEFAULT_PICKS = [
   },
   {
     "slug": "famipay-45th-20",
+    "capYen": 100,
     "name": "ファミペイ「ファミマとコラボ祭」対象商品20%還元",
     "rate": "20%還元（進呈上限100円相当）",
     "period": "9/1〜9/14",
@@ -346,20 +350,52 @@ const DEFAULT_PICKS = [
   },
   {
     "slug": "smbc-applepay-online-10000",
+    "capYen": 100,
     "name": "三井住友カード Apple Payのオンライン決済で最大10,000pt",
-    "rate": "抽選で最大10,000pt＋5,000円以上利用でもれなく100pt",
+    "rate": "抽選で最大10,000pt（100名）＋5,000円以上利用でもれなく100pt",
     "period": "9/1〜9/30",
     "expires": "2026-09-30",
     "how": [
-      "キャンペーンページからエントリーする",
-      "三井住友カードを設定したApple Payでオンライン決済を利用する",
-      "5,000円以上利用するともれなく100ptが確定する（抽選の10,000ptとは別枠）"
+      "Vpassにログインのうえ、対象カードでキャンペーンにエントリーする（複数枚持っている場合はいずれか1枚でOK、対象カードすべての利用が集計される）",
+      "三井住友カードを設定したApple Payで、1回1,500円（税込）以上のオンライン決済を利用する（抽選対象の条件）",
+      "合計5,000円（税込）以上利用するともれなく100ptが確定する（抽選の10,000ptとは別枠）"
     ],
-    "note": "抽選部分と確定100pt部分は別条件。対象は「キャンペーンページに記載のある三井住友カード」を設定したApple Payのオンライン決済のみ。［確認日: 2026-09-01／出典: 三井住友カード公式］",
+    "note": "抽選は1回1,500円以上の利用が対象、100名に10,000pt。確定100ptは合計5,000円以上の利用が条件。対象は「キャンペーンページに記載のある三井住友カード」を設定したApple Payのオンライン決済のみ。［確認日: 2026-09-04／出典: 三井住友カード公式］",
     "url": "https://www.smbc-card.com/mem/cardinfo/26/cardinfo7224794.jsp"
   },
   {
+    "slug": "docomo-dbarai-charge-kaimono-et26003",
+    "capYen": 100,
+    "name": "d払い残高チャージ＋お買物で抽選＆全員100pt（ET26003）",
+    "rate": "抽選最大10,000pt＋ドコモの銀行からチャージでもれなく100pt",
+    "period": "9/1 10:00〜9/30 23:59",
+    "expires": "2026-09-30",
+    "how": [
+      "「今すぐエントリー」からキャンペーンにエントリーする（規約同意が必要）",
+      "銀行口座・セブン銀行ATM（ファミマATM含む）・ローソン銀行ATMのいずれかからd払い残高へ1,000円以上チャージする",
+      "d払い残高で合計500円（税込）以上お買物する",
+      "チャージ元をドコモの銀行（ドコモSMTBネット銀行）にすると、条件1・2を満たさなくてももれなく100pt上乗せされる"
+    ],
+    "note": "抽選：1等10,000pt（100名）／2等1,000pt（1,000名）／3等500pt（5,000名）。ドコモの銀行からのチャージ特典100ptは1アカウント1回のみ。dポイント・クーポン利用分の支払いは対象外。特典進呈は2026年11月末日予定。エントリーは利用後でも期間内ならOK。マネックス証券口座は対象外。［確認日: 2026-09-04／出典: d払い公式（キャンペーンコード：ET26003）］",
+    "url": "https://service.smt.docomo.ne.jp/keitai_payment/campaign/PPX6rzqcO5I4rPCy_2609/"
+  },
+  {
+    "slug": "docomo-smtb-birthday-salary-5000",
+    "capYen": 5000,
+    "name": "ドコモの銀行誕生祭 給与受取キャンペーン",
+    "rate": "現金5,000円プレゼント",
+    "period": "要確認（公式ページで期間をご確認ください）",
+    "how": [
+      "対象の支店（フルーツ・スイーツ・海の生き物の名前がついた支店）で口座を持っているか確認する",
+      "キャンペーンにエントリーする",
+      "給与・賞与の受取先に指定し、対象期間内に一度で15万円以上の受取がある状態にする"
+    ],
+    "note": "2026年8月時点で給与受取設定をしていない方が対象（既に設定済みの方は対象外）。給与・賞与の判定は入出金明細の記載によるため、勤務先によっては「振込」扱いとなり対象外になる場合がある。対象支店：イチゴ・ブドウ・ミカン・レモン・リンゴ・バナナ・メロン・キウイ（フルーツ）、ドーナツ・クッキー・マカロン・パフェ・チョコレート・アイスクリーム・ドラヤキ・ティラミス・クレープ・ショートケーキ（スイーツ）、イルカ・クジラ・アシカ・マンボウ（海の生き物）の各支店に限定。この記事の期間表記は未確認のため、必ず公式ページで最新の期間をご確認ください。［確認日: 2026-09-04／出典: ドコモSMTBネット銀行公式］",
+    "url": "https://www.netbk.co.jp/contents/cmp/20260901_006170/"
+  },
+  {
     "slug": "wester-festa-5x",
+    "capYen": 1000,
     "name": "WESTERフェスタ！ WESTERポイントほぼ5倍",
     "rate": "ポイントほぼ5倍（付与上限1,000pt）",
     "period": "9/1〜9/30（エントリーは8/19〜9/30）",
@@ -374,6 +410,7 @@ const DEFAULT_PICKS = [
   },
   {
     "slug": "rakuten-card-visa-applepay-1000",
+    "capYen": 0,
     "name": "楽天カード Apple PayでVisaのタッチ決済 最大1,000円キャッシュバック",
     "rate": "抽選で最大1,000円キャッシュバック",
     "period": "実施中（要確認）",
@@ -386,6 +423,7 @@ const DEFAULT_PICKS = [
   },
   {
     "slug": "vandle-lawsonbank-atm-10000",
+    "capYen": 0,
     "name": "バンドルカード×ローソン銀行ATMチャージで抽選最大10,000円",
     "rate": "抽選で最大10,000円",
     "period": "9月（要確認・詳細はキャンペーンページで）",
@@ -398,6 +436,7 @@ const DEFAULT_PICKS = [
   },
   {
     "slug": "famipay-yokugetsubarai-half",
+    "capYen": 3000,
     "name": "ファミペイ翌月払い もれなく半額還元",
     "rate": "利用金額の半額還元（初めて登録：上限3,000円相当／登録済みの方：上限100円相当）",
     "period": "9/1〜9/30（エントリー・利用期間）",
@@ -412,6 +451,7 @@ const DEFAULT_PICKS = [
   },
   {
     "slug": "aeon-koukyouryoukin-1500",
+    "capYen": 1500,
     "name": "イオンカード公共料金 はじめても、久しぶりも。1,500 WAON POINT",
     "rate": "もれなく1,500 WAON POINT（適用条件あり）",
     "period": "9/1〜11/30",
@@ -6463,6 +6503,7 @@ function openPickModal(pick){
     [
       { key: "name", label: "名称（例：VポイントPay ポイント優先払いで10%還元）", value: pick ? pick.name : "" },
       { key: "rate", label: "特典（例：10%還元）", value: pick ? pick.rate : "" },
+      { key: "capYen", label: "実際にもらえる金額の目安（円・pt／任意・ランキングの並び順に使います。「％還元」と「上限◯円」は単位が違うため、これを入れないと正しく比較できません）", value: pick && typeof pick.capYen === "number" ? String(pick.capYen) : "" },
       { key: "period", label: "期間の表示（例：8/1〜8/31）", value: pick ? pick.period : "" },
       { key: "expires", label: "終了日（例：2026-08-31）", value: pick ? pick.expires : "" },
       { key: "how", label: "手順（1行に1ステップ。改行で区切る）", type: "textarea",
@@ -6472,9 +6513,11 @@ function openPickModal(pick){
       { key: "note", label: "上限・注意点", type: "textarea", value: pick ? pick.note : "" },
     ],
     (v)=>{
+      const capYenNum = v.capYen && v.capYen.trim() !== "" ? parseFloat(v.capYen) : undefined;
       const obj = {
         name: v.name, rate: v.rate, period: v.period,
         expires: v.expires || undefined,
+        capYen: (typeof capYenNum === "number" && !isNaN(capYenNum)) ? capYenNum : undefined,
         how: v.how ? v.how.split("\n").map(s=>s.trim()).filter(Boolean) : [],
         note: v.note, url: v.url || undefined,
         image: v.image || undefined
@@ -6577,13 +6620,19 @@ function renderCampaignRanking(){
   const list = document.getElementById("cmpRankingList");
   if(!list) return;
 
-  // MONTHLY_PICKSから最大還元率が高い上位3件をランキング表示
+  // MONTHLY_PICKSから上位3件をランキング表示。
+  // 「％還元」と「上限◯円/pt」は単位が違うので、rate文字列の先頭の数字をそのまま比べると
+  // （例：JAL Payの「100%」と、Vクーポンの「500pt」を100 vs 500として比較してしまう）
+  // 実際の価値と逆転した順位になることがある。capYen（実際にもらえる絶対額の見積り）が
+  // 設定されている場合はそちらを優先して比較する。
   const ranked = [...MONTHLY_PICKS]
     .map(p => {
       const rateStr = String(p.rate||"");
       const m = rateStr.match(/(\d+(?:\.\d+)?)/);
       const isPercent = /%/.test(rateStr);
-      return { p, v: m ? parseFloat(m[1]) : 0, isPercent };
+      const hasCapYen = typeof p.capYen === "number";
+      const v = hasCapYen ? p.capYen : (m ? parseFloat(m[1]) : 0);
+      return { p, v, isPercent, hasCapYen };
     })
     .sort((a,b)=> b.v - a.v)
     .slice(0, 3);
@@ -6600,7 +6649,7 @@ function renderCampaignRanking(){
     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg>`,
   ];
 
-  list.innerHTML = ranked.map(({p, v, isPercent}, i) => `
+  list.innerHTML = ranked.map(({p, v, isPercent, hasCapYen}, i) => `
     <div class="cmp-rank-card" data-slug="${escapeAttr(p.slug || "")}" style="cursor:pointer;">
       <div class="cmp-rank-badge" style="background:${RANK_COLORS[i]};">
         <span style="width:16px;height:16px;display:flex;align-items:center;justify-content:center;">${RANK_ICONS[i]}</span>
@@ -6614,8 +6663,8 @@ function renderCampaignRanking(){
       </div>
       <div class="cmp-rank-right">
         <div class="cmp-rank-label">最大</div>
-        <div class="cmp-rank-rate">${v}${isPercent ? "%" : "pt"}</div>
-        <div class="cmp-rank-rate-sub">${isPercent ? "還元" : "獲得"}</div>
+        <div class="cmp-rank-rate">${v}${(!hasCapYen && isPercent) ? "%" : "pt"}</div>
+        <div class="cmp-rank-rate-sub">${(!hasCapYen && isPercent) ? "還元" : "獲得"}</div>
       </div>
       <svg class="cmp-rank-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
     </div>
