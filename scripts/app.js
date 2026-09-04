@@ -9014,10 +9014,12 @@ function showModal(title, fields, onSave, onDelete){
     fileEl.addEventListener("change", async () => {
       const file = fileEl.files[0];
       if(!file) return;
-      statusEl.textContent = "アップロード中…";
+      statusEl.textContent = "画像を圧縮しています…";
       statusEl.className = "modal-image-status busy";
       try{
-        const path = await uploadCampaignImage(file, title);
+        const compressed = await compressImageFile(file);
+        statusEl.textContent = "アップロード中…";
+        const path = await uploadCampaignImage(compressed, title);
         textEl.value = path;
         showPreview(path);
         statusEl.textContent = "✓ アップロードしました（保存を押すと確定します）";
@@ -9434,24 +9436,61 @@ async function uploadCampaignImage(file, hintName){
   const path = `assets/campaign-images/${safeName}-${Date.now()}.${ext}`;
   const apiUrl = `https://api.github.com/repos/${cfg.username}/${cfg.repo}/contents/${path}`;
   const b64 = await fileToBase64(file);
-  const putRes = await fetch(apiUrl, {
-    method: "PUT",
-    headers: {
-      Authorization: `Bearer ${cfg.token}`,
-      Accept: "application/vnd.github+json",
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      message: `ペイ択：キャンペーン画像を追加（${safeName}）`,
-      content: b64,
-      branch
-    })
+  const body = JSON.stringify({
+    message: `ペイ択：キャンペーン画像を追加（${safeName}）`,
+    content: b64,
+    branch
   });
+  // 認証ヘッダーの形式差異（"Bearer xxx" と "token xxx"）でトークンの通り方が変わる場合があるため、
+  // 最初に失敗したら別形式で1回だけ再試行する。
+  async function tryPut(authHeader){
+    return fetch(apiUrl, {
+      method: "PUT",
+      headers: {
+        Authorization: authHeader,
+        Accept: "application/vnd.github+json",
+        "Content-Type": "application/json"
+      },
+      body
+    });
+  }
+  let putRes = await tryPut(`Bearer ${cfg.token}`);
+  if(putRes.status === 401){
+    putRes = await tryPut(`token ${cfg.token}`);
+  }
   if(!putRes.ok){
     const errBody = await putRes.text();
+    if(putRes.status === 401){
+      throw new Error(`GitHubの認証に失敗しました（トークンが無効か期限切れの可能性があります）。「🔗 GitHub連携」でトークンを再設定してください。`);
+    }
     throw new Error(`アップロードに失敗（HTTP ${putRes.status}）：${errBody.slice(0,150)}`);
   }
   return path;
+}
+
+// スマホの写真は数MBになることが多く、そのままではアップロードに失敗したり時間がかかったりする。
+// GitHub Contents APIでの作成は1MBまでという制限もあるため、canvasで縮小・圧縮してから送る。
+function compressImageFile(file, maxWidth = 1280, quality = 0.82){
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const scale = Math.min(1, maxWidth / img.width);
+      const w = Math.round(img.width * scale);
+      const h = Math.round(img.height * scale);
+      const canvas = document.createElement("canvas");
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, w, h);
+      canvas.toBlob(blob => {
+        if(!blob){ reject(new Error("画像の圧縮に失敗しました")); return; }
+        resolve(new File([blob], "image.jpg", { type: "image/jpeg" }));
+      }, "image/jpeg", quality);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("画像の読み込みに失敗しました")); };
+    img.src = url;
+  });
 }
 
 function utf8ToBase64(str){
