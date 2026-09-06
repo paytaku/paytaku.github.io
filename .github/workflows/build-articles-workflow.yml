@@ -1,0 +1,68 @@
+name: build-articles
+
+# content/articles.json や articles/*.html、affiliates.json、assets/thumbnails配下の画像を変更してmainにpushすると、
+# 記事一覧（articles/index.html）とsitemap.xmlを自動生成してコミットし直す。
+# （2026-08-31追記：サムネイル画像だけをadmin/thumbnails.htmlからアップロードした場合も、
+# 　記事一覧側のサムネイル表示に反映されるよう、assets/thumbnails/** もトリガー対象に追加した。
+# 　これが無いと、画像自体はコミットされるのに articles/index.html の表示が古いまま残ってしまう。）
+# （2026-09-04追記：stores.json / picks.json（編集モードから実際に読み書きされる本番データ）を
+# 　変更した時も、scripts/app.js内のDEFAULT_STORES/DEFAULT_PICKS（フォールバック用の初期データ）に
+# 　自動で同期するようにした。これまでは編集モードでの追加がscripts/app.js側に反映されず、
+# 　2つのデータソースがズレる問題が繰り返し起きていたため、sync-data-defaults.mjsで機械的に解消する。）
+# あわせて、内部リンク切れ・未収益化のアフィリエイトリンク・確認日の鮮度もチェックし、
+# 結果を content/health-check.json としてコミットする。
+# このJSONはサイトの編集モードから読み込まれ、GitHub Actionsの画面を見なくても
+# ペイ択のページ内で直接警告が確認できる（scripts/app.js の renderHealthCheckBanner 参照）。
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "content/articles.json"
+      - "articles/**"
+      - "scripts/**"
+      - "affiliates.json"
+      - "assets/thumbnails/**"
+      - "stores.json"
+      - "picks.json"
+  workflow_dispatch: {}
+  schedule:
+    # 毎週月曜9:00(UTC, 日本時間18:00)に、記事を編集していなくても定期チェックだけ走らせる。
+    # 確認日の鮮度チェックは「時間が経つだけで古くなる」ため、pushトリガーだけでは検知できない。
+    - cron: "0 9 * * 1"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: リポジトリを取得
+        uses: actions/checkout@v4
+
+      - name: Node.jsをセットアップ
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: 記事HTMLのARTICLE_METAをarticles.jsonへ同期
+        run: node scripts/sync-articles-meta.mjs
+
+      - name: stores.json/picks.jsonをscripts/app.jsのフォールバックデータへ同期
+        run: node scripts/sync-data-defaults.mjs
+
+      - name: 記事一覧・sitemap・健全性チェックを生成（内部リンク切れがあれば失敗させる）
+        run: node scripts/build-articles.mjs --strict
+
+      - name: 変更があればコミット・push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add articles/index.html sitemap.xml content/articles.json content/health-check.json scripts/app.js
+          if git diff --cached --quiet; then
+            echo "変更なし。コミットをスキップします。"
+          else
+            git commit -m "chore: 記事一覧・sitemap・健全性チェック・DEFAULT_STORES/PICKSを自動更新"
+            git push
+          fi
