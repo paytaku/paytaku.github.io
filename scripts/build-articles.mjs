@@ -195,6 +195,18 @@ function articleTemplate(a, bySlug){
   const description = metaDescriptionFor(a);
   const canonical = `${SITE_URL}/articles/${a.slug}.html`;
 
+  // 終了済みのキャンペーンは、内容が薄いまま検索結果に残り続けると
+  // 「有用性の低いコンテンツ」の温床になりやすい。expiresが過去日付なら
+  // 自動でnoindexにして、検索結果からは外しつつページ自体は残す
+  // （リンク切れにはしない・related等の内部リンクはfollowのままにする）。
+  const isExpired = a.expires && new Date(a.expires + "T23:59:59") < new Date();
+  const robotsMeta = isExpired
+    ? `<meta name="robots" content="noindex, follow">`
+    : "";
+  const endedBanner = isExpired
+    ? `<div class="lp-risk-note" style="margin-bottom:16px;">🔴 このキャンペーンは${esc(a.period || "")}で終了しました。同様のキャンペーンが再開された際は、この記事を更新してお知らせします。</div>`
+    : "";
+
   // Article構造化データ（JSON-LD）。customHtmlの記事はHTML側に直接埋め込まれているが、
   // このテンプレートで都度生成するキャンペーン系記事はここで生成しないと再ビルドのたびに消えてしまう。
   const articleJsonLd = JSON.stringify({
@@ -221,6 +233,7 @@ function articleTemplate(a, bySlug){
 <title>${esc(pageTitle)}</title>
 <meta name="description" content="${esc(description)}">
 <link rel="canonical" href="${canonical}">
+${robotsMeta}
 <meta property="og:type" content="article">
 <meta property="og:title" content="${esc(pageTitle)}">
 <meta property="og:description" content="${esc(description)}">
@@ -280,7 +293,7 @@ ${articleJsonLd}
       <p class="lp-tagline">${lead}</p>
       <div class="lp-byline">更新日：${esc(a.updatedDate || a.publishedDate || "")}　|　ペイ択編集部</div>
     </div>
-
+${endedBanner}
     <nav class="lp-toc">
       ${tocHtml(a)}
     </nav>
