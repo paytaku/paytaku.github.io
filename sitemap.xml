@@ -2,15 +2,21 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://paytaku.github.io/</loc>
-    <lastmod>2026-08-31</lastmod>
+    <lastmod>2026-09-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://paytaku.github.io/articles/</loc>
-    <lastmod>2026-08-31</lastmod>
+    <lastmod>2026-09-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://paytaku.github.io/articles/famipay-yokugetsubarai-hangaku.html</loc>
+    <lastmod>2026-09-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://paytaku.github.io/articles/bank-furikomi-pointkatsu-checklist.html</loc>
@@ -98,7 +104,7 @@
   </url>
   <url>
     <loc>https://paytaku.github.io/articles/vpoint-pay-yusen-10.html</loc>
-    <lastmod>2026-08-09</lastmod>
+    <lastmod>2026-09-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -122,7 +128,7 @@
   </url>
   <url>
     <loc>https://paytaku.github.io/articles/dpoint-koukan-zouryo.html</loc>
-    <lastmod>2026-08-09</lastmod>
+    <lastmod>2026-09-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -236,31 +242,31 @@
   </url>
   <url>
     <loc>https://paytaku.github.io/articles/kabu-koza.html</loc>
-    <lastmod>2026-08-31</lastmod>
+    <lastmod>2026-09-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://paytaku.github.io/articles/nettsuuhan.html</loc>
-    <lastmod>2026-08-31</lastmod>
+    <lastmod>2026-09-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://paytaku.github.io/articles/odakyu-point.html</loc>
-    <lastmod>2026-08-31</lastmod>
+    <lastmod>2026-09-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://paytaku.github.io/articles/about.html</loc>
-    <lastmod>2026-08-31</lastmod>
+    <lastmod>2026-09-06</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://paytaku.github.io/articles/privacy.html</loc>
-    <lastmod>2026-08-31</lastmod>
+    <lastmod>2026-09-06</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
